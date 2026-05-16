@@ -7,6 +7,7 @@ import {
   getTipBySlug,
   getBackingTrackById,
   getPrincipleBySlug,
+  getLeavesByTrunk,
 } from '@/lib/curriculum/organic'
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
 import SelfCheck from '@/components/leaf/SelfCheck'
@@ -31,6 +32,11 @@ export default async function LeafPage({ params }: Props) {
   const refs   = leaf.relatedPrincipleSlugs.map(getPrincipleBySlug).filter(Boolean)
   const protocols = getProtocolsForLeaf(leaf.slug)
   const TrunkIcon = trunk ? TrunkIconMap[trunk.slug as TrunkSlug] : null
+
+  const siblingLeaves = trunk ? getLeavesByTrunk(trunk.slug as TrunkSlug) : []
+  const myIdx = siblingLeaves.findIndex(l => l.slug === leaf.slug)
+  const prevLeaf = myIdx > 0 ? siblingLeaves[myIdx - 1] : null
+  const nextLeaf = myIdx >= 0 && myIdx < siblingLeaves.length - 1 ? siblingLeaves[myIdx + 1] : null
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-16 space-y-14">
@@ -180,6 +186,36 @@ export default async function LeafPage({ params }: Props) {
             ))}
           </ul>
         </section>
+      )}
+
+      {/* Sibling navigation */}
+      {(prevLeaf || nextLeaf) && (
+        <nav className="flex items-stretch gap-px bg-rule border border-rule">
+          {prevLeaf ? (
+            <Link
+              href={`/leaf/${prevLeaf.slug}`}
+              className="flex-1 bg-paper-bright p-5 hover:bg-surface transition-colors flex items-center gap-3"
+            >
+              <IconArrowLeft size={14} className="text-ink-faint shrink-0" />
+              <div className="text-left min-w-0">
+                <div className="eyebrow">Prev Leaf</div>
+                <div className="text-sm text-ink mt-0.5 truncate">{prevLeaf.title[locale]}</div>
+              </div>
+            </Link>
+          ) : <span className="flex-1 bg-paper-bright p-5" />}
+          {nextLeaf ? (
+            <Link
+              href={`/leaf/${nextLeaf.slug}`}
+              className="flex-1 bg-paper-bright p-5 hover:bg-surface transition-colors flex items-center gap-3 justify-end"
+            >
+              <div className="text-right min-w-0">
+                <div className="eyebrow">Next Leaf</div>
+                <div className="text-sm text-ink mt-0.5 truncate">{nextLeaf.title[locale]}</div>
+              </div>
+              <IconArrowRight size={14} className="text-ink-faint shrink-0" />
+            </Link>
+          ) : <span className="flex-1 bg-paper-bright p-5" />}
+        </nav>
       )}
 
       <Divider />

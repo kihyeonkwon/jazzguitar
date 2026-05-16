@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
-import { getTipBySlug } from '@/lib/curriculum/organic'
+import { getTipBySlug, leaves } from '@/lib/curriculum/organic'
 import { Locale } from '@/lib/curriculum/types'
 import { IconArrowRight, IconArrowLeft } from '@/components/icons'
 import { Divider } from '@/components/ui'
@@ -91,6 +91,8 @@ export default async function TipPage({ params }: Props) {
   const tip = getTipBySlug(slug)
   if (!tip) notFound()
 
+  const relatedLeaves = leaves.filter(l => l.relatedTipSlugs.includes(slug))
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-16 space-y-12">
 
@@ -136,6 +138,29 @@ export default async function TipPage({ params }: Props) {
             </div>
             <IconArrowRight size={16} className="text-ink-faint group-hover:text-ink transition-colors" />
           </Link>
+        </section>
+      )}
+
+      {/* Used in these leaves */}
+      {relatedLeaves.length > 0 && (
+        <section className="pt-4 border-t border-rule space-y-4">
+          <div className="flex items-baseline gap-3">
+            <span className="section-no">L</span>
+            <span className="eyebrow">Used in these leaves</span>
+          </div>
+          <ul className="border-t border-rule">
+            {relatedLeaves.map(l => (
+              <li key={l.id} className="border-b border-rule">
+                <Link
+                  href={`/leaf/${l.slug}`}
+                  className="group flex items-center justify-between py-3.5 hover:bg-surface/50 -mx-3 px-3 transition-colors"
+                >
+                  <div className="text-[14px] text-ink">{l.title[locale]}</div>
+                  <IconArrowRight size={14} className="text-ink-faint group-hover:text-ink transition-colors" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
     </div>

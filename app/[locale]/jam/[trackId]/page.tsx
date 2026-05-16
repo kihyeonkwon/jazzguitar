@@ -5,6 +5,7 @@ import {
   getBackingTrackById,
   getTipBySlug,
   tips,
+  leaves,
 } from '@/lib/curriculum/organic'
 import { Locale } from '@/lib/curriculum/types'
 import BackingTrackPlayer from '@/components/jam/BackingTrackPlayer'
@@ -26,6 +27,10 @@ export default async function JamSessionPage({ params }: Props) {
   const matchingTip =
     tips.find(t => t.suggestedBackingTrackId === track.id) ??
     getTipBySlug('phrase-on-3')
+
+  const relatedLeaves = leaves.filter(l =>
+    l.relatedBackingTrackIds.includes(track.id)
+  )
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-12 space-y-12">
@@ -103,6 +108,44 @@ export default async function JamSessionPage({ params }: Props) {
         백킹 트랙을 먼저 재생한 뒤 녹음을 시작하면, 백킹 사운드와 마이크가 함께 한 파일로 저장됩니다.
         다운로드한 파일을 선생님께 제출하거나 자신의 어제 솔로와 비교해보세요.
       </Hint>
+
+      {/* ── Used in these leaves ──────────────────────── */}
+      {relatedLeaves.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-baseline justify-between">
+            <div className="flex items-baseline gap-3">
+              <span className="section-no">L</span>
+              <span className="eyebrow">Used in these leaves</span>
+            </div>
+            <span className="text-[10px] font-mono tabular text-ink-faint tracking-widest">
+              {relatedLeaves.length} {relatedLeaves.length === 1 ? 'LEAF' : 'LEAVES'}
+            </span>
+          </div>
+          <ul className="border-t border-rule">
+            {relatedLeaves.map(l => (
+              <li key={l.id} className="border-b border-rule">
+                <Link
+                  href={`/leaf/${l.slug}`}
+                  className="group flex items-baseline gap-5 py-4 hover:bg-surface/50 -mx-4 px-4 transition-colors"
+                >
+                  <span className="section-no shrink-0">
+                    {String(l.order).padStart(2, '0')}
+                  </span>
+                  <div className="flex-1 space-y-1">
+                    <div className="text-[15px] font-medium text-ink">
+                      {l.title[locale]}
+                    </div>
+                    <div className="text-xs text-ink-soft">
+                      {l.description[locale]}
+                    </div>
+                  </div>
+                  <IconArrowRight size={14} className="text-ink-faint group-hover:text-ink shrink-0 mt-1.5 transition-colors" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   )
 }
