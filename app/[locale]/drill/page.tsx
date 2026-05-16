@@ -39,6 +39,12 @@ const DRILLS = [
     title: '코드 구구단',
     description: '코드 이름을 보고 구성음을 클릭으로 선택. Triad / 7th 두 모드.',
   },
+  {
+    type: 'scale-construction',
+    number: 7,
+    title: '스케일 구구단',
+    description: '루트와 스케일 이름을 보고 구성음을 빠르게 선택한다.',
+  },
 ]
 
 export default function DrillLibraryPage() {

@@ -4,6 +4,7 @@ import { useMemo, useSyncExternalStore } from 'react'
 import {
   getCompletedTopicIds,
   getLeafProgress,
+  getLeafLevelChecks,
   getLeafScore,
   getLeafSelfCheck,
   getStartedTopicIds,
@@ -97,6 +98,46 @@ export function useLeafSelfCheck(leafSlug: string): Record<number, boolean> {
     subscribeProgressStore,
     getSnapshot,
     () => EMPTY_SELF_CHECK
+  )
+}
+
+export function useLeafLevelChecks(
+  leafSlug: string,
+  level: string
+): Record<number, boolean> {
+  const getSnapshot = useMemo(
+    () => makeStableSnapshot(() => getLeafLevelChecks(leafSlug, level), EMPTY_SELF_CHECK),
+    [leafSlug, level]
+  )
+  return useSyncExternalStore(
+    subscribeProgressStore,
+    getSnapshot,
+    () => EMPTY_SELF_CHECK
+  )
+}
+
+export function useLeafLevelCheckMap(
+  leafSlug: string,
+  groups: Array<{ level: string }>
+): Record<string, Record<number, boolean>> {
+  const getSnapshot = useMemo(
+    () =>
+      makeStableSnapshot(
+        () => {
+          const map: Record<string, Record<number, boolean>> = {}
+          for (const group of groups) {
+            map[group.level] = getLeafLevelChecks(leafSlug, group.level)
+          }
+          return map
+        },
+        {}
+      ),
+    [groups, leafSlug]
+  )
+  return useSyncExternalStore(
+    subscribeProgressStore,
+    getSnapshot,
+    () => ({})
   )
 }
 

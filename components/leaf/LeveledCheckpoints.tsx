@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import {
-  getLeafLevelChecks,
   toggleLeafLevelCheck,
   touchLeafActivity,
-  PROGRESS_STORE_EVENT,
 } from '@/lib/progress/store'
+import { useLeafLevelCheckMap } from '@/lib/progress/hooks'
 import type { CheckpointGroup, Locale } from '@/lib/curriculum/types'
 import { IconCheck } from '@/components/icons'
 
@@ -24,26 +23,25 @@ const LEVEL_LABEL: Record<string, { kr: string; range: string }> = {
 }
 
 export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) {
-  const [version, setVersion] = useState(0)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    const onChange = () => setVersion(v => v + 1)
-    window.addEventListener(PROGRESS_STORE_EVENT, onChange)
-    return () => window.removeEventListener(PROGRESS_STORE_EVENT, onChange)
-  }, [])
+  const levelCheckMap = useLeafLevelCheckMap(leafSlug, groups)
 
   // 전체 점수 계산
-  let totalScore = 0
-  const groupStates = groups.map((g) => {
-    const checks = mounted ? getLeafLevelChecks(leafSlug, g.level) : {}
-    const done = Object.values(checks).filter(Boolean).length
-    const ratio = g.items.length === 0 ? 0 : done / g.items.length
-    totalScore += ratio * g.weight
-    return { group: g, checks, done }
-  })
-  totalScore = Math.round(totalScore)
+  const groupStates = useMemo(
+    () =>
+      groups.map((g) => {
+        const checks = levelCheckMap[g.level] ?? {}
+        const done = Object.values(checks).filter(Boolean).length
+        return { group: g, checks, done }
+      }),
+    [groups, levelCheckMap]
+  )
+
+  const totalScore = Math.round(
+    groupStates.reduce((sum, { group, done }) => {
+      const ratio = group.items.length === 0 ? 0 : done / group.items.length
+      return sum + ratio * group.weight
+    }, 0)
+  )
 
   const handleToggle = (level: string, idx: number) => {
     toggleLeafLevelCheck(leafSlug, level, idx)
@@ -58,7 +56,7 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
           <span className="eyebrow">Checkpoints</span>
         </div>
         <span className="text-[11px] font-mono tabular text-ink-faint tracking-widest">
-          {mounted ? totalScore : 0}<span className="text-ink-quiet"> / 100</span>
+          {totalScore}<span className="text-ink-quiet"> / 100</span>
         </span>
       </div>
 

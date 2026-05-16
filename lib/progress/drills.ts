@@ -9,8 +9,14 @@ export interface DrillScore {
 }
 
 const STORAGE_KEY = 'jazz-guitar-drill-scores'
+export const DRILL_SCORES_EVENT = 'jazz-guitar-drill-scores-change'
 
 type DrillScoreMap = Record<string, DrillScore>
+
+function emitDrillScoresChange(): void {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(DRILL_SCORES_EVENT))
+}
 
 function readMap(): DrillScoreMap {
   if (typeof window === 'undefined') return {}
@@ -25,6 +31,7 @@ function readMap(): DrillScoreMap {
 function writeMap(map: DrillScoreMap): void {
   if (typeof window === 'undefined') return
   localStorage.setItem(STORAGE_KEY, JSON.stringify(map))
+  emitDrillScoresChange()
 }
 
 export function getDrillScore(drillType: string): DrillScore | null {

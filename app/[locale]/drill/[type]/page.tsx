@@ -7,12 +7,13 @@ import ChordQualityEar from '@/components/drills/ChordQualityEar'
 import VoicingFind from '@/components/drills/VoicingFind'
 import ChordToneId from '@/components/drills/ChordToneId'
 import ChordConstruction from '@/components/drills/ChordConstruction'
+import ScaleConstruction from '@/components/drills/ScaleConstruction'
 
 interface Props {
   params: Promise<{ type: string; locale: string }>
 }
 
-const DRILL_TYPES = ['fretboard-find', 'interval-ear', 'chord-quality-ear', 'voicing-find', 'chord-tone-id', 'chord-construction']
+const DRILL_TYPES = ['fretboard-find', 'interval-ear', 'chord-quality-ear', 'voicing-find', 'chord-tone-id', 'chord-construction', 'scale-construction']
 
 export default async function DrillPage({ params }: Props) {
   const { type } = await params
@@ -35,6 +36,7 @@ export default async function DrillPage({ params }: Props) {
       {type === 'voicing-find' && <VoicingFind />}
       {type === 'chord-tone-id' && <ChordToneId />}
       {type === 'chord-construction' && <ChordConstruction />}
+      {type === 'scale-construction' && <ScaleConstruction />}
     </div>
   )
 }

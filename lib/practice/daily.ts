@@ -1,6 +1,6 @@
 'use client'
 
-import { getAllDrillScores, getDrillScore } from '@/lib/progress/drills'
+import { getDrillScore } from '@/lib/progress/drills'
 import {
   getLeafScore,
   getLeafLastActivity,
@@ -14,6 +14,7 @@ const ALL_DRILLS = [
   'voicing-find',
   'chord-tone-id',
   'chord-construction',
+  'scale-construction',
 ]
 
 const LAST_DRILL_KEY = 'jazz-guitar-last-daily-drill'
@@ -116,4 +117,5 @@ export const DRILL_LABELS: Record<string, string> = {
   'voicing-find':        '보이싱 찾기',
   'chord-tone-id':       '코드톤 식별',
   'chord-construction':  '코드 구구단',
+  'scale-construction':  '스케일 구구단',
 }
