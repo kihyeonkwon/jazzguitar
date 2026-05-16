@@ -5,7 +5,13 @@ import {
   getLeafScore,
   getLeafLastActivity,
 } from '@/lib/progress/store'
+import { trunks } from '@/lib/curriculum/organic'
 import type { Leaf } from '@/lib/curriculum/types'
+
+// 트렁크 슬러그 → 학습 순서 (낮을수록 먼저)
+const TRUNK_ORDER: Record<string, number> = Object.fromEntries(
+  trunks.map(t => [t.slug, t.order])
+)
 
 const ALL_DRILLS = [
   'fretboard-find',
@@ -97,10 +103,11 @@ export function pickTodaysLeaf(allLeaves: Leaf[]): Leaf | null {
   // 진행 중인 잎이 없으면 → 첫 잎 (시작하지 않은 것 중 첫 번째)
   const fresh = scored.filter(x => x.score === 0)
   if (fresh.length > 0) {
-    // trunk order, then leaf order
+    // 트렁크 학습 순서 (Foundation = 1, Blues = 2...) → 잎 order 순
     fresh.sort((a, b) => {
-      const trunkDiff = (a.leaf.trunkSlug ?? '').localeCompare(b.leaf.trunkSlug ?? '')
-      if (trunkDiff !== 0) return trunkDiff
+      const ta = TRUNK_ORDER[a.leaf.trunkSlug] ?? 99
+      const tb = TRUNK_ORDER[b.leaf.trunkSlug] ?? 99
+      if (ta !== tb) return ta - tb
       return a.leaf.order - b.leaf.order
     })
     return fresh[0].leaf

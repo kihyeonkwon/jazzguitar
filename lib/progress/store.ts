@@ -216,3 +216,108 @@ export function touchLeafActivity(leafSlug: string): void {
   localStorage.setItem(`leaf-activity:${leafSlug}`, new Date().toISOString())
   emitProgressStoreChange()
 }
+
+// ─── Lick mastery ────────────────────────────────────────────────────
+// 사용자가 외운 (memorized) 릭 추적
+const LICK_KEY = 'jazz-guitar-lick-mastery'
+
+interface LickMasteryEntry {
+  memorized: boolean
+  citedCount: number      // 잼에서 인용한 횟수
+  lastSeenAt: string      // 마지막으로 본 ISO
+}
+
+type LickMasteryMap = Record<string, LickMasteryEntry>
+
+function getLickMap(): LickMasteryMap {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = localStorage.getItem(LICK_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+function saveLickMap(map: LickMasteryMap): void {
+  if (typeof window === 'undefined') return
+  localStorage.setItem(LICK_KEY, JSON.stringify(map))
+  emitProgressStoreChange()
+}
+
+export function getLickMastery(lickId: string): LickMasteryEntry {
+  return getLickMap()[lickId] ?? {
+    memorized: false,
+    citedCount: 0,
+    lastSeenAt: '1970-01-01',
+  }
+}
+
+export function setLickMemorized(lickId: string, memorized: boolean): void {
+  const map = getLickMap()
+  const entry = map[lickId] ?? { memorized: false, citedCount: 0, lastSeenAt: '1970-01-01' }
+  entry.memorized = memorized
+  entry.lastSeenAt = new Date().toISOString()
+  map[lickId] = entry
+  saveLickMap(map)
+}
+
+export function incrementLickCited(lickId: string): void {
+  const map = getLickMap()
+  const entry = map[lickId] ?? { memorized: false, citedCount: 0, lastSeenAt: '1970-01-01' }
+  entry.citedCount += 1
+  entry.lastSeenAt = new Date().toISOString()
+  map[lickId] = entry
+  saveLickMap(map)
+}
+
+// ─── Session record checks (universal 4) ─────────────────────────────
+const SESSION_KEY = 'jazz-guitar-session-log'
+
+export interface SessionRecord {
+  ts: string                                 // ISO when finished
+  leafSlug: string
+  checks: {
+    form: boolean
+    silence: boolean
+    lick: boolean
+    landing: boolean
+  }
+}
+
+export function logSessionRecord(rec: SessionRecord): void {
+  if (typeof window === 'undefined') return
+  try {
+    const raw = localStorage.getItem(SESSION_KEY)
+    const list: SessionRecord[] = raw ? JSON.parse(raw) : []
+    list.push(rec)
+    // 최근 200개만 유지
+    const trimmed = list.slice(-200)
+    localStorage.setItem(SESSION_KEY, JSON.stringify(trimmed))
+    emitProgressStoreChange()
+  } catch {
+    // ignore
+  }
+}
+
+export function getRecentSessions(limit = 20): SessionRecord[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = localStorage.getItem(SESSION_KEY)
+    const list: SessionRecord[] = raw ? JSON.parse(raw) : []
+    return list.slice(-limit).reverse()
+  } catch {
+    return []
+  }
+}
+
+export function countSessionsForLeaf(leafSlug: string): number {
+  if (typeof window === 'undefined') return 0
+  try {
+    const raw = localStorage.getItem(SESSION_KEY)
+    const list: SessionRecord[] = raw ? JSON.parse(raw) : []
+    return list.filter(r => r.leafSlug === leafSlug).length
+  } catch {
+    return 0
+  }
+}

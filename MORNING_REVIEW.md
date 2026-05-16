@@ -1,164 +1,118 @@
-# 아침 리뷰 — 새 시스템 완성
+# 아침 리뷰 — Mission Runner 추가
 
-기현님, 푹 주무셨길 바랍니다. 어젯밤 제안하신 **단순화된 구조**(잎 하나에 이론·실습·체크리스트 통합 + 데일리 1드릴+1잎)가 모두 완성됐습니다.
-
----
-
-## ✅ 어젯밤 완료된 작업 — 4 Phase 전부
-
-### Phase 1 — 아키텍처 단순화
-**잎 한 페이지에 모든 게** (Theory · Jam Tracks · Exercises · Checkpoints)
-- 더 이상 Tip/Principle/Protocol 따로 안 다님
-- 잎 페이지에서 다 보고 다 체크
-- 형제 잎 네비게이션 (Prev/Next)
-
-**체크포인트가 4 레벨로** (Bronze 30 / Silver 30 / Gold 25 / Master 15)
-- 0–100점 점수 시스템
-- 100점이 될 때까지 잎이 SRS로 재등장 (자연스러운 반복)
-- 레벨별로 항목 다름:
-  - Bronze: "일단 가능" (3-4개)
-  - Silver: "안정적" (3-4개)
-  - Gold: "음악적" (3-4개)
-  - Master: "자유로움" (2-3개)
-
-**Daily Session = 1 드릴 + 1 잎** (4 섹션 네비: Today / Jam / Tree / Drills)
-- 워밍업 드릴: 점수 가장 낮은 + 직전 회피
-- 오늘의 잎: 진행 중 잎 중 점수 가장 낮은 것 (없으면 첫 미시작 잎)
-- 처방전 카드: 05분 워밍업 + 40분 잎 + 10분 잼 = 60분 권장
-
-### Phase 2 — 35개 잎 전부 풍부화
-모든 기존 잎이 **새 shape**으로 완전히 채워졌습니다:
-- `theory.content` — 친절한 블로그 톤 ("무엇인가 / 어떻게 쓰이는가 / 핵심 포인트" 구조), 400~700자
-- `practice.exercises` — 2-3개 단계별 실습 (BPM 명시)
-- `practice.backingTrackIds` — 매핑됨
-- `checkpoints` — Bronze/Silver/Gold/Master 4레벨 전부 작성
-- 톤: **합니다 / 입니다 / 할 수 있습니다** 경어체 유지
-
-트렁크별 잎 수:
-| 트렁크 | 잎 수 |
-|--------|------|
-| 기초 (Foundation) | 4 |
-| 블루스 (Blues) | 6 |
-| 화성·컴핑 | 8 (기존 6 + 신규 2) |
-| 솔로 (Soloing) | 9 (기존 6 + 신규 3) |
-| 청음 | 4 |
-| 스탠다드 | 5 |
-| 아티스트 | 4 |
-| **합계** | **40** |
-
-### Phase 4 — 강의 노트 흡수 (누락 개념 신규 잎)
-
-강의 노트(lesson_old, lesson_new)에서 누락된 개념을 5개 신규 잎으로 추가:
-
-1. **Dorian Tetrachord** — 4음 셀 분리, [A]/[B] 핑거링, 대각선/수직, 4시작 포지션
-2. **Half-Whole Dim & Whole Tone Scale** — 대칭 스케일 비교
-3. **Im6 vs Im7** — 어느 모드에서 가져오나 (모달 솔로 정확성)
-4. **II-V-I 텐션 해결** — Easy/Advanced 보이스리딩 (b9↓5, b13↓9, #11↑9, #9 → b9↓5 등)
-5. **Shell Voicings** — 1-3-7 / 1-7-3 (Walking + 멜로디 동시 연주용)
-
-신규 백킹 트랙 1개: **Blue Bossa BPM 100** (Cm key, 16 bars, bossa style).
+기현님, 친구 피드백 반영해서 **Mission Runner**를 만들었습니다.
 
 ---
 
-## 🔍 확인하셔야 할 항목 (기본값 적용됨)
+## 🎯 친구 피드백 → 실제 변경
 
-1. **추가 신규 잎 후보** — 에이전트가 시간 관계로 5개만 추가했습니다. 나머지 후보 (다음 작업으로 미룬 것):
-   - Closed voicing / Drop 3 / Upper Structure Triad
-   - Walking Bass (이미 hc-5 있음)
-   - 트라이어드 구구단 (이미 fd-2 있음)
-   - Symmetric chord / Donna Lee 분석 / Bebop Line (이미 so-4)
-   - Sub V7 / Entry chord / Jazz Minor Diatonic / 4종 스케일 체계
-
-2. **신규 드릴 — 스케일 구구단** 추가됨 (`/drill/scale-construction`). 잘 작동하는지 확인.
-
-3. **Tree of Jazz** 진도 0/40으로 카운트 (이전 28에서 늘어남). 35→40 잎 추가 반영.
-
-4. **데일리 알고리즘** 시작 단계에서 어떤 잎을 잡는지 — 처음 사용자(점수 0)는 알파벳 순 첫 잎으로 시작. 더 똑똑하게 만들지 결정 필요.
-
-5. **Daily 페이지 처방전 카드** — `05분 워밍업 + 40분 잎 + 10분 잼 = 60분` 배분. 시간 비율 조정 필요한지.
-
-6. **레거시 라우트** — `/topic`, `/principles`, `/tip`, `/session` 모두 작동하지만 메인 흐름엔 안 보입니다. 완전 삭제할지 검색 가능한 사전으로 유지할지.
+| 친구 진단 | 처방 | 구현 상태 |
+|---------|------|---------|
+| Daily가 처방이 아니라 옵션이다 | 단일 미션 중심 5-step Runner | ✅ |
+| 드릴 ↔ 잼 단절 | 잎의 `quickDrill`로 컨텍스트 일치 | ✅ (구조), 데이터는 1개만 |
+| 릭 부족 (외울 단위 X) | `LickSnippet[]` 타입 + 잎별 1-3개 | ✅ (구조), 데이터는 F블루스만 |
+| 녹음 평가 단순화 | Universal 4 체크 컴포넌트 | ✅ |
+| 완료 기준 = 행동 | RecordCheck → Bronze 자동 가산 | ✅ |
+| 선택 피로 | 홈 = MissionRunner 자동 추천 | ✅ |
+| Archive 격하 | nav에서 빠짐, 푸터 링크만 | ✅ |
 
 ---
 
-## 📐 새 데이터 shape 예시 (참고용)
+## 🛤️ 새 Daily 흐름
 
-```ts
-{
-  slug: 'blues-1-chorus-pentatonic',
-  title: { ko: 'F 블루스에서 펜타토닉으로 1코러스 친다', ... },
-  
-  theory: {
-    content: { ko: '## 마이너 펜타토닉은 무엇인가\n\n5음으로 구성된 가장 보편적인 솔로 도구입니다...' },
-    abcNotation: 'X:1\nT:F minor pentatonic\n...',
-  },
-  
-  practice: {
-    exercises: [
-      { title: '1포지션 펜타토닉 오르내림', bpm: 80, ... },
-      { title: '백킹 위 1코러스 솔로', bpm: 80, ... },
-      { title: '코드 변화에 음을 떨어뜨리기', bpm: 80, ... },
-    ],
-    backingTrackIds: ['bt-f-blues-80'],
-  },
-  
-  checkpoints: [
-    { level: 'Bronze', weight: 30, items: [...3-4 items] },
-    { level: 'Silver', weight: 30, items: [...3-4 items] },
-    { level: 'Gold',   weight: 25, items: [...3-4 items] },
-    { level: 'Master', weight: 15, items: [...2-3 items] },
-  ],
-}
+```
+01 MISSION OVERVIEW
+  ↓
+02 WARMUP   — 5분 드릴 (잎과 컨텍스트 일치)
+  ↓
+03 LICK     — 2-4 마디 짧은 어휘 (외움 토글)
+  ↓
+04 APPLY    — 백킹 + 녹음
+  ↓
+05 RECORD   — Universal 4 체크 → Bronze 자동 가산
 ```
 
----
-
-## 🌅 사용자 경험 흐름 (현재)
-
-1. **홈** (`/ko`) → "오늘, 한 잎." Today's Session
-2. **워밍업 드릴 5분** (점수 낮은 것 자동 선택)
-3. **오늘의 잎 클릭** → 한 페이지에서
-   - 이론 읽기 (블로그 톤)
-   - 잼 트랙으로 가서 연주 (백킹 + 마이크 녹음)
-   - 4레벨 체크포인트 자가평가
-4. 점수가 100점 안 되면 → **내일 다시 등장**
-5. 100점 도달 → 다음 잎 자동 추천 (점수 낮은 진행 중인 잎 또는 미시작 잎)
+각 단계 sticky 하단에 BACK / NEXT. 잎에 lick·jam·drill 데이터가 없으면 fallback 화면 노출.
 
 ---
 
-## 📂 새/수정 파일
+## ✅ 검증 완료
 
-### 신규
-- `components/practice/DailySession.tsx` — 새 홈 페이지 (1 드릴 + 1 잎)
-- `components/leaf/LeveledCheckpoints.tsx` — 4레벨 체크포인트 UI
-- `components/leaf/markdown.tsx` — 공유 마크다운 렌더러
-- `lib/practice/daily.ts` — 드릴/잎 picker 알고리즘
-- `lib/practice/hooks.ts` — Daily 상태 hooks
-- `lib/progress/hooks.ts` — 리액티브 진도 hooks (useLeafScoreMap, useLeafLevelCheckMap)
-- `components/drills/ScaleConstruction.tsx` — 신규 7번째 드릴
+`http://localhost:3001/ko` 에서 5단계 시퀀스 모두 클릭 테스트 완료:
+- Step 1 Mission Overview: 미션 문구 + 시간 배분 (Warmup 5 / Lick 10 / Apply 20 / Check 5)
+- Step 2 Warmup: 잎의 quickDrill 표시 + 드릴 진입 버튼
+- Step 3 Lick: LickCard (악보 + memorized 토글) — 없으면 빈 화면 노출
+- Step 4 Apply: BackingTrackPlayer + Recorder — 없으면 빈 화면
+- Step 5 Record: Universal 4 체크 + Bronze 자동 가산
 
-### 대규모 수정
-- `lib/curriculum/types.ts` — Leaf에 theory/practice/checkpoints 필드 (optional)
-- `lib/curriculum/organic.ts` — 40개 잎 모두 새 shape으로 풍부화 + 신규 5개 + Blue Bossa 트랙
-- `lib/progress/store.ts` — getLeafScore, getLeafLastActivity 등 새 함수
-- `app/[locale]/page.tsx` — Daily Session
-- `app/[locale]/leaf/[slug]/page.tsx` — 통합 레이아웃
-- `app/[locale]/session/[leafSlug]/page.tsx` — leaf로 리다이렉트
-- `components/layout/Header.tsx` — 4 nav items (Today / Jam / Tree / Drills)
+데일리 picker가 트렁크 학습 순서(Foundation → Blues → …) 우선으로 수정됨 (이전엔 알파벳순이라 Artists가 먼저 잡힘).
 
 ---
 
-## 🚧 다음 마일스톤 (제안)
+## 🔍 확인하셔야 할 부분 (기본값 적용됨)
+
+### 1. F 블루스 잎에만 LickSnippet 3개 있음
+샘플로 `lf-bl-1`에만 채워뒀습니다 — 다른 39개 잎에도 채워야 합니다.
+
+**현재 채워진 릭 3개** (모두 짧은 교본 스타일 일반 패턴):
+- `lk-bl-1-pentatonic-down` — 하행 + 상행 페어
+- `lk-bl-1-blue-note` — ♭5 블루 노트 강조
+- `lk-bl-1-turnaround` — I7 → V7 해결
+
+**의견 주실 부분**: 다른 잎의 릭 데이터 작성 톤
+- 모두 **교본 스타일 일반 패턴**으로 갈지 (가장 안전)
+- 또는 **유명 아티스트 어법을 흉내낸 자작 라인** ("Burrell-style", "Wes-inspired" 표기)으로 갈지
+
+저작권 안전을 위해 직접 전사(transcribe)는 피하는 게 좋습니다. 교본·교육 자료에서 흔히 보는 일반 패턴 또는 "스타일 영감받은 자작"이 적절합니다.
+
+### 2. quickDrill 데이터도 1개 잎만
+F 블루스 잎에만 `quickDrill: { kind: 'scale-notes', params: { scale: 'minor pentatonic', root: 'F' } }` 있음. 나머지는 폴백으로 일반 드릴로 진입.
+
+### 3. Mission Runner 시간 배분 카드 (`05/10/20/05`)
+지금은 고정. 잎 진도에 따라 동적 조정할지 결정 필요.
+
+### 4. 외울 릭은 어떻게 외웠는지 검증?
+현재는 "MEMORIZED 토글"만 있어 자가 신고. 실제 외웠는지는 잼/녹음에서 사용했는지로 검증.
+→ Record Check #3 "오늘의 릭을 1번 이상 자연스럽게 끼워 넣었다"가 그 검증.
+
+---
+
+## 📁 새 파일
+
+```
+components/mission/
+  ├── MissionRunner.tsx       # 5-step 메인 오케스트레이터
+  ├── LickCard.tsx            # 릭 표시 + 외움 토글
+  └── RecordCheck.tsx         # Universal 4 체크 (Bronze 자동 가산)
+
+lib/curriculum/types.ts        # LickSnippet, QuickDrill, RecordCheckKey 추가
+lib/progress/store.ts          # 릭 마스터리 + 세션 로그 함수
+```
+
+수정된 파일:
+- `app/[locale]/page.tsx` — 홈 = MissionRunner
+- `lib/practice/daily.ts` — 트렁크 학습 순서 우선 (Foundation → Blues …)
+- `lib/curriculum/organic.ts` — F 블루스 잎에 mission/licks/quickDrill 샘플 추가
+
+---
+
+## 🚧 다음 작업 (우선순위)
 
 | 우선 | 작업 |
 |------|------|
-| 1 | 위 5개 추가 신규 잎 후보 채우기 (Closed/Drop3, Upper Structure 등) |
-| 2 | Tree of Jazz에서 잎 점수 시각화 강화 (0/30/60/100 단계별 채움) |
-| 3 | 백킹 트랙 추가 (현재 6개 → 12개 정도, ATTYA, Confirmation 등) |
-| 4 | Daily 처방전 시간 비율 동적 조정 (잎 진도에 따라) |
-| 5 | 레거시 라우트 정리 또는 사전으로 유지 결정 |
-| 6 | Supabase 연결 (멀티 디바이스 + 선생님-학생 연결) |
+| 1 | 나머지 39개 잎에 `mission` 문구 추가 (단일 행위) |
+| 2 | 잎별 LickSnippet 1-3개 작성 (모두 교본 스타일 일반 패턴) |
+| 3 | 잎별 quickDrill 명세 추가 |
+| 4 | Mission 시간 배분 동적 조정 (잎 진도 기반) |
+| 5 | "외운 릭 모음" 페이지 (`/licks` 재활용) |
+| 6 | Archive (`/principles`, `/tip`) 정리 또는 사전 검색 페이지로 |
 
-천천히 검토하시고 의견 주세요.
+---
 
-— 어젯밤 작업한 클로드 드림
+## 🌐 깨어나서 확인
+
+`http://localhost:3001/ko` → Mission Runner 시작 (Foundation 12음 잎이 첫 미션으로 잡힙니다).
+
+`http://localhost:3001/ko/leaf/blues-1-chorus-pentatonic` → 릭 3개 + quickDrill 가진 첫 완성 잎. Mission Runner 단계 모두 콘텐츠 있음.
+
+푸시 완료 — 좋은 아침 되세요.

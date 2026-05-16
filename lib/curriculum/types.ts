@@ -74,6 +74,32 @@ export interface CheckpointGroup {
   items: I18n[]           // 3-5개 체크 항목
 }
 
+// ─── Lick (2-4 마디 음악 단위) ──────────────────────────────────────────
+// 외워서 솔로에 인용할 짧은 어휘. 한 잎에 1-3개 권장.
+export interface LickSnippet {
+  id: string
+  leafSlug: string
+  bars: number              // 보통 2-4
+  context: I18n             // 어떤 진행에 쓰나 (예: "Dm7-G7-Cmaj7")
+  abcNotation: string       // 재생 가능한 ABC
+  source?: I18n             // 출처/스타일 (예: "Kenny Burrell · Chitlins Con Carne")
+}
+
+// ─── Quick Drill (잎 내장 미니 드릴) ────────────────────────────────────
+// 잎이 미션이 됐을 때 보여줄 5문제 짜리 워밍업 명세.
+// 기존 드릴 타입을 잎의 컨텍스트에 맞게 파라미터화한 것.
+export interface QuickDrill {
+  kind:
+    | 'chord-notes'         // 코드 구성음 맞히기 (예: Bb Mixo 음)
+    | 'scale-notes'         // 스케일 구성음 맞히기
+    | 'interval'            // 인터벌 청음
+    | 'chord-quality'       // 코드 퀄리티 청음
+  // 자유 파라미터: 컴포넌트가 해석
+  params: Record<string, string | number | string[]>
+  questionCount: number     // 보통 5
+  passingScore?: number     // 0-100, 기본 80
+}
+
 export interface Leaf {
   id: string
   slug: string
@@ -93,12 +119,20 @@ export interface Leaf {
   }
   checkpoints?: CheckpointGroup[]   // Bronze/Silver/Gold/Master 4 레벨
 
+  // ─ Mission Runner용 ─
+  mission?: I18n                  // 오늘의 한 문장 ("IV7에서 Bb Mixolydian 색깔 내기")
+  licks?: LickSnippet[]           // 외울 짧은 어휘 (1-3개)
+  quickDrill?: QuickDrill         // 잎과 연결된 5문제 미니 드릴
+
   // ─ 레거시 (점진적으로 폐기) ─
   selfCheck: I18n[]
   relatedTipSlugs: string[]
   relatedBackingTrackIds: string[]
   relatedPrincipleSlugs: string[]
 }
+
+// ─── 세션 종료 시 universal 4 체크 ───────────────────────────────────────
+export type RecordCheckKey = 'form' | 'silence' | 'lick' | 'landing'
 
 // 레벨 → 가중치 (기본값)
 export const LEVEL_WEIGHTS: Record<CheckpointLevel, number> = {
