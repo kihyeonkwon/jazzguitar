@@ -33,6 +33,12 @@ const DRILLS = [
     title: '코드톤 식별',
     description: '코드와 한 음이 주어진다. 그 음의 도수를 답한다.',
   },
+  {
+    type: 'chord-construction',
+    number: 6,
+    title: '코드 구구단',
+    description: '코드 이름을 보고 구성음을 클릭으로 선택. Triad / 7th 두 모드.',
+  },
 ]
 
 export default function DrillLibraryPage() {

@@ -1,8 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { Chord } from 'tonal'
 import { BackingTrack } from '@/lib/curriculum/types'
+import { trackToLeadSheetAbc } from '@/lib/music/leadsheet'
+
+const SheetMusic = dynamic(() => import('@/components/music/SheetMusic'), { ssr: false })
 
 interface Props {
   track: BackingTrack
@@ -254,20 +258,10 @@ export default function BackingTrackPlayer({ track }: Props) {
         ))}
       </div>
 
-      {/* 코드 진행 */}
+      {/* 리드시트 (5선지 + 코드 + 가이드 톤) */}
       <div className="p-5 border-b border-rule">
-        <div className="eyebrow mb-3">Progression</div>
-        <div className="flex flex-wrap gap-1.5">
-          {track.chords.map((c, i) => (
-            <span
-              key={i}
-              className="px-2 py-1 bg-surface text-[11px] font-mono tabular text-ink-soft"
-            >
-              {c.chord}
-              <span className="text-ink-faint ml-1">·{c.beats}b</span>
-            </span>
-          ))}
-        </div>
+        <div className="eyebrow mb-3">Lead Sheet · Guide Tones</div>
+        <LeadSheet track={track} />
       </div>
 
       {/* 컨트롤 */}
@@ -284,4 +278,10 @@ export default function BackingTrackPlayer({ track }: Props) {
       </button>
     </div>
   )
+}
+
+// ── 리드시트 (코드 + 가이드톤 5선지) ──
+function LeadSheet({ track }: { track: BackingTrack }) {
+  const abc = useMemo(() => trackToLeadSheetAbc(track), [track])
+  return <SheetMusic notation={abc} bpm={track.bpm} minimal />
 }

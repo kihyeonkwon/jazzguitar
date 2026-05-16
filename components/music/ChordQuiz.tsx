@@ -40,7 +40,11 @@ function qualityLabel(quality: string): string {
   return map[quality] ?? quality
 }
 
-export default function ChordQuiz() {
+interface ChordQuizProps {
+  onScoreChange?: (s: { correct: number; total: number }) => void
+}
+
+export default function ChordQuiz({ onScoreChange }: ChordQuizProps = {}) {
   const [mode,    setMode]    = useState<Mode>('seventh')
   const [chord,   setChord]   = useState<string>(() => pickRandom(seventhChords))
   const [selected, setSelected] = useState<string[]>([])
@@ -76,15 +80,19 @@ export default function ChordQuiz() {
 
     const isCorrect = checkNoteSelection(selected, correctNotes)
     setResult(isCorrect ? 'correct' : 'wrong')
-    setScore(prev => ({
-      correct: prev.correct + (isCorrect ? 1 : 0),
-      total:   prev.total + 1,
-    }))
+    setScore(prev => {
+      const next = {
+        correct: prev.correct + (isCorrect ? 1 : 0),
+        total:   prev.total + 1,
+      }
+      onScoreChange?.(next)
+      return next
+    })
     if (!isCorrect) {
       setShake(true)
       setTimeout(() => setShake(false), 500)
     }
-  }, [selected, targetCount, result, correctNotes])
+  }, [selected, targetCount, result, correctNotes, onScoreChange])
 
   // 다음 코드
   const next = useCallback(() => {
