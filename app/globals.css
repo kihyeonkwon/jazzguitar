@@ -1,42 +1,114 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #111111;
-}
+/* ──────────────────────────────────────────────────────────────────
+   Design Tokens — Monochrome editorial
+   ECM Records inspired. No accent color. Hierarchy by typography
+   and whitespace only.
+   ────────────────────────────────────────────────────────────────── */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Surfaces */
+  --color-paper:        #fafafa;  /* page background */
+  --color-paper-bright: #ffffff;  /* elevated surfaces */
+  --color-surface:      #f4f4f4;  /* subtle wash */
+  --color-rule:         #e5e5e5;  /* hairline */
+  --color-rule-strong:  #d4d4d4;
+
+  /* Ink */
+  --color-ink:        #0a0a0a;  /* headings, primary */
+  --color-ink-soft:   #525252;  /* body, secondary */
+  --color-ink-faint:  #a3a3a3;  /* caption, tertiary */
+  --color-ink-quiet:  #d4d4d4;  /* placeholder */
+
+  /* Inverse */
+  --color-ink-inv:    #fafafa;  /* on dark */
+
+  /* Fonts */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Base
+   ────────────────────────────────────────────────────────────────── */
+
+html {
+  font-feature-settings: 'ss01', 'cv11';
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.005em;
 }
 
-/* 오답 shake 애니메이션 */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%       { transform: translateX(-6px); }
-  40%       { transform: translateX(6px); }
-  60%       { transform: translateX(-4px); }
-  80%       { transform: translateX(4px); }
+/* Tabular numbers — for BPM, scores, dates */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
-.animate-shake { animation: shake 0.4s ease-in-out; }
 
-/* abcjs SVG light theme */
-.sheet-music-container svg {
-  background: transparent !important;
+/* Display headings — tighter tracking */
+.display {
+  letter-spacing: -0.02em;
+  font-weight: 700;
 }
+
+/* Eyebrow / overline labels */
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-ink-faint);
+}
+
+/* Numbered section marker */
+.section-no {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-faint);
+  font-feature-settings: 'tnum';
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   abcjs SVG — keep light theme
+   ────────────────────────────────────────────────────────────────── */
+
+.sheet-music-container svg { background: transparent !important; }
 .sheet-music-container .abcjs-note path,
 .sheet-music-container .abcjs-note rect,
 .sheet-music-container path,
 .sheet-music-container text {
-  fill: #111111 !important;
+  fill: #0a0a0a !important;
 }
-.sheet-music-container line {
-  stroke: #d1d5db !important;
+.sheet-music-container line { stroke: #d4d4d4 !important; }
+
+/* ──────────────────────────────────────────────────────────────────
+   Animations
+   ────────────────────────────────────────────────────────────────── */
+
+@keyframes metronome-up {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
+.animate-metronome-up {
+  animation: metronome-up 180ms ease-out;
+  transform-origin: bottom right;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+.animate-shake { animation: shake 0.4s ease-in-out; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 240ms ease-out; }

@@ -91,3 +91,51 @@ export function getStartedTopicIds(): string[] {
     .filter(tp => tp.started && !tp.completed)
     .map(tp => tp.topicId)
 }
+
+// ─── Self-check (Leaf 단위 체크박스) 영속화 ────────────────────────────
+const SELFCHECK_KEY = 'jazz-guitar-selfcheck'
+
+type SelfCheckMap = Record<string, Record<number, boolean>>
+
+function getSelfCheckMap(): SelfCheckMap {
+  if (typeof window === 'undefined') return {}
+  try {
+    const raw = localStorage.getItem(SELFCHECK_KEY)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+function saveSelfCheckMap(map: SelfCheckMap): void {
+  if (typeof window === 'undefined') return
+  localStorage.setItem(SELFCHECK_KEY, JSON.stringify(map))
+}
+
+export function getLeafSelfCheck(leafSlug: string): Record<number, boolean> {
+  return getSelfCheckMap()[leafSlug] ?? {}
+}
+
+export function toggleLeafSelfCheck(leafSlug: string, index: number): void {
+  const map = getSelfCheckMap()
+  if (!map[leafSlug]) map[leafSlug] = {}
+  map[leafSlug][index] = !map[leafSlug][index]
+  saveSelfCheckMap(map)
+}
+
+export function getLeafProgress(leafSlug: string, total: number): { done: number; total: number; ratio: number } {
+  const checks = getLeafSelfCheck(leafSlug)
+  const done = Object.values(checks).filter(Boolean).length
+  return { done, total, ratio: total === 0 ? 0 : done / total }
+}
+
+export function isLeafCompleted(leafSlug: string, total: number): boolean {
+  if (total === 0) return false
+  return getLeafProgress(leafSlug, total).done >= total
+}
+
+export function getCompletedLeafSlugs(allLeaves: Array<{ slug: string; selfCheck: unknown[] }>): string[] {
+  return allLeaves
+    .filter(l => isLeafCompleted(l.slug, l.selfCheck.length))
+    .map(l => l.slug)
+}

@@ -1,14 +1,17 @@
 import { getTranslations } from 'next-intl/server'
 import LicksClient from './LicksClient'
+import { SectionHeader } from '@/components/ui'
 
 export default async function LicksPage() {
   const t = await getTranslations('licks')
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <div className="space-y-2 mb-10">
-        <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
-        <p className="text-gray-500">{t('subtitle')}</p>
-      </div>
+    <div className="max-w-4xl mx-auto px-6 py-16 space-y-10">
+      <SectionHeader
+        number={0}
+        eyebrow="Licks"
+        title={t('title')}
+        description={t('subtitle')}
+      />
       <LicksClient />
     </div>
   )

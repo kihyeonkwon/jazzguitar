@@ -111,78 +111,72 @@ export default function ChordQuiz() {
   const correctSharps = correctNotes.map(toSharp)
 
   return (
-    <div className="border border-gray-200 rounded-xl p-6 space-y-5 bg-white">
-
-      {/* 모드 + 점수 */}
-      <div className="flex items-center justify-between">
-        <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
+    <div className="border border-rule bg-paper-bright">
+      {/* 헤더 — 모드 + 점수 */}
+      <div className="flex items-center justify-between p-4 border-b border-rule">
+        <div className="flex border border-rule overflow-hidden">
           {(['triad', 'seventh'] as Mode[]).map(m => (
             <button
               key={m}
               onClick={() => setMode(m)}
-              className={`px-4 py-1.5 transition-colors ${
+              className={`px-4 h-7 text-[11px] font-mono tracking-widest transition-colors ${
                 mode === m
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-500 hover:bg-gray-50'
+                  ? 'bg-ink text-ink-inv'
+                  : 'bg-paper-bright text-ink-faint hover:text-ink hover:bg-surface'
               }`}
             >
-              {m === 'triad' ? 'Triad' : '7th'}
+              {m === 'triad' ? 'TRIAD' : '7TH'}
             </button>
           ))}
         </div>
-
-        <div className="text-sm text-gray-400">
+        <div className="text-[11px] font-mono tabular text-ink-faint tracking-widest">
           {score.total > 0
-            ? <><span className="font-medium text-gray-700">{score.correct}/{score.total}</span>
-                <span className="ml-1">({Math.round(score.correct / score.total * 100)}%)</span></>
-            : <span>0/0</span>
-          }
+            ? <><span className="text-ink">{score.correct}/{score.total}</span>
+                <span className="ml-2 text-ink-quiet">{Math.round(score.correct / score.total * 100)}%</span></>
+            : <span>0 / 0</span>}
         </div>
       </div>
 
       {/* 코드명 */}
-      <div className={`text-center py-5 transition-all ${shake ? 'animate-shake' : ''}`}>
-        <div className="flex items-baseline justify-center gap-1">
-          <span className="text-6xl font-mono font-bold tracking-tight text-gray-900">
+      <div className={`text-center py-8 border-b border-rule ${shake ? 'animate-shake' : ''}`}>
+        <div className="flex items-baseline justify-center gap-1 font-mono tabular">
+          <span className="text-6xl font-bold tracking-tight text-ink leading-none">
             {root}
           </span>
-          <span className="text-3xl font-mono text-gray-400 font-medium">
+          <span className="text-3xl text-ink-faint font-medium leading-none">
             {quality}
           </span>
         </div>
-        <div className="mt-2 text-xs text-gray-400 tracking-widest uppercase">
-          {qualityLabel(quality)} · {targetCount}음 선택
+        <div className="mt-3 eyebrow">
+          {qualityLabel(quality)} · {targetCount} NOTES
         </div>
       </div>
 
       {/* 12음 버튼 그리드 */}
-      <div className="grid grid-cols-6 gap-2">
+      <div className="grid grid-cols-6 gap-px bg-rule">
         {NOTES_12.map(note => {
           const isSelected = selected.includes(note)
-          // 버튼 이름(플랫)과 정답(플랫으로 변환)을 비교
           const isCorrectNote = correctFlats.includes(note) || correctSharps.includes(toSharp(note))
           const isBlack = BLACK_KEYS.has(note)
 
-          // 결과 후 색상
-          let bg = isBlack ? 'bg-gray-100' : 'bg-white'
-          let border = 'border-gray-200'
-          let text = isBlack ? 'text-gray-600' : 'text-gray-800'
+          let bg = isBlack ? 'bg-surface' : 'bg-paper-bright'
+          let text = isBlack ? 'text-ink-soft' : 'text-ink'
+          let ring = ''
 
           if (isSelected) {
             if (result === 'correct') {
-              bg = 'bg-gray-900'; border = 'border-gray-900'; text = 'text-white'
+              bg = 'bg-ink'; text = 'text-ink-inv'
             } else if (result === 'wrong') {
               if (isCorrectNote) {
-                bg = 'bg-gray-900'; border = 'border-gray-900'; text = 'text-white'
+                bg = 'bg-ink'; text = 'text-ink-inv'
               } else {
-                bg = 'bg-red-50'; border = 'border-red-300'; text = 'text-red-500'
+                bg = 'bg-red-50'; text = 'text-red-500'; ring = 'border-red-300'
               }
             } else {
-              bg = 'bg-gray-900'; border = 'border-gray-900'; text = 'text-white'
+              bg = 'bg-ink'; text = 'text-ink-inv'
             }
           } else if (result !== null && isCorrectNote) {
-            // 놓친 정답 표시
-            bg = 'bg-gray-100'; border = 'border-gray-400'; text = 'text-gray-700'
+            bg = 'bg-surface'; text = 'text-ink'; ring = 'border border-ink-soft'
           }
 
           return (
@@ -190,18 +184,14 @@ export default function ChordQuiz() {
               key={note}
               onClick={() => toggleNote(note)}
               disabled={result !== null && !(result === 'wrong')}
-              className={`
-                relative h-12 rounded-lg border font-mono text-sm font-medium
-                transition-all duration-100
-                ${bg} ${border} ${text}
-                ${result === null && !isSelected ? 'hover:border-gray-400 hover:bg-gray-50 active:scale-95' : ''}
+              className={`relative h-14 font-mono text-sm font-medium transition-colors ${bg} ${text} ${ring}
+                ${result === null && !isSelected ? 'hover:bg-surface active:bg-ink-quiet/30' : ''}
                 ${result !== null ? 'cursor-default' : 'cursor-pointer'}
               `}
             >
               {note}
-              {/* 선택된 순서 표시 */}
               {isSelected && result === null && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-gray-900 text-white text-[9px] rounded-full flex items-center justify-center">
+                <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-paper text-ink text-[9px] font-mono tabular flex items-center justify-center">
                   {selected.indexOf(note) + 1}
                 </span>
               )}
@@ -210,15 +200,13 @@ export default function ChordQuiz() {
         })}
       </div>
 
-      {/* 선택 현황 */}
-      <div className="flex items-center justify-center gap-1.5 h-5">
+      {/* 선택 현황 (점 dot) */}
+      <div className="flex items-center justify-center gap-1.5 h-8 border-t border-rule">
         {Array.from({ length: targetCount }).map((_, i) => (
           <div
             key={i}
-            className={`w-2 h-2 rounded-full transition-all ${
-              selected[i]
-                ? 'bg-gray-900 scale-110'
-                : 'bg-gray-200'
+            className={`w-1.5 h-1.5 transition-all ${
+              selected[i] ? 'bg-ink' : 'bg-rule'
             }`}
           />
         ))}
@@ -226,60 +214,60 @@ export default function ChordQuiz() {
 
       {/* 결과 */}
       {result !== null && (
-        <div className={`rounded-lg px-4 py-3 text-center border ${
+        <div className={`px-4 py-3 text-center border-t ${
           result === 'correct'
-            ? 'bg-gray-50 border-gray-200'
+            ? 'bg-surface border-rule'
             : 'bg-red-50 border-red-100'
         }`}>
           {result === 'correct' ? (
-            <div className="space-y-1">
-              <div className="font-semibold text-gray-900 text-sm">정답</div>
-              <div className="font-mono text-gray-600 text-sm tracking-widest">
+            <>
+              <div className="eyebrow mb-1">Correct</div>
+              <div className="font-mono tabular text-ink text-sm tracking-widest">
                 {correctNotes.join('  ·  ')}
               </div>
-            </div>
+            </>
           ) : (
-            <div className="space-y-1">
-              <div className="font-semibold text-red-500 text-sm">오답</div>
-              <div className="text-gray-600 text-sm">
-                정답: <span className="font-mono tracking-widest">{correctNotes.join('  ·  ')}</span>
+            <>
+              <div className="eyebrow !text-red-500 mb-1">Wrong</div>
+              <div className="text-ink-soft text-sm">
+                정답 <span className="font-mono tabular text-ink ml-2">{correctNotes.join('  ·  ')}</span>
               </div>
-            </div>
+            </>
           )}
         </div>
       )}
 
       {/* 버튼 */}
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-px bg-rule border-t border-rule">
         {result === null ? (
           <button
             onClick={() => setSelected([])}
             disabled={selected.length === 0}
-            className="flex-1 py-2.5 rounded-lg text-sm text-gray-500 border border-gray-200 hover:bg-gray-50 disabled:opacity-30 transition-colors"
+            className="h-12 bg-paper-bright text-ink-soft hover:bg-surface text-xs font-mono tracking-widest disabled:opacity-30 transition-colors"
           >
-            초기화
+            RESET
           </button>
         ) : result === 'wrong' ? (
           <button
             onClick={retry}
-            className="flex-1 py-2.5 rounded-lg text-sm text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors"
+            className="h-12 bg-paper-bright text-ink-soft hover:bg-surface text-xs font-mono tracking-widest transition-colors"
           >
-            다시 시도
+            RETRY
           </button>
-        ) : null}
+        ) : <span className="h-12 bg-paper-bright" />}
 
-        {result !== null && (
+        {result !== null ? (
           <button
             onClick={next}
-            className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-gray-900 text-white hover:bg-gray-700 transition-colors"
+            className="h-12 bg-ink text-ink-inv hover:bg-ink-soft text-xs font-mono tracking-widest transition-colors"
           >
-            다음 코드 →
+            NEXT
           </button>
-        )}
+        ) : <span className="h-12 bg-paper-bright" />}
       </div>
 
-      <p className="text-center text-xs text-gray-300">
-        {targetCount}개 선택하면 자동 채점
+      <p className="text-center text-[9px] text-ink-quiet py-3 tracking-widest font-mono">
+        SELECT {targetCount} NOTES TO AUTO-GRADE
       </p>
     </div>
   )

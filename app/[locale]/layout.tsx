@@ -3,6 +3,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/lib/i18n/routing'
 import Header from '@/components/layout/Header'
+import FloatingMetronome from '@/components/music/FloatingMetronome'
 
 type Locale = 'ko' | 'en' | 'ja'
 
@@ -25,6 +26,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages} locale={locale}>
       <Header />
       <main className="flex-1">{children}</main>
+      <FloatingMetronome />
     </NextIntlClientProvider>
   )
 }

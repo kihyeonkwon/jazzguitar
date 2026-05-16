@@ -237,92 +237,89 @@ function MetronomeInner({
   const timeSignatures: TimeSignature[] = ['2/4', '3/4', '4/4']
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-paper-bright border border-rule overflow-hidden">
       {/* 진자 영역 */}
-      <div className="relative flex flex-col items-center pt-6 pb-2 bg-gray-50 border-b border-gray-100">
+      <div className="relative flex flex-col items-center pt-8 pb-4 bg-surface border-b border-rule">
         <Pendulum angle={pendulumAngle} bpm={bpm} isPlaying={isPlaying} />
 
         {/* 비트 인디케이터 */}
-        <div className="flex justify-center gap-3 mt-3 mb-4">
+        <div className="flex justify-center gap-2.5 mt-4">
           {Array.from({ length: beatsPerMeasure }, (_, i) => (
             <div
               key={i}
-              className="rounded-full transition-all duration-75"
+              className="transition-colors duration-75"
               style={{
-                width:  isPlaying && beat === i ? 10 : 8,
-                height: isPlaying && beat === i ? 10 : 8,
+                width:  isPlaying && beat === i ? 10 : 6,
+                height: isPlaying && beat === i ? 10 : 6,
                 backgroundColor: isPlaying && beat === i
-                  ? (i === 0 ? '#111827' : '#6b7280')
-                  : '#d1d5db',
+                  ? '#0a0a0a'
+                  : '#d4d4d4',
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* 컨트롤 영역 */}
-      <div className="p-6 space-y-5">
-        {/* BPM */}
-        <div className="text-center">
-          <div className="text-5xl font-mono font-bold text-gray-900 tabular-nums">{bpm}</div>
-          <div className="text-gray-400 text-xs mt-1 tracking-widest uppercase">BPM</div>
-        </div>
-
-        {/* 슬라이더 */}
-        <div className="space-y-1">
-          <input
-            type="range" min={40} max={240} value={bpm}
-            onChange={e => handleBpmChange(Number(e.target.value))}
-            className="w-full h-1.5 rounded-full cursor-pointer appearance-none bg-gray-200"
-            style={{ accentColor: '#111827' }}
-          />
-          <div className="flex justify-between text-gray-400 text-xs">
-            <span>40</span><span>120</span><span>240</span>
-          </div>
-        </div>
-
-        {/* 버튼 */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={togglePlay}
-            className={`py-3 rounded-lg font-semibold text-sm border-2 transition-all ${
-              isPlaying
-                ? 'bg-gray-900 text-white border-gray-900'
-                : 'bg-white text-gray-900 border-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            {isPlaying ? '■ 정지' : '▶ 시작'}
-          </button>
-          <button
-            onClick={handleTap}
-            className="py-3 rounded-lg font-medium text-sm border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 transition-colors"
-          >
-            탭 템포
-          </button>
-        </div>
-
-        {/* 박자 */}
-        {showTimeSignature && (
-          <div>
-            <div className="text-gray-400 text-xs mb-2 tracking-widest uppercase">박자</div>
-            <div className="flex gap-2">
-              {timeSignatures.map(ts => (
-                <button
-                  key={ts}
-                  onClick={() => { setTimeSignature(ts); if (isPlaying) stopMetronome() }}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                    timeSignature === ts
-                      ? 'bg-gray-900 text-white border-gray-900'
-                      : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  {ts}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+      {/* BPM display */}
+      <div className="text-center py-6 border-b border-rule">
+        <div className="text-6xl font-mono font-medium text-ink tabular leading-none">{bpm}</div>
+        <div className="eyebrow mt-3">BPM</div>
       </div>
+
+      {/* 슬라이더 */}
+      <div className="px-6 py-5 border-b border-rule space-y-2">
+        <input
+          type="range" min={40} max={240} value={bpm}
+          onChange={e => handleBpmChange(Number(e.target.value))}
+          className="w-full h-1 cursor-pointer appearance-none bg-rule"
+          style={{ accentColor: '#0a0a0a' }}
+        />
+        <div className="flex justify-between text-[10px] font-mono tabular text-ink-faint tracking-widest">
+          <span>40</span><span>120</span><span>240</span>
+        </div>
+      </div>
+
+      {/* 버튼 */}
+      <div className="grid grid-cols-2 gap-px bg-rule">
+        <button
+          onClick={togglePlay}
+          className={`h-14 text-xs font-mono tracking-widest transition-colors ${
+            isPlaying
+              ? 'bg-ink text-ink-inv hover:bg-ink-soft'
+              : 'bg-paper-bright text-ink hover:bg-surface'
+          }`}
+        >
+          {isPlaying ? '■  STOP' : '▶  START'}
+        </button>
+        <button
+          onClick={handleTap}
+          className="h-14 bg-paper-bright text-ink-soft hover:bg-surface text-xs font-mono tracking-widest transition-colors"
+        >
+          TAP TEMPO
+        </button>
+      </div>
+
+      {/* 박자 */}
+      {showTimeSignature && (
+        <div className="border-t border-rule">
+          <div className="px-5 pt-4 eyebrow">Time Signature</div>
+          <div className="flex gap-px bg-rule mt-2">
+            {timeSignatures.map(ts => (
+              <button
+                key={ts}
+                onClick={() => { setTimeSignature(ts); if (isPlaying) stopMetronome() }}
+                className={`flex-1 h-12 text-xs font-mono tracking-widest transition-colors ${
+                  timeSignature === ts
+                    ? 'bg-ink text-ink-inv'
+                    : 'bg-paper-bright text-ink-soft hover:bg-surface'
+                }`}
+              >
+                {ts}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
