@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "home": "홈",
+    "curriculum": "커리큘럼",
+    "licks": "릭 라이브러리",
+    "practice": "연습 도구"
+  },
+  "home": {
+    "title": "Jazz Guitar",
+    "subtitle": "체계적인 재즈 기타 학습",
+    "currentTopic": "현재 학습 중",
+    "overallProgress": "전체 진도",
+    "topicsCompleted": "토픽 완료",
+    "stageProgress": "스테이지 진도",
+    "recentlyCompleted": "최근 완료",
+    "continueLearning": "학습 계속하기",
+    "startLearning": "학습 시작하기",
+    "noProgress": "아직 시작하지 않았습니다",
+    "stage": "스테이지"
+  },
+  "curriculum": {
+    "title": "커리큘럼",
+    "subtitle": "15개 토픽으로 재즈 기타 마스터하기",
+    "selectTopic": "토픽을 선택하세요",
+    "stage": "스테이지",
+    "topics": "토픽",
+    "preview": "미리보기",
+    "start": "시작하기",
+    "continue": "계속하기",
+    "completed": "완료",
+    "locked": "잠김",
+    "inProgress": "진행 중"
+  },
+  "topic": {
+    "theory": "이론",
+    "practice": "실습",
+    "checkpoints": "체크포인트",
+    "prevTopic": "이전 토픽",
+    "nextTopic": "다음 토픽",
+    "tools": "도구",
+    "metronome": "메트로놈",
+    "sheetMusic": "악보",
+    "chordDiagram": "코드 다이어그램",
+    "allCheckpointsDone": "모든 체크포인트 완료!",
+    "proceedNext": "다음 토픽으로",
+    "bpm": "BPM",
+    "exercise": "연습"
+  },
+  "licks": {
+    "title": "릭 라이브러리",
+    "subtitle": "재즈 블루스 핵심 릭 컬렉션",
+    "filter": "필터",
+    "all": "전체",
+    "blues": "블루스",
+    "iivi": "ii-V-I",
+    "bebop": "비밥",
+    "play": "재생",
+    "stop": "정지",
+    "bpm": "BPM",
+    "key": "키"
+  },
+  "practice": {
+    "title": "연습 도구",
+    "metronome": "메트로놈",
+    "bpm": "BPM",
+    "start": "시작",
+    "stop": "정지",
+    "tap": "탭 템포",
+    "tapHelp": "버튼을 박자에 맞춰 클릭하세요",
+    "timeSignature": "박자",
+    "beat": "박",
+    "beats": "박자"
+  },
+  "language": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語",
+    "comingSoon": "준비중"
+  },
+  "stages": {
+    "1": {
+      "name": "기초 다지기",
+      "subtitle": "Foundations"
+    },
+    "2": {
+      "name": "재즈 블루스",
+      "subtitle": "Jazz Blues"
+    },
+    "3": {
+      "name": "ii-V-I",
+      "subtitle": "ii-V-I Progressions"
+    },
+    "4": {
+      "name": "스탠다드",
+      "subtitle": "Jazz Standards"
+    }
+  }
+}
