@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { triadChords, seventhChords, getChordNotes, checkNoteSelection, toSharp } from '@/lib/music/chords'
 
 // 12음 — 플랫 기준 표기 (재즈에서 더 일반적)
@@ -46,7 +46,7 @@ interface ChordQuizProps {
 
 export default function ChordQuiz({ onScoreChange }: ChordQuizProps = {}) {
   const [mode,    setMode]    = useState<Mode>('seventh')
-  const [chord,   setChord]   = useState<string>(() => pickRandom(seventhChords))
+  const [chord,   setChord]   = useState<string>(seventhChords[0] ?? 'Cmaj7')
   const [selected, setSelected] = useState<string[]>([])
   const [result,  setResult]  = useState<Result>(null)
   const [score,   setScore]   = useState({ correct: 0, total: 0 })
@@ -56,43 +56,39 @@ export default function ChordQuiz({ onScoreChange }: ChordQuizProps = {}) {
   const correctNotes = getChordNotes(chord)
   const { root, quality } = getChordLabel(chord)
 
-  // 모드 변경 시 리셋
-  useEffect(() => {
-    const pool = mode === 'triad' ? triadChords : seventhChords
+  const changeMode = useCallback((nextMode: Mode) => {
+    const pool = nextMode === 'triad' ? triadChords : seventhChords
+    setMode(nextMode)
     setChord(pickRandom(pool))
     setSelected([])
     setResult(null)
-  }, [mode])
+  }, [])
 
   // 노트 토글
   const toggleNote = useCallback((note: string) => {
     if (result !== null) return
-    setSelected(prev => {
-      if (prev.includes(note)) return prev.filter(n => n !== note)
-      if (prev.length >= targetCount) return prev  // 최대 개수 초과 방지
-      return [...prev, note]
-    })
-  }, [result, targetCount])
+    const nextSelected = selected.includes(note)
+      ? selected.filter(n => n !== note)
+      : selected.length >= targetCount
+      ? selected
+      : [...selected, note]
 
-  // selected 개수가 targetCount에 도달하면 자동 채점
-  useEffect(() => {
-    if (selected.length !== targetCount || result !== null) return
+    setSelected(nextSelected)
+    if (nextSelected.length !== targetCount) return
 
-    const isCorrect = checkNoteSelection(selected, correctNotes)
+    const isCorrect = checkNoteSelection(nextSelected, correctNotes)
+    const nextScore = {
+      correct: score.correct + (isCorrect ? 1 : 0),
+      total: score.total + 1,
+    }
     setResult(isCorrect ? 'correct' : 'wrong')
-    setScore(prev => {
-      const next = {
-        correct: prev.correct + (isCorrect ? 1 : 0),
-        total:   prev.total + 1,
-      }
-      onScoreChange?.(next)
-      return next
-    })
+    setScore(nextScore)
+    onScoreChange?.(nextScore)
     if (!isCorrect) {
       setShake(true)
       setTimeout(() => setShake(false), 500)
     }
-  }, [selected, targetCount, result, correctNotes, onScoreChange])
+  }, [correctNotes, onScoreChange, result, score, selected, targetCount])
 
   // 다음 코드
   const next = useCallback(() => {
@@ -126,7 +122,7 @@ export default function ChordQuiz({ onScoreChange }: ChordQuizProps = {}) {
           {(['triad', 'seventh'] as Mode[]).map(m => (
             <button
               key={m}
-              onClick={() => setMode(m)}
+              onClick={() => changeMode(m)}
               className={`px-4 h-7 text-[11px] font-mono tracking-widest transition-colors ${
                 mode === m
                   ? 'bg-ink text-ink-inv'

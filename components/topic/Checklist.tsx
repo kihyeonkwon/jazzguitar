@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
 import { Topic, Locale } from '@/lib/curriculum/types'
-import { getTopicProgress, toggleCheckpoint } from '@/lib/progress/store'
+import { toggleCheckpoint } from '@/lib/progress/store'
+import { useTopicProgress } from '@/lib/progress/hooks'
 import { getNextTopic } from '@/lib/curriculum/data'
 
 interface ChecklistProps {
@@ -14,26 +15,21 @@ interface ChecklistProps {
 export default function Checklist({ topic }: ChecklistProps) {
   const t = useTranslations('topic')
   const locale = useLocale() as Locale
-  const [checkedItems, setCheckedItems] = useState<number[]>([])
+  const progress = useTopicProgress(topic.id)
   const [justCompleted, setJustCompleted] = useState(false)
 
   const nextTopic = getNextTopic(topic.order)
-
-  useEffect(() => {
-    const progress = getTopicProgress(topic.id)
-    setCheckedItems(progress.completedCheckpoints)
-  }, [topic.id])
+  const checkedItems = progress.completedCheckpoints
 
   const handleToggle = (index: number) => {
+    const next = checkedItems.includes(index)
+      ? checkedItems.filter((i) => i !== index)
+      : [...checkedItems, index]
     toggleCheckpoint(topic.id, index, topic.checkpoints.length)
-    setCheckedItems((prev) => {
-      const next = prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-      if (next.length === topic.checkpoints.length && prev.length < topic.checkpoints.length) {
-        setJustCompleted(true)
-        setTimeout(() => setJustCompleted(false), 3000)
-      }
-      return next
-    })
+    if (next.length === topic.checkpoints.length && checkedItems.length < topic.checkpoints.length) {
+      setJustCompleted(true)
+      setTimeout(() => setJustCompleted(false), 3000)
+    }
   }
 
   const allDone = checkedItems.length === topic.checkpoints.length

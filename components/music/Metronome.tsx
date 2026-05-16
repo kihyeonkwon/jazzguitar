@@ -65,7 +65,7 @@ function MetronomeInner({
   const [isPlaying, setIsPlaying] = useState(false)
   const [beat, setBeat] = useState(-1)
   const [timeSignature, setTimeSignature] = useState<TimeSignature>('4/4')
-  const [tapTimes, setTapTimes] = useState<number[]>([])
+  const [, setTapTimes] = useState<number[]>([])
   const [pendulumAngle, setPendulumAngle] = useState(0)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

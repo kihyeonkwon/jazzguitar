@@ -1,23 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
-import { topics, stages } from '@/lib/curriculum/data'
-import { getCompletedTopicIds, getStartedTopicIds } from '@/lib/progress/store'
+import { stages } from '@/lib/curriculum/data'
+import { useCompletedTopicIds, useStartedTopicIds } from '@/lib/progress/hooks'
 import { Locale } from '@/lib/curriculum/types'
 
 export default function CurriculumMap() {
   const t = useTranslations('curriculum')
   const stagesT = useTranslations('stages')
   const locale = useLocale() as Locale
-  const [completedIds, setCompletedIds] = useState<string[]>([])
-  const [startedIds, setStartedIds] = useState<string[]>([])
-
-  useEffect(() => {
-    setCompletedIds(getCompletedTopicIds())
-    setStartedIds(getStartedTopicIds())
-  }, [])
+  const completedIds = useCompletedTopicIds()
+  const startedIds = useStartedTopicIds()
 
   return (
     <div className="space-y-8">

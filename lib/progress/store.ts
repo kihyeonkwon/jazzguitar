@@ -3,6 +3,12 @@
 import { Progress, TopicProgress } from './types'
 
 const STORAGE_KEY = 'jazz-guitar-progress'
+export const PROGRESS_STORE_EVENT = 'jazz-guitar-progress-change'
+
+function emitProgressStoreChange(): void {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(PROGRESS_STORE_EVENT))
+}
 
 export function getProgress(): Progress {
   if (typeof window === 'undefined') return { topics: {} }
@@ -18,6 +24,7 @@ export function getProgress(): Progress {
 export function saveProgress(progress: Progress): void {
   if (typeof window === 'undefined') return
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
+  emitProgressStoreChange()
 }
 
 export function getTopicProgress(topicId: string): TopicProgress {
@@ -110,6 +117,7 @@ function getSelfCheckMap(): SelfCheckMap {
 function saveSelfCheckMap(map: SelfCheckMap): void {
   if (typeof window === 'undefined') return
   localStorage.setItem(SELFCHECK_KEY, JSON.stringify(map))
+  emitProgressStoreChange()
 }
 
 export function getLeafSelfCheck(leafSlug: string): Record<number, boolean> {
@@ -138,4 +146,73 @@ export function getCompletedLeafSlugs(allLeaves: Array<{ slug: string; selfCheck
   return allLeaves
     .filter(l => isLeafCompleted(l.slug, l.selfCheck.length))
     .map(l => l.slug)
+}
+
+// ─── Leveled checkpoint progress (Bronze/Silver/Gold/Master) ─────────
+// 키 형식: `${leafSlug}__${level}` (예: blues-1-chorus-pentatonic__Bronze)
+
+export function getLeafLevelKey(leafSlug: string, level: string): string {
+  return `${leafSlug}__${level}`
+}
+
+export function getLeafLevelChecks(leafSlug: string, level: string): Record<number, boolean> {
+  return getSelfCheckMap()[getLeafLevelKey(leafSlug, level)] ?? {}
+}
+
+export function toggleLeafLevelCheck(leafSlug: string, level: string, index: number): void {
+  const map = getSelfCheckMap()
+  const key = getLeafLevelKey(leafSlug, level)
+  if (!map[key]) map[key] = {}
+  map[key][index] = !map[key][index]
+  saveSelfCheckMap(map)
+}
+
+interface LevelGroup { level: string; weight: number; items: unknown[] }
+
+/**
+ * 잎의 0~100점 점수를 계산합니다.
+ * - 새 shape (checkpoints[]) 있으면 가중치 합산
+ * - 없으면 legacy selfCheck 비율 × 100
+ */
+export function getLeafScore(
+  leafSlug: string,
+  checkpoints?: LevelGroup[],
+  legacySelfCheckLen: number = 0,
+): number {
+  if (checkpoints && checkpoints.length > 0) {
+    let total = 0
+    for (const g of checkpoints) {
+      if (g.items.length === 0) continue
+      const checks = getLeafLevelChecks(leafSlug, g.level)
+      const done = Object.values(checks).filter(Boolean).length
+      total += (done / g.items.length) * g.weight
+    }
+    return Math.round(total)
+  }
+  // legacy fallback
+  if (legacySelfCheckLen === 0) return 0
+  const checks = getLeafSelfCheck(leafSlug)
+  const done = Object.values(checks).filter(Boolean).length
+  return Math.round((done / legacySelfCheckLen) * 100)
+}
+
+/**
+ * 잎의 마지막 활동 시각 (ISO). 체크 한 항목 중 가장 최근.
+ * 데이터 없으면 null.
+ */
+export function getLeafLastActivity(leafSlug: string): string | null {
+  // 현재 selfCheckMap에는 timestamp가 없으므로, 별도 키로 추적
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem(`leaf-activity:${leafSlug}`)
+    return raw
+  } catch {
+    return null
+  }
+}
+
+export function touchLeafActivity(leafSlug: string): void {
+  if (typeof window === 'undefined') return
+  localStorage.setItem(`leaf-activity:${leafSlug}`, new Date().toISOString())
+  emitProgressStoreChange()
 }

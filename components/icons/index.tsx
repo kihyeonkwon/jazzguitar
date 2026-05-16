@@ -177,6 +177,16 @@ export function IconClose(p: IconProps) {
   )
 }
 
+export function IconMenu(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <line x1="5" y1="7" x2="19" y2="7" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+      <line x1="5" y1="17" x2="19" y2="17" />
+    </Svg>
+  )
+}
+
 export function IconPlay(p: IconProps) {
   return (
     <Svg {...p}>

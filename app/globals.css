@@ -73,6 +73,16 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────────────
+   Leaf prose — 본문 톤 (편집물 같은 느낌)
+   ────────────────────────────────────────────────────────────────── */
+
+.leaf-prose { color: var(--color-ink-soft); }
+.leaf-prose h2 { color: var(--color-ink); }
+.leaf-prose h3 { color: var(--color-ink); }
+.leaf-prose strong { color: var(--color-ink); font-weight: 600; }
+.leaf-prose p, .leaf-prose li { font-size: 15px; line-height: 1.75; }
+
+/* ──────────────────────────────────────────────────────────────────
    abcjs SVG — keep light theme
    ────────────────────────────────────────────────────────────────── */
 

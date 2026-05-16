@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getLeafSelfCheck, toggleLeafSelfCheck } from '@/lib/progress/store'
+import { toggleLeafSelfCheck } from '@/lib/progress/store'
+import { useLeafSelfCheck } from '@/lib/progress/hooks'
 import { IconCheck } from '@/components/icons'
 
 interface Props {
@@ -10,17 +10,10 @@ interface Props {
 }
 
 export default function SelfCheck({ leafSlug, items }: Props) {
-  const [checks, setChecks] = useState<Record<number, boolean>>({})
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setChecks(getLeafSelfCheck(leafSlug))
-    setMounted(true)
-  }, [leafSlug])
+  const checks = useLeafSelfCheck(leafSlug)
 
   const toggle = (i: number) => {
     toggleLeafSelfCheck(leafSlug, i)
-    setChecks(getLeafSelfCheck(leafSlug))
   }
 
   const doneCount = Object.values(checks).filter(Boolean).length
@@ -36,7 +29,7 @@ export default function SelfCheck({ leafSlug, items }: Props) {
           <span className="eyebrow">Self-check</span>
         </div>
         <span className="text-xs font-mono tabular text-ink-faint">
-          {mounted ? doneCount : 0}<span className="text-ink-quiet"> / {total}</span>
+          {doneCount}<span className="text-ink-quiet"> / {total}</span>
         </span>
       </div>
 

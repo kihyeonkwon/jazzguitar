@@ -9,14 +9,19 @@ const ROUND_SIZE = 10  // 10 chord attempts = 1 round
 
 export default function ChordConstruction() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
-  const roundStartRef = useRef<number>(Date.now())
+  const roundStartRef = useRef<number>(0)
 
   // 라운드 완료 시 점수 저장
   useEffect(() => {
+    if (score.total === 1 && roundStartRef.current === 0) {
+      roundStartRef.current = Date.now()
+    }
     if (score.total > 0 && score.total % ROUND_SIZE === 0) {
       const accuracy = Math.round((score.correct / score.total) * 100)
-      const elapsedSec = Math.round((Date.now() - roundStartRef.current) / 1000)
+      const startedAt = roundStartRef.current || Date.now()
+      const elapsedSec = Math.round((Date.now() - startedAt) / 1000)
       saveDrillScore('chord-construction', accuracy, elapsedSec)
+      roundStartRef.current = Date.now()
     }
   }, [score])
 

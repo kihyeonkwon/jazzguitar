@@ -4,16 +4,16 @@ import { Link } from '@/lib/i18n/navigation'
 import {
   getLeafBySlug,
   getTrunkBySlug,
-  getTipBySlug,
   getBackingTrackById,
-  getPrincipleBySlug,
   getLeavesByTrunk,
 } from '@/lib/curriculum/organic'
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
+import LeveledCheckpoints from '@/components/leaf/LeveledCheckpoints'
 import SelfCheck from '@/components/leaf/SelfCheck'
 import { TrunkIconMap, IconArrowRight, IconArrowLeft, IconPlay } from '@/components/icons'
 import { Divider } from '@/components/ui'
-import { getProtocolsForLeaf } from '@/lib/practice/protocols'
+import { renderMarkdown } from '@/components/leaf/markdown'
+import SheetMusic from '@/components/music/SheetMusic'
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>
@@ -26,22 +26,33 @@ export default async function LeafPage({ params }: Props) {
   const leaf = getLeafBySlug(slug)
   if (!leaf) notFound()
 
-  const trunk  = getTrunkBySlug(leaf.trunkSlug)
-  const tips   = leaf.relatedTipSlugs.map(getTipBySlug).filter(Boolean)
-  const tracks = leaf.relatedBackingTrackIds.map(getBackingTrackById).filter(Boolean)
-  const refs   = leaf.relatedPrincipleSlugs.map(getPrincipleBySlug).filter(Boolean)
-  const protocols = getProtocolsForLeaf(leaf.slug)
+  const trunk = getTrunkBySlug(leaf.trunkSlug)
   const TrunkIcon = trunk ? TrunkIconMap[trunk.slug as TrunkSlug] : null
 
+  // 잼 트랙 (새 shape 우선, 폴백으로 legacy)
+  const trackIds = leaf.practice?.backingTrackIds ?? leaf.relatedBackingTrackIds
+  const tracks = trackIds.map(getBackingTrackById).filter(Boolean)
+
+  // 형제 잎
   const siblingLeaves = trunk ? getLeavesByTrunk(trunk.slug as TrunkSlug) : []
   const myIdx = siblingLeaves.findIndex(l => l.slug === leaf.slug)
   const prevLeaf = myIdx > 0 ? siblingLeaves[myIdx - 1] : null
   const nextLeaf = myIdx >= 0 && myIdx < siblingLeaves.length - 1 ? siblingLeaves[myIdx + 1] : null
 
+  // 이론 본문 (새 shape)
+  const theoryContent = leaf.theory?.content?.[locale]
+  const theoryAbc = leaf.theory?.abcNotation
+
+  // 실습 항목
+  const exercises = leaf.practice?.exercises ?? []
+
+  // 체크포인트 (새 shape: 4레벨, 없으면 legacy selfCheck로 표시)
+  const checkpoints = leaf.checkpoints
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-16 space-y-14">
 
-      {/* ── Back link ─────────────────────────────────────── */}
+      {/* Back */}
       {trunk && (
         <Link
           href={`/trunk/${trunk.slug}`}
@@ -52,13 +63,13 @@ export default async function LeafPage({ params }: Props) {
         </Link>
       )}
 
-      {/* ── Cover ─────────────────────────────────────────── */}
+      {/* Cover */}
       <header className="space-y-5">
         <div className="flex items-baseline gap-3">
           <span className="section-no">
             {String(leaf.order).padStart(2, '0')}
           </span>
-          <span className="eyebrow">I Can Play</span>
+          <span className="eyebrow">Leaf · I can play</span>
         </div>
         <div className="flex items-start gap-5">
           {TrunkIcon && <TrunkIcon size={36} className="text-ink shrink-0 mt-2" />}
@@ -71,52 +82,30 @@ export default async function LeafPage({ params }: Props) {
         </p>
       </header>
 
-      {/* ── Guided Practice CTA ──────────────────────────── */}
-      {protocols.length > 0 && (
+      {/* Theory */}
+      {theoryContent && (
         <section className="space-y-4">
           <div className="flex items-baseline gap-3">
-            <span className="section-no">G</span>
-            <span className="eyebrow">Guided Practice</span>
+            <span className="section-no">T</span>
+            <span className="eyebrow">Theory</span>
           </div>
-          <div className="border border-rule bg-paper-bright">
-            {protocols.map((p) => (
-              <Link
-                key={p.id}
-                href={`/session/${leaf.slug}?p=${p.id}`}
-                className="group flex items-center justify-between p-5 hover:bg-surface transition-colors border-b border-rule last:border-b-0"
-              >
-                <div className="flex-1">
-                  <div className="text-[15px] font-semibold text-ink">
-                    {p.name[locale]}
-                  </div>
-                  <div className="text-sm text-ink-soft mt-1">
-                    {p.description[locale]}
-                  </div>
-                  <div className="text-[10px] font-mono tabular text-ink-faint tracking-widest mt-2">
-                    {p.steps.length} STEPS · ~{p.estimatedMin} MIN
-                  </div>
-                </div>
-                <div className="shrink-0 inline-flex items-center gap-2 text-xs font-mono tracking-widest text-ink-faint group-hover:text-ink ml-4">
-                  <IconPlay size={14} /> START
-                </div>
-              </Link>
-            ))}
-          </div>
+          <article className="leaf-prose max-w-none">
+            {renderMarkdown(theoryContent)}
+          </article>
+          {theoryAbc && (
+            <div className="border border-rule">
+              <SheetMusic notation={theoryAbc} minimal />
+            </div>
+          )}
         </section>
       )}
 
-      {/* ── Self check ────────────────────────────────────── */}
-      <SelfCheck
-        leafSlug={leaf.slug}
-        items={leaf.selfCheck.map(c => c[locale])}
-      />
-
-      {/* ── Related backing tracks ────────────────────────── */}
+      {/* Practice — Backing tracks */}
       {tracks.length > 0 && (
         <section className="space-y-4">
           <div className="flex items-baseline gap-3">
-            <span className="section-no">P</span>
-            <span className="eyebrow">Practice Tracks</span>
+            <span className="section-no">J</span>
+            <span className="eyebrow">Jam Tracks</span>
           </div>
           <ul className="border-t border-rule">
             {tracks.map(t => t && (
@@ -131,7 +120,7 @@ export default async function LeafPage({ params }: Props) {
                       {t.key.toUpperCase()} · {t.bpm} BPM · {t.bars} BARS
                     </div>
                   </div>
-                  <IconArrowRight size={16} className="text-ink-faint group-hover:text-ink transition-colors" />
+                  <IconPlay size={16} className="text-ink-faint group-hover:text-ink transition-colors" />
                 </Link>
               </li>
             ))}
@@ -139,53 +128,44 @@ export default async function LeafPage({ params }: Props) {
         </section>
       )}
 
-      {/* ── Related tips ─────────────────────────────────── */}
-      {tips.length > 0 && (
+      {/* Practice — Exercises */}
+      {exercises.length > 0 && (
         <section className="space-y-4">
           <div className="flex items-baseline gap-3">
-            <span className="section-no">T</span>
-            <span className="eyebrow">Tips</span>
+            <span className="section-no">P</span>
+            <span className="eyebrow">Exercises</span>
           </div>
-          <ul className="border-t border-rule">
-            {tips.map(t => t && (
-              <li key={t.slug} className="border-b border-rule">
-                <Link
-                  href={`/tip/${t.slug}`}
-                  className="group flex items-baseline justify-between gap-4 py-4 hover:bg-surface/50 -mx-3 px-3 transition-colors"
-                >
-                  <div>
-                    <div className="text-[15px] font-medium text-ink">{t.title[locale]}</div>
-                    <div className="text-sm text-ink-soft mt-1">{t.summary[locale]}</div>
-                  </div>
-                  <IconArrowRight size={16} className="text-ink-faint group-hover:text-ink shrink-0 mt-1 transition-colors" />
-                </Link>
-              </li>
+          <div className="space-y-6">
+            {exercises.map((ex, i) => (
+              <div key={i} className="border border-rule bg-paper-bright p-5 space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <h3 className="text-base font-semibold text-ink">{ex.title[locale]}</h3>
+                  {ex.bpm && (
+                    <span className="text-[10px] font-mono tabular text-ink-faint tracking-widest">{ex.bpm} BPM</span>
+                  )}
+                </div>
+                <p className="text-sm text-ink-soft leading-relaxed">{ex.description[locale]}</p>
+                {ex.abcNotation && (
+                  <SheetMusic notation={ex.abcNotation} minimal />
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
-      {/* ── Related principles ───────────────────────────── */}
-      {refs.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-baseline gap-3">
-            <span className="section-no">R</span>
-            <span className="eyebrow">Reference</span>
-          </div>
-          <ul className="border-t border-rule">
-            {refs.map(p => p && (
-              <li key={p.slug} className="border-b border-rule">
-                <Link
-                  href={`/principles/${p.slug}`}
-                  className="group flex items-center justify-between py-3.5 hover:bg-surface/50 -mx-3 px-3 transition-colors"
-                >
-                  <div className="text-[14px] text-ink">{p.title[locale]}</div>
-                  <IconArrowRight size={14} className="text-ink-faint group-hover:text-ink transition-colors" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+      {/* Checkpoints — new leveled or legacy */}
+      {checkpoints && checkpoints.length > 0 ? (
+        <LeveledCheckpoints
+          leafSlug={leaf.slug}
+          groups={checkpoints}
+          locale={locale}
+        />
+      ) : (
+        <SelfCheck
+          leafSlug={leaf.slug}
+          items={leaf.selfCheck.map(c => c[locale])}
+        />
       )}
 
       {/* Sibling navigation */}

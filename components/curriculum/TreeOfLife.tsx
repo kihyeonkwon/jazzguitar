@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from '@/lib/i18n/navigation'
 import { useLocale } from 'next-intl'
 import { trunks, leaves, getLeavesByTrunk } from '@/lib/curriculum/organic'
-import { getLeafSelfCheck } from '@/lib/progress/store'
+import { useCompletedLeafSlugs } from '@/lib/progress/hooks'
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
 import { TrunkIconMap, IconRoot } from '@/components/icons'
 
@@ -63,22 +63,14 @@ function branchPath(
 export default function TreeOfLife() {
   const router = useRouter()
   const locale = useLocale() as Locale
+  const completedLeafSlugs = useCompletedLeafSlugs(leaves)
 
-  const [completedLeaves, setCompletedLeaves] = useState<Set<string>>(new Set())
   const [hoveredTrunk, setHoveredTrunk]       = useState<string | null>(null)
   const [hoveredLeaf,  setHoveredLeaf]        = useState<string | null>(null)
 
-  useEffect(() => {
-    const done = new Set<string>()
-    for (const leaf of leaves) {
-      const checks = getLeafSelfCheck(leaf.slug)
-      const doneCount = Object.values(checks).filter(Boolean).length
-      if (doneCount === leaf.selfCheck.length && leaf.selfCheck.length > 0) {
-        done.add(leaf.slug)
-      }
-    }
-    setCompletedLeaves(done)
-  }, [])
+  const completedLeaves = useMemo(() => {
+    return new Set(completedLeafSlugs)
+  }, [completedLeafSlugs])
 
   const trunkLayout = useMemo(() => {
     return trunks.map((trunk, i) => {
@@ -246,7 +238,7 @@ export default function TreeOfLife() {
         })}
 
         {/* 잎 */}
-        {trunkLayout.map(({ trunk, leafPositions }) =>
+        {trunkLayout.map(({ leafPositions }) =>
           leafPositions.map(({ leaf, pos }) => {
             const isCompleted = completedLeaves.has(leaf.slug)
             const isHovered   = hoveredLeaf === leaf.slug

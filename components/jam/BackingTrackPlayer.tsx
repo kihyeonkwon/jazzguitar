@@ -54,13 +54,16 @@ export default function BackingTrackPlayer({ track }: Props) {
   const synthsRef = useRef<any[]>([])
 
   // Build flat array of "per-beat" entries.
-  const beatSteps: FlatStep[] = []
-  for (const c of track.chords) {
-    const v = voicingFor(c.chord)
-    for (let i = 0; i < c.beats; i++) {
-      beatSteps.push({ chord: c.chord, notes: v })
+  const beatSteps = useMemo<FlatStep[]>(() => {
+    const steps: FlatStep[] = []
+    for (const c of track.chords) {
+      const v = voicingFor(c.chord)
+      for (let i = 0; i < c.beats; i++) {
+        steps.push({ chord: c.chord, notes: v })
+      }
     }
-  }
+    return steps
+  }, [track.chords])
   const totalBeats = beatSteps.length
   const beatsPerBar = totalBeats / track.bars
 
@@ -159,7 +162,6 @@ export default function BackingTrackPlayer({ track }: Props) {
     let chorus = 1
 
     const part = new Tone.Part(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (time: number, evt: Evt) => {
         const { step, index } = evt
         const isBeatOne = index % beatsPerBar === 0

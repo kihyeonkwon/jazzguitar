@@ -3,6 +3,12 @@
 import { LeitnerBox, PracticeRecord, Rating } from '@/lib/curriculum/types'
 
 const STORAGE_KEY = 'jazz-guitar-practice-records'
+export const PRACTICE_RECORDS_EVENT = 'jazz-guitar-practice-records-change'
+
+function emitPracticeRecordsChange(): void {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(PRACTICE_RECORDS_EVENT))
+}
 
 // 박스별 다음 복습 간격 (일 단위)
 const BOX_INTERVAL_DAYS: Record<LeitnerBox, number> = {
@@ -36,6 +42,7 @@ function loadRecords(): Record<string, PracticeRecord> {
 function saveRecords(records: Record<string, PracticeRecord>): void {
   if (typeof window === 'undefined') return
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records))
+  emitPracticeRecordsChange()
 }
 
 function recordKey(leafSlug: string, protocolId: string): string {

@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
-import { getCompletedTopicIds, getStartedTopicIds } from '@/lib/progress/store'
+import { useCompletedTopicIds, useStartedTopicIds } from '@/lib/progress/hooks'
 import { topics } from '@/lib/curriculum/data'
 import { Locale } from '@/lib/curriculum/types'
 
@@ -21,15 +20,8 @@ interface Props {
 export default function DashboardClient({ locale, totalTopics, stages }: Props) {
   const t = useTranslations('home')
   const stagesT = useTranslations('stages')
-  const [completedIds, setCompletedIds] = useState<string[]>([])
-  const [startedIds, setStartedIds] = useState<string[]>([])
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setCompletedIds(getCompletedTopicIds())
-    setStartedIds(getStartedTopicIds())
-    setMounted(true)
-  }, [])
+  const completedIds = useCompletedTopicIds()
+  const startedIds = useStartedTopicIds()
 
   const currentTopicId = startedIds[startedIds.length - 1] ?? (completedIds.length < totalTopics ? topics[completedIds.length]?.id : null)
   const currentTopic = currentTopicId ? topics.find(t => t.id === currentTopicId) : topics[0]
@@ -37,18 +29,6 @@ export default function DashboardClient({ locale, totalTopics, stages }: Props) 
   const completionPct = Math.round((completedIds.length / totalTopics) * 100)
 
   const loc = locale as Locale
-
-  if (!mounted) {
-    return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-40 bg-gray-100 rounded-xl" />
-        <div className="h-20 bg-gray-100 rounded-xl" />
-        <div className="grid grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-gray-100 rounded-xl" />)}
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-8">

@@ -4,7 +4,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import { useRouter } from '@/lib/i18n/navigation'
 import { useLocale } from 'next-intl'
 import { topics, stages } from '@/lib/curriculum/data'
-import { getCompletedTopicIds, getStartedTopicIds } from '@/lib/progress/store'
+import { useCompletedTopicIds, useStartedTopicIds } from '@/lib/progress/hooks'
 import { Locale } from '@/lib/curriculum/types'
 
 // ─── 노드 좌표 (나무뿌리 탑다운) ─────────────────────────────────────────
@@ -115,16 +115,11 @@ export default function CurriculumGraph() {
   const locale       = useLocale() as Locale
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const [completed, setCompleted] = useState<string[]>([])
-  const [started,   setStarted]   = useState<string[]>([])
+  const completed = useCompletedTopicIds()
+  const started   = useStartedTopicIds()
   const [tooltip,   setTooltip]   = useState<{ id: string } | null>(null)
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 })
   const [tick,      setTick]      = useState(0) // pulse timer
-
-  useEffect(() => {
-    setCompleted(getCompletedTopicIds())
-    setStarted(getStartedTopicIds())
-  }, [])
 
   // 맥동 타이머
   useEffect(() => {

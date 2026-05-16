@@ -59,6 +59,21 @@ export interface Trunk {
   leafIds: string[]
 }
 
+// ─── Leveled checkpoints ──────────────────────────────────────────────────
+// 한 잎의 학습 진도를 4단계로 나눠 0~100점으로 측정합니다.
+//   Bronze  — 입문: 일단 가능. weight 30
+//   Silver  — 기본: 안정적. weight 30
+//   Gold    — 중급: 음악적. weight 25
+//   Master  — 마스터: 자유로움. weight 15
+
+export type CheckpointLevel = 'Bronze' | 'Silver' | 'Gold' | 'Master'
+
+export interface CheckpointGroup {
+  level: CheckpointLevel
+  weight: number          // 합 = 100
+  items: I18n[]           // 3-5개 체크 항목
+}
+
 export interface Leaf {
   id: string
   slug: string
@@ -66,10 +81,31 @@ export interface Leaf {
   order: number
   title: I18n
   description: I18n
+
+  // ─ 새 통합 구조 ─
+  theory?: {
+    content: I18n          // markdown 본문 (블로그 톤)
+    abcNotation?: string   // 핵심 악보 예시
+  }
+  practice?: {
+    exercises: Exercise[]
+    backingTrackIds: string[]
+  }
+  checkpoints?: CheckpointGroup[]   // Bronze/Silver/Gold/Master 4 레벨
+
+  // ─ 레거시 (점진적으로 폐기) ─
   selfCheck: I18n[]
   relatedTipSlugs: string[]
   relatedBackingTrackIds: string[]
   relatedPrincipleSlugs: string[]
+}
+
+// 레벨 → 가중치 (기본값)
+export const LEVEL_WEIGHTS: Record<CheckpointLevel, number> = {
+  Bronze: 30,
+  Silver: 30,
+  Gold:   25,
+  Master: 15,
 }
 
 export interface Tip {

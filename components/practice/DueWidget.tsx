@@ -1,27 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useLocale } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
-import { getDueRecords, getAllRecords } from '@/lib/practice/leitner'
 import { getProtocolById, practiceProtocols } from '@/lib/practice/protocols'
 import { getLeafBySlug } from '@/lib/curriculum/organic'
-import { Locale, PracticeRecord } from '@/lib/curriculum/types'
+import { Locale } from '@/lib/curriculum/types'
 import { IconArrowRight } from '@/components/icons'
+import { useAllPracticeRecords, useDuePracticeRecords } from '@/lib/practice/hooks'
 
 export default function DueWidget() {
   const locale = useLocale() as Locale
-  const [mounted, setMounted] = useState(false)
-  const [due, setDue]         = useState<PracticeRecord[]>([])
-  const [allRecords, setAll]  = useState<PracticeRecord[]>([])
-
-  useEffect(() => {
-    setDue(getDueRecords())
-    setAll(getAllRecords())
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
+  const due = useDuePracticeRecords()
+  const allRecords = useAllPracticeRecords()
 
   // 한 번도 안 해본 프로토콜들 (새로운 것)
   const recordKeys = new Set(allRecords.map(r => `${r.leafSlug}__${r.protocolId}`))
