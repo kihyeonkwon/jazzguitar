@@ -109,9 +109,10 @@ export interface Leaf {
   description: I18n
 
   // ─ 새 통합 구조 ─
+  // theory.content는 마크다운으로 ```abc, ```fretboard, ```chord fenced 블록을
+  // 본문 안에 직접 박을 수 있습니다. 별도의 abcNotation 필드는 두지 않습니다.
   theory?: {
-    content: I18n          // markdown 본문 (블로그 톤)
-    abcNotation?: string   // 핵심 악보 예시
+    content: I18n
   }
   practice?: {
     exercises: Exercise[]

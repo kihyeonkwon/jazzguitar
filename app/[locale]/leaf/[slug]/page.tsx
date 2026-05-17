@@ -12,7 +12,7 @@ import LeveledCheckpoints from '@/components/leaf/LeveledCheckpoints'
 import SelfCheck from '@/components/leaf/SelfCheck'
 import { TrunkIconMap, IconArrowRight, IconArrowLeft, IconPlay } from '@/components/icons'
 import { Divider } from '@/components/ui'
-import { renderMarkdown } from '@/components/leaf/markdown'
+import TheoryProse from '@/components/leaf/TheoryProse'
 import SheetMusic from '@/components/music/SheetMusic'
 
 interface Props {
@@ -39,9 +39,8 @@ export default async function LeafPage({ params }: Props) {
   const prevLeaf = myIdx > 0 ? siblingLeaves[myIdx - 1] : null
   const nextLeaf = myIdx >= 0 && myIdx < siblingLeaves.length - 1 ? siblingLeaves[myIdx + 1] : null
 
-  // 이론 본문 (새 shape)
+  // 이론 본문 (마크다운 안에 fenced 블록으로 음악 위젯 포함)
   const theoryContent = leaf.theory?.content?.[locale]
-  const theoryAbc = leaf.theory?.abcNotation
 
   // 실습 항목
   const exercises = leaf.practice?.exercises ?? []
@@ -89,14 +88,7 @@ export default async function LeafPage({ params }: Props) {
             <span className="section-no">T</span>
             <span className="eyebrow">Theory</span>
           </div>
-          <article className="leaf-prose max-w-none">
-            {renderMarkdown(theoryContent)}
-          </article>
-          {theoryAbc && (
-            <div className="border border-rule">
-              <SheetMusic notation={theoryAbc} minimal />
-            </div>
-          )}
+          <TheoryProse content={theoryContent} />
         </section>
       )}
 
