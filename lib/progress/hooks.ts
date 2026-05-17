@@ -16,6 +16,8 @@ import { TopicProgress } from './types'
 
 const EMPTY_STRING_ARRAY: string[] = []
 const EMPTY_SELF_CHECK: Record<number, boolean> = {}
+const EMPTY_SCORE_MAP: Record<string, number> = {}
+const EMPTY_LEVEL_CHECK_MAP: Record<string, Record<number, boolean>> = {}
 const EMPTY_TOPIC_PROGRESS: TopicProgress = {
   topicId: '',
   completedCheckpoints: [],
@@ -130,14 +132,14 @@ export function useLeafLevelCheckMap(
           }
           return map
         },
-        {}
+        EMPTY_LEVEL_CHECK_MAP
       ),
     [groups, leafSlug]
   )
   return useSyncExternalStore(
     subscribeProgressStore,
     getSnapshot,
-    () => ({})
+    () => EMPTY_LEVEL_CHECK_MAP
   )
 }
 
@@ -159,14 +161,14 @@ export function useLeafScoreMap(allLeaves: Leaf[]): Record<string, number> {
           }
           return map
         },
-        {} as Record<string, number>
+        EMPTY_SCORE_MAP
       ),
     [allLeaves]
   )
   return useSyncExternalStore(
     subscribeProgressStore,
     getSnapshot,
-    () => ({} as Record<string, number>)
+    () => EMPTY_SCORE_MAP
   )
 }
 
