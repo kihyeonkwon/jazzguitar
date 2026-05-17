@@ -166,6 +166,10 @@ export interface BackingTrack {
   bars: number
   chords: BackingTrackChord[]
   loopCount?: number
+  /** 옵션: YouTube 비디오 ID (11자) — 진짜 녹음 reference */
+  referenceYoutubeId?: string
+  /** 옵션: reference 영상 출처/설명 */
+  referenceCaption?: I18n
 }
 
 export interface Principle {

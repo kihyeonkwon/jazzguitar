@@ -10,9 +10,10 @@ import {
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
 import LeveledCheckpoints from '@/components/leaf/LeveledCheckpoints'
 import SelfCheck from '@/components/leaf/SelfCheck'
-import { TrunkIconMap, IconArrowRight, IconArrowLeft, IconPlay } from '@/components/icons'
+import { TrunkIconMap, IconArrowRight, IconArrowLeft } from '@/components/icons'
 import { Divider } from '@/components/ui'
 import TheoryProse from '@/components/leaf/TheoryProse'
+import InlineJam from '@/components/leaf/InlineJam'
 import SheetMusic from '@/components/music/SheetMusic'
 
 interface Props {
@@ -92,31 +93,23 @@ export default async function LeafPage({ params }: Props) {
         </section>
       )}
 
-      {/* Practice — Backing tracks */}
+      {/* Practice — Inline jam (player + recorder + optional YouTube reference) */}
       {tracks.length > 0 && (
-        <section className="space-y-4">
+        <section className="space-y-5">
           <div className="flex items-baseline gap-3">
             <span className="section-no">J</span>
-            <span className="eyebrow">Jam Tracks</span>
+            <span className="eyebrow">Jam</span>
           </div>
-          <ul className="border-t border-rule">
+          <div className="space-y-10">
             {tracks.map(t => t && (
-              <li key={t.id} className="border-b border-rule">
-                <Link
-                  href={`/jam/${t.id}`}
-                  className="group flex items-center justify-between py-4 hover:bg-surface/50 -mx-3 px-3 transition-colors"
-                >
-                  <div>
-                    <div className="text-[15px] font-medium text-ink">{t.name[locale]}</div>
-                    <div className="text-[11px] font-mono tabular text-ink-faint tracking-widest mt-1">
-                      {t.key.toUpperCase()} · {t.bpm} BPM · {t.bars} BARS
-                    </div>
-                  </div>
-                  <IconPlay size={16} className="text-ink-faint group-hover:text-ink transition-colors" />
-                </Link>
-              </li>
+              <InlineJam
+                key={t.id}
+                track={t}
+                locale={locale}
+                showRecorder={tracks.length === 1}
+              />
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
