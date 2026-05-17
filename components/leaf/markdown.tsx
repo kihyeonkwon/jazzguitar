@@ -214,8 +214,8 @@ export function renderMarkdown(md: string): React.ReactNode {
     }
     if (b.kind === 'abc') {
       return (
-        <div key={i} className="my-6 border border-rule">
-          <SheetMusic notation={b.body} minimal />
+        <div key={i} className="my-6">
+          <SheetMusic notation={b.body} />
         </div>
       )
     }
