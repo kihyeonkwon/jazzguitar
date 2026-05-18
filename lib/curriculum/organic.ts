@@ -5174,6 +5174,168 @@ export const backingTracks: BackingTrack[] = [
       { chord: 'Cmaj7', beats: 8 },
     ],
   },
+
+  // ─── 신규 6개 ─────────────────────────────────────────────────────
+
+  {
+    id: 'bt-bird-blues-f-120',
+    name: i18('F Bird-Style Blues BPM 120'),
+    key: 'F',
+    bpm: 120,
+    style: 'blues',
+    bars: 12,
+    loopCount: 8,
+    // 12바 블루스에 패싱 ii-V를 추가한 교본 패턴
+    chords: [
+      { chord: 'F7',    beats: 8 },                        // 1
+      { chord: 'Em7',   beats: 4 }, { chord: 'A7',  beats: 4 }, // 2  ii-V of D
+      { chord: 'Dm7',   beats: 4 }, { chord: 'G7',  beats: 4 }, // 3  ii-V of C
+      { chord: 'Cm7',   beats: 4 }, { chord: 'F7',  beats: 4 }, // 4  ii-V of Bb
+      { chord: 'Bb7',   beats: 8 },                        // 5
+      { chord: 'Bbm7',  beats: 4 }, { chord: 'Eb7', beats: 4 }, // 6  ii-V of Ab
+      { chord: 'F7',    beats: 4 }, { chord: 'D7',  beats: 4 }, // 7
+      { chord: 'Gm7',   beats: 4 }, { chord: 'C7',  beats: 4 }, // 8
+      { chord: 'Am7',   beats: 4 }, { chord: 'D7',  beats: 4 }, // 9
+      { chord: 'Gm7',   beats: 4 }, { chord: 'C7',  beats: 4 }, // 10
+      { chord: 'F7',    beats: 4 }, { chord: 'D7',  beats: 4 }, // 11
+      { chord: 'Gm7',   beats: 4 }, { chord: 'C7',  beats: 4 }, // 12
+    ],
+  },
+
+  {
+    id: 'bt-key-cycle-ab-120',
+    name: i18('장3도 키 센터 사이클 BPM 120'),
+    key: 'Ab',
+    bpm: 120,
+    style: 'standard',
+    bars: 16,
+    loopCount: 4,
+    // 키 센터가 장3도로 이동하는 교본 패턴 (Ab → C → Eb 등)
+    chords: [
+      { chord: 'Fm7',    beats: 8 },                                  // 1
+      { chord: 'Bbm7',   beats: 8 },                                  // 2
+      { chord: 'Eb7',    beats: 8 },                                  // 3
+      { chord: 'Abmaj7', beats: 8 },                                  // 4
+      { chord: 'Dbmaj7', beats: 8 },                                  // 5
+      { chord: 'Dm7b5',  beats: 4 }, { chord: 'G7',  beats: 4 },      // 6
+      { chord: 'Cmaj7',  beats: 8 },                                  // 7
+      { chord: 'Cmaj7',  beats: 8 },                                  // 8
+      { chord: 'Cm7',    beats: 8 },                                  // 9
+      { chord: 'Fm7',    beats: 8 },                                  // 10
+      { chord: 'Bb7',    beats: 8 },                                  // 11
+      { chord: 'Ebmaj7', beats: 8 },                                  // 12
+      { chord: 'Abmaj7', beats: 8 },                                  // 13
+      { chord: 'Am7b5',  beats: 4 }, { chord: 'D7',  beats: 4 },      // 14
+      { chord: 'Gmaj7',  beats: 8 },                                  // 15
+      { chord: 'Gmaj7',  beats: 8 },                                  // 16
+    ],
+  },
+
+  {
+    id: 'bt-dorian-d-100',
+    name: i18('D Dorian 모달 뱀프 BPM 100'),
+    key: 'D',
+    bpm: 100,
+    style: 'modal',
+    bars: 8,
+    loopCount: 8,
+    // 한 코드 뱀프 — 모드 솔로 연습용
+    chords: [
+      { chord: 'Dm7', beats: 64 },
+    ],
+  },
+
+  {
+    id: 'bt-lydian-f-90',
+    name: i18('F Lydian 모달 뱀프 BPM 90'),
+    key: 'F',
+    bpm: 90,
+    style: 'modal',
+    bars: 8,
+    loopCount: 8,
+    // F Lydian 색채 — Fmaj7로 통일, 솔로이스트가 #11 띄움
+    chords: [
+      { chord: 'Fmaj7', beats: 64 },
+    ],
+  },
+
+  {
+    id: 'bt-rhythm-changes-bb-140',
+    name: i18('B♭ Rhythm Changes (AABA) BPM 140'),
+    key: 'Bb',
+    bpm: 140,
+    style: 'standard',
+    bars: 32,
+    loopCount: 3,
+    // 표준 AABA I-VI-ii-V 비밥 형식 — 교본 표준
+    chords: [
+      // A1 (8 bars)
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'G7',   beats: 4 },  // 1
+      { chord: 'Cm7',    beats: 4 }, { chord: 'F7',   beats: 4 },  // 2
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'G7',   beats: 4 },  // 3
+      { chord: 'Cm7',    beats: 4 }, { chord: 'F7',   beats: 4 },  // 4
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'Bb7',  beats: 4 },  // 5
+      { chord: 'Ebmaj7', beats: 4 }, { chord: 'Edim7',beats: 4 },  // 6
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'F7',   beats: 4 },  // 7
+      { chord: 'Bbmaj7', beats: 8 },                               // 8
+      // A2 (8 bars) — A1 반복
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'G7',   beats: 4 },  // 9
+      { chord: 'Cm7',    beats: 4 }, { chord: 'F7',   beats: 4 },  // 10
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'G7',   beats: 4 },  // 11
+      { chord: 'Cm7',    beats: 4 }, { chord: 'F7',   beats: 4 },  // 12
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'Bb7',  beats: 4 },  // 13
+      { chord: 'Ebmaj7', beats: 4 }, { chord: 'Edim7',beats: 4 },  // 14
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'F7',   beats: 4 },  // 15
+      { chord: 'Bbmaj7', beats: 8 },                               // 16
+      // B (Bridge, 8 bars) — III VI II V 사이클
+      { chord: 'D7',     beats: 8 },                               // 17
+      { chord: 'D7',     beats: 8 },                               // 18
+      { chord: 'G7',     beats: 8 },                               // 19
+      { chord: 'G7',     beats: 8 },                               // 20
+      { chord: 'C7',     beats: 8 },                               // 21
+      { chord: 'C7',     beats: 8 },                               // 22
+      { chord: 'F7',     beats: 8 },                               // 23
+      { chord: 'F7',     beats: 8 },                               // 24
+      // A3 (8 bars)
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'G7',   beats: 4 },  // 25
+      { chord: 'Cm7',    beats: 4 }, { chord: 'F7',   beats: 4 },  // 26
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'G7',   beats: 4 },  // 27
+      { chord: 'Cm7',    beats: 4 }, { chord: 'F7',   beats: 4 },  // 28
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'Bb7',  beats: 4 },  // 29
+      { chord: 'Ebmaj7', beats: 4 }, { chord: 'Edim7',beats: 4 },  // 30
+      { chord: 'Bbmaj7', beats: 4 }, { chord: 'F7',   beats: 4 },  // 31
+      { chord: 'Bbmaj7', beats: 8 },                               // 32
+    ],
+  },
+
+  {
+    id: 'bt-ballad-eb-70',
+    name: i18('E♭ 발라드 ii-V-I BPM 70'),
+    key: 'Eb',
+    bpm: 70,
+    style: 'standard',
+    bars: 16,
+    loopCount: 4,
+    // 발라드 톤의 전형적 ii-V-I 사이클 — 교본 표준
+    chords: [
+      { chord: 'Cm7',    beats: 8 },                                // 1
+      { chord: 'F7',     beats: 8 },                                // 2
+      { chord: 'Bbmaj7', beats: 8 },                                // 3
+      { chord: 'Bbmaj7', beats: 8 },                                // 4
+      { chord: 'Fm7',    beats: 8 },                                // 5
+      { chord: 'Bb7',    beats: 8 },                                // 6
+      { chord: 'Ebmaj7', beats: 8 },                                // 7
+      { chord: 'Ebmaj7', beats: 8 },                                // 8
+      { chord: 'Abmaj7', beats: 8 },                                // 9
+      { chord: 'Adim7',  beats: 8 },                                // 10
+      { chord: 'Ebmaj7', beats: 4 }, { chord: 'Cm7',    beats: 4 }, // 11
+      { chord: 'Fm7',    beats: 4 }, { chord: 'Bb7',    beats: 4 }, // 12
+      { chord: 'Ebmaj7', beats: 8 },                                // 13
+      { chord: 'Adim7',  beats: 8 },                                // 14
+      { chord: 'Ebmaj7', beats: 4 }, { chord: 'Cm7',    beats: 4 }, // 15
+      { chord: 'Fm7',    beats: 4 }, { chord: 'Bb7',    beats: 4 }, // 16
+    ],
+  },
 ]
 
 // ─── Principles (carried from existing topics) ─────────────────────────────

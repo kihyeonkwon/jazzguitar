@@ -13,7 +13,7 @@ import SelfCheck from '@/components/leaf/SelfCheck'
 import { TrunkIconMap, IconArrowRight, IconArrowLeft } from '@/components/icons'
 import { Divider } from '@/components/ui'
 import TheoryProse from '@/components/leaf/TheoryProse'
-import InlineJam from '@/components/leaf/InlineJam'
+import JamPicker from '@/components/leaf/JamPicker'
 import SheetMusic from '@/components/music/SheetMusic'
 
 interface Props {
@@ -93,27 +93,7 @@ export default async function LeafPage({ params }: Props) {
         </section>
       )}
 
-      {/* Practice — Inline jam (player + recorder + optional YouTube reference) */}
-      {tracks.length > 0 && (
-        <section className="space-y-5">
-          <div className="flex items-baseline gap-3">
-            <span className="section-no">J</span>
-            <span className="eyebrow">Jam</span>
-          </div>
-          <div className="space-y-10">
-            {tracks.map(t => t && (
-              <InlineJam
-                key={t.id}
-                track={t}
-                locale={locale}
-                showRecorder={tracks.length === 1}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Practice — Exercises */}
+      {/* Practice — Exercises (Jam 위로 이동) */}
       {exercises.length > 0 && (
         <section className="space-y-4">
           <div className="flex items-baseline gap-3">
@@ -138,6 +118,21 @@ export default async function LeafPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* Practice — Jam (트랙·키 자유 선택 + 녹음 + reference) */}
+      <section className="space-y-5">
+        <div className="flex items-baseline gap-3">
+          <span className="section-no">J</span>
+          <span className="eyebrow">Jam</span>
+        </div>
+        <p className="text-[13px] text-ink-soft">
+          이 잎이 추천하는 트랙은 <strong className="text-ink">★</strong> 표시됩니다. 키는 자유롭게 바꿔서 다른 조에서도 같은 잎을 연습할 수 있습니다.
+        </p>
+        <JamPicker
+          recommendedTrackIds={tracks.map(t => t!.id)}
+          locale={locale}
+        />
+      </section>
 
       {/* Checkpoints — new leveled or legacy */}
       {checkpoints && checkpoints.length > 0 ? (
