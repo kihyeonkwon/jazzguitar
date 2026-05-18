@@ -3,6 +3,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import FretboardDiagram from '@/components/music/FretboardDiagram'
+import PentatonicShape from '@/components/music/PentatonicShape'
 import Quiz from '@/components/leaf/blocks/Quiz'
 import Callout from '@/components/leaf/blocks/Callout'
 import TwoColumn from '@/components/leaf/blocks/TwoColumn'
@@ -201,6 +202,7 @@ type Block =
   | { kind: 'abc';        body: string }
   | { kind: 'fretboard';  params: FretboardParams }
   | { kind: 'chord';      params: { chord: string; caption?: string } }
+  | { kind: 'shape';      params: { type: 'A' | 'B'; title?: string } }
   | { kind: 'quiz';       params: QuizParams }
   | { kind: 'callout';    params: CalloutParams }
   | { kind: 'two-column'; params: TwoColumnParams }
@@ -243,6 +245,13 @@ function parseBlocks(md: string): Block[] {
         case 'chord-diagram':
           blocks.push({ kind: 'chord', params: parseChordBody(body) })
           break
+        case 'shape':
+        case 'pentatonic-shape': {
+          const kv = parseKeyValue(body)
+          const t = (kv.type || 'A').toUpperCase() === 'B' ? 'B' : 'A'
+          blocks.push({ kind: 'shape', params: { type: t, title: kv.title } })
+          break
+        }
         case 'quiz':
           blocks.push({ kind: 'quiz', params: parseQuizBody(body) })
           break
@@ -366,6 +375,15 @@ export function renderMarkdown(md: string): React.ReactNode {
             </p>
           )}
         </div>
+      )
+    }
+    if (b.kind === 'shape') {
+      return (
+        <PentatonicShape
+          key={i}
+          type={b.params.type}
+          title={b.params.title}
+        />
       )
     }
     if (b.kind === 'quiz') {
