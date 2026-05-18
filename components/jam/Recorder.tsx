@@ -5,7 +5,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 type Mode = 'audio' | 'video'
 type State = 'idle' | 'recording' | 'recorded'
 
-export default function Recorder() {
+interface Props {
+  /** 부모(BackingTrackPlayer)가 재생 중인지 — 재생 중일 때만 녹음 시작 가능 */
+  isParentPlaying?: boolean
+  /** 임베디드 모드 — 자체 border/bg 없이 부모 카드 안에 합쳐짐 */
+  embedded?: boolean
+}
+
+export default function Recorder({ isParentPlaying = true, embedded = false }: Props = {}) {
   const [mode, setMode]         = useState<Mode>('audio')
   const [state, setState]       = useState<State>('idle')
   const [elapsedMs, setElapsed] = useState(0)
@@ -16,6 +23,7 @@ export default function Recorder() {
   const recRef    = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const userStreamRef = useRef<MediaStream | null>(null)
+  const finalStreamRef = useRef<MediaStream | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recDestRef    = useRef<any>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,6 +38,7 @@ export default function Recorder() {
   const cleanup = useCallback(() => {
     userStreamRef.current?.getTracks().forEach(t => t.stop())
     userStreamRef.current = null
+    finalStreamRef.current = null
     try { toneConnectionRef.current?.disconnect() } catch {/* */}
     try { micSourceRef.current?.disconnect() } catch {/* */}
     recDestRef.current = null
@@ -99,17 +108,13 @@ export default function Recorder() {
         mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
           ? 'video/webm;codecs=vp9,opus'
           : 'video/webm'
-        // 영상 미리보기
-        if (videoRef.current) {
-          videoRef.current.srcObject = finalStream
-          videoRef.current.muted = true  // 본인 영상 미리보기는 음소거 (피드백 방지)
-        }
       } else {
         finalStream = recDest.stream
         mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
           ? 'audio/webm;codecs=opus'
           : 'audio/webm'
       }
+      finalStreamRef.current = finalStream
       setMediaMime(mime)
 
       // 6) MediaRecorder
@@ -145,6 +150,23 @@ export default function Recorder() {
     recRef.current?.stop()
   }, [])
 
+  // 부모가 재생을 멈추면 녹음도 자동으로 멈춤
+  useEffect(() => {
+    if (!isParentPlaying && state === 'recording') {
+      recRef.current?.stop()
+    }
+  }, [isParentPlaying, state])
+
+  // 비디오 미리보기: state가 recording이 되면서 <video> 요소가 마운트된 직후
+  // srcObject를 붙인다. start() 안에서 직접 붙이면 그 시점엔 video ref가 null이라 검은 화면이 됨.
+  useEffect(() => {
+    if (mode === 'video' && state === 'recording' && videoRef.current && finalStreamRef.current) {
+      videoRef.current.srcObject = finalStreamRef.current
+      videoRef.current.muted = true  // 피드백 방지
+      videoRef.current.play().catch(() => { /* autoplay 실패는 무시 */ })
+    }
+  }, [mode, state])
+
   const reset = useCallback(() => {
     if (mediaUrl) URL.revokeObjectURL(mediaUrl)
     setMediaUrl(null)
@@ -173,7 +195,7 @@ export default function Recorder() {
   const isVideo = mediaMime.startsWith('video')
 
   return (
-    <div className="border border-rule bg-paper-bright">
+    <div className={embedded ? '' : 'border border-rule bg-paper-bright'}>
       {/* 헤더 */}
       <div className="flex items-center justify-between p-5 border-b border-rule">
         <div className="eyebrow">{mode === 'video' ? 'Video Recording' : 'Audio Recording'}</div>
@@ -199,6 +221,9 @@ export default function Recorder() {
       <p className="px-5 pt-4 text-[11px] text-ink-faint leading-relaxed">
         백킹 트랙과 마이크가 함께 녹음됩니다.
         {mode === 'video' && ' 카메라도 함께 녹화됩니다.'}
+      </p>
+      <p className="px-5 pt-2 text-[11px] text-ink-faint leading-relaxed">
+        ⚠ 녹음·녹화 결과는 서버에 저장되지 않습니다. 다시 들으려면 종료 전에 반드시 다운로드해 두세요.
       </p>
 
       {/* 영상 미리보기 */}
@@ -231,7 +256,9 @@ export default function Recorder() {
       {state === 'idle' && (
         <button
           onClick={start}
-          className="w-full h-14 bg-ink text-ink-inv hover:bg-ink-soft text-sm font-medium tracking-widest transition-colors"
+          disabled={!isParentPlaying}
+          title={!isParentPlaying ? '백킹 재생을 먼저 시작하세요' : undefined}
+          className="w-full h-14 bg-ink text-ink-inv hover:bg-ink-soft text-sm font-medium tracking-widest transition-colors disabled:bg-paper-bright disabled:text-ink-faint disabled:border-t disabled:border-rule disabled:cursor-not-allowed"
         >
           ●  {mode === 'video' ? 'START VIDEO' : 'START RECORDING'}
         </button>
