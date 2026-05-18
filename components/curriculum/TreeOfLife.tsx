@@ -392,7 +392,16 @@ export default function TreeOfLife() {
 
                 {/* 호버 라벨 */}
                 {isHovered && (() => {
-                  const labelW = Math.min(280, leaf.title[locale].length * 7.5 + 28)
+                  // 제목 너비: 한글은 ~12px, 라틴/숫자 ~7px, 공백 ~3.5px (fontSize 11 bold 기준)
+                  const titleW = [...leaf.title[locale]].reduce((sum, ch) => {
+                    if (/[가-힯]/.test(ch)) return sum + 12
+                    if (ch === ' ') return sum + 3.5
+                    return sum + 7
+                  }, 0)
+                  // 부제 너비: fontSize 9 + letterSpacing 1.5
+                  const sub = isCompleted ? 'MASTERED' : 'CLICK TO STUDY'
+                  const subW = sub.length * 7 + Math.max(0, sub.length - 1) * 1.5
+                  const labelW = Math.min(360, Math.max(titleW, subW) + 28)
                   return (
                     <g style={{ pointerEvents: 'none' }}>
                       <rect

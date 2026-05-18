@@ -96,13 +96,13 @@ export default function FretboardFind() {
         (p) => p.string === pos.string && p.fret === pos.fret
       )
       if (already) return
+      if (pos.fret === 0) return  // 개방현 제외 — 클릭 무시(원천 차단되어 있지만 안전망)
       if (isMatch) {
         setFoundPositions((prev) => [...prev, pos])
         setTotalFound((n) => n + 1)
         correctRef.current += 1
-        // 같은 음의 모든 위치를 찾았는지 검사
-        const targetCount = countOccurrences(targetPc)
-        if (foundPositions.length + 1 >= targetCount) {
+        // 1~12프렛만 사용 → 각 음은 정확히 6개 위치(줄마다 1개)
+        if (foundPositions.length + 1 >= 6) {
           setTimeout(() => nextNote(), 350)
         }
       } else {
@@ -126,7 +126,7 @@ export default function FretboardFind() {
     <DrillFrame
       number={1}
       title="지판 음 찾기"
-      description="제시된 음의 모든 위치를 60초 안에 클릭하세요. 옥타브 무관."
+      description="제시된 음의 6개 위치를 60초 안에 클릭하세요. 1~12프렛, 줄마다 1개."
       footerStats={[
         { label: 'Time', value: `${mm}:${ss}` },
         { label: 'Found', value: totalFound },
@@ -159,6 +159,7 @@ export default function FretboardFind() {
         <Fretboard
           marks={marks}
           onPositionClick={running ? handleClick : undefined}
+          excludeOpen
         />
       </div>
 
@@ -174,13 +175,3 @@ export default function FretboardFind() {
   )
 }
 
-// 6줄 × 13프렛 안에서 특정 pitch class가 몇 번 나오는지
-function countOccurrences(pc: number): number {
-  let count = 0
-  for (let s = 0; s < 6; s++) {
-    for (let f = 0; f < 13; f++) {
-      if (pcOf(midiAt(s, f)) === pc) count++
-    }
-  }
-  return count
-}

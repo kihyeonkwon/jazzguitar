@@ -25,6 +25,7 @@ interface FretboardProps {
   marks?: MarkedPosition[]
   onPositionClick?: (pos: FretPosition) => void
   showFretMarkers?: boolean
+  excludeOpen?: boolean  // true면 0프렛(개방현) 클릭 비활성화 + 시각적으로 흐리게
 }
 
 export function midiAt(stringIdx: number, fret: number): number {
@@ -37,6 +38,7 @@ export default function Fretboard({
   marks = [],
   onPositionClick,
   showFretMarkers = true,
+  excludeOpen = false,
 }: FretboardProps) {
   const padLeft = 40
   const padRight = 16
@@ -134,7 +136,12 @@ export default function Fretboard({
           textAnchor="middle"
           fontSize={9}
           fontFamily="var(--font-mono)"
-          fill="var(--color-ink-faint)"
+          fill={
+            excludeOpen && f === 0
+              ? 'var(--color-ink-quiet)'
+              : 'var(--color-ink-faint)'
+          }
+          opacity={excludeOpen && f === 0 ? 0.4 : 1}
         >
           {f}
         </text>
@@ -161,9 +168,10 @@ export default function Fretboard({
           const mark = marks.find((m) => m.string === s && m.fret === f)
           const cx = noteCenterX(f)
           const cy = stringY(s)
+          const isOpenDisabled = excludeOpen && f === 0
           return (
             <g key={`p-${s}-${f}`}>
-              {onPositionClick && (
+              {onPositionClick && !isOpenDisabled && (
                 <rect
                   x={cx - fretWidth * 0.45}
                   y={cy - stringSpacing * 0.45}
@@ -174,7 +182,7 @@ export default function Fretboard({
                   onClick={() => onPositionClick({ string: s, fret: f })}
                 />
               )}
-              {mark && <Marker cx={cx} cy={cy} mark={mark} />}
+              {mark && !isOpenDisabled && <Marker cx={cx} cy={cy} mark={mark} />}
             </g>
           )
         })
