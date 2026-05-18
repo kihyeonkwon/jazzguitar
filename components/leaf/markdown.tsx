@@ -3,16 +3,21 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import FretboardDiagram from '@/components/music/FretboardDiagram'
+import Quiz from '@/components/leaf/blocks/Quiz'
+import Callout from '@/components/leaf/blocks/Callout'
+import TwoColumn from '@/components/leaf/blocks/TwoColumn'
 
 const SheetMusic = dynamic(() => import('@/components/music/SheetMusic'), { ssr: false })
 const ChordDiagram = dynamic(() => import('@/components/music/ChordDiagram'), { ssr: false })
 
 /**
- * 경량 markdown 렌더러 — 헤딩(##, ###), 리스트(-), 볼드(**), 인라인 코드(`),
- * 그리고 fenced 블록 3종 지원:
- *   ```abc        → 오선지 (abcjs)
- *   ```fretboard  → 지판 다이어그램 (FretboardDiagram)
- *   ```chord      → 코드 다이어그램 (ChordDiagram)
+ * 경량 markdown 렌더러 + fenced 블록 7종:
+ *   ```abc        → 오선지
+ *   ```fretboard  → 지판 다이어그램 (단일 / 다중 포지션)
+ *   ```chord      → 코드 다이어그램
+ *   ```quiz       → 미니 퀴즈
+ *   ```callout    → 강조 박스 (tip/info/warning/note)
+ *   ```two-column → 좌/우 비교
  */
 
 // ─── Inline ───────────────────────────────────────────────────────────
@@ -38,15 +43,7 @@ function renderInline(text: string): React.ReactNode {
   })
 }
 
-// ─── Fenced block 파서 ────────────────────────────────────────────────
-
-interface FretboardParams {
-  title?: string
-  root: string
-  notes: string[]
-  frets: [number, number]
-  showDegrees?: boolean
-}
+// ─── Fenced block 헬퍼 ─────────────────────────────────────────────────
 
 function parseKeyValue(body: string): Record<string, string> {
   const map: Record<string, string> = {}
@@ -60,41 +57,153 @@ function parseKeyValue(body: string): Record<string, string> {
   return map
 }
 
+/**
+ * key:value 헤더와 본문 분리 — 첫 빈 줄 이전은 header, 이후는 body
+ * 빈 줄이 없으면 전부 header.
+ */
+function splitHeaderBody(body: string): { header: Record<string, string>; body: string } {
+  const lines = body.split('\n')
+  const blankIdx = lines.findIndex(l => l.trim() === '')
+  if (blankIdx === -1) {
+    return { header: parseKeyValue(body), body: '' }
+  }
+  const headerText = lines.slice(0, blankIdx).join('\n')
+  const bodyText = lines.slice(blankIdx + 1).join('\n')
+  return { header: parseKeyValue(headerText), body: bodyText }
+}
+
+// ─── Fretboard params ─────────────────────────────────────────────────
+
+interface FretboardParams {
+  title?: string
+  root: string
+  notes: string[]
+  frets: [number, number]
+  positions?: Array<[number, number]>
+  positionLabels?: string[]
+  showDegrees?: boolean
+}
+
+function parseRange(s: string): [number, number] {
+  const [a, b] = s.split(/[-–~]/).map(x => parseInt(x.trim(), 10))
+  return [Number.isFinite(a) ? a : 0, Number.isFinite(b) ? b : a]
+}
+
 function parseFretboardBody(body: string): FretboardParams {
   const kv = parseKeyValue(body)
-  const fretsStr = kv.frets || '0-12'
-  const [fromStr, toStr] = fretsStr.split(/[-–~]/).map(s => s.trim())
-  const from = parseInt(fromStr, 10)
-  const to = parseInt(toStr ?? fromStr, 10)
-  return {
+  const params: FretboardParams = {
     title: kv.title,
     root: kv.root || 'C',
     notes: (kv.notes || '').split(',').map(s => s.trim()).filter(Boolean),
-    frets: [
-      Number.isFinite(from) ? from : 0,
-      Number.isFinite(to) ? to : 12,
-    ],
+    frets: parseRange(kv.frets || '0-12'),
     showDegrees: kv['show-degrees'] === 'false' ? false : true,
   }
+  // 다중 포지션
+  if (kv.positions) {
+    params.positions = kv.positions
+      .split(',')
+      .map(s => parseRange(s.trim()))
+  }
+  if (kv['position-labels']) {
+    params.positionLabels = kv['position-labels']
+      .split(',')
+      .map(s => s.trim())
+  }
+  return params
 }
+
+// ─── Chord params ─────────────────────────────────────────────────────
 
 function parseChordBody(body: string): { chord: string; caption?: string } {
   const kv = parseKeyValue(body)
   if (kv.chord || kv.name) {
     return { chord: kv.chord || kv.name, caption: kv.caption }
   }
-  // 키 없으면 첫 줄을 코드명으로
   const first = body.trim().split('\n')[0]
   return { chord: first.trim() }
+}
+
+// ─── Quiz params ──────────────────────────────────────────────────────
+
+interface QuizParams {
+  question: string
+  choices: string[]
+  correct: string
+  hint?: string
+}
+
+function parseQuizBody(body: string): QuizParams {
+  const kv = parseKeyValue(body)
+  return {
+    question: kv.question || '',
+    choices: (kv.choices || '').split(',').map(s => s.trim()).filter(Boolean),
+    correct: kv.correct || '',
+    hint: kv.hint,
+  }
+}
+
+// ─── Callout params ───────────────────────────────────────────────────
+
+interface CalloutParams {
+  type?: 'tip' | 'info' | 'warning' | 'note'
+  title?: string
+  body: string
+}
+
+function parseCalloutBody(body: string): CalloutParams {
+  const { header, body: msg } = splitHeaderBody(body)
+  const type = (header.type as CalloutParams['type']) || 'note'
+  return {
+    type,
+    title: header.title,
+    body: msg.trim() || header.body || '',
+  }
+}
+
+// ─── Two-column params ────────────────────────────────────────────────
+// 형식: --- left / 헤더 / 본문 / --- right / 헤더 / 본문
+
+interface TwoColumnParams {
+  left:  { header?: string; body: string }
+  right: { header?: string; body: string }
+}
+
+function parseTwoColumnBody(body: string): TwoColumnParams {
+  const lines = body.split('\n')
+  let current: 'left' | 'right' | null = null
+  const blocks: Record<'left' | 'right', string[]> = { left: [], right: [] }
+
+  for (const line of lines) {
+    const m = line.match(/^---\s*(left|right)\s*$/i)
+    if (m) {
+      current = m[1].toLowerCase() as 'left' | 'right'
+      continue
+    }
+    if (current) blocks[current].push(line)
+  }
+
+  const parseSide = (lns: string[]) => {
+    const text = lns.join('\n')
+    const { header, body: rest } = splitHeaderBody(text)
+    return { header: header.header || header.title, body: rest.trim() || text.trim() }
+  }
+
+  return {
+    left:  parseSide(blocks.left),
+    right: parseSide(blocks.right),
+  }
 }
 
 // ─── Block 파서 ───────────────────────────────────────────────────────
 
 type Block =
-  | { kind: 'text';      lines: string[] }
-  | { kind: 'abc';       body: string }
-  | { kind: 'fretboard'; params: FretboardParams }
-  | { kind: 'chord';     params: { chord: string; caption?: string } }
+  | { kind: 'text';       lines: string[] }
+  | { kind: 'abc';        body: string }
+  | { kind: 'fretboard';  params: FretboardParams }
+  | { kind: 'chord';      params: { chord: string; caption?: string } }
+  | { kind: 'quiz';       params: QuizParams }
+  | { kind: 'callout';    params: CalloutParams }
+  | { kind: 'two-column'; params: TwoColumnParams }
 
 function parseBlocks(md: string): Block[] {
   const blocks: Block[] = []
@@ -110,28 +219,42 @@ function parseBlocks(md: string): Block[] {
 
   while (i < lines.length) {
     const line = lines[i]
-    const fence = line.match(/^```(\w+)?\s*$/)
+    const fence = line.match(/^```([\w-]+)?\s*$/)
     if (fence) {
       flushText()
       const kind = (fence[1] ?? '').toLowerCase()
-      // 닫는 ``` 까지 수집
       const bodyLines: string[] = []
       i++
       while (i < lines.length && !lines[i].match(/^```\s*$/)) {
         bodyLines.push(lines[i])
         i++
       }
-      i++ // skip closing fence
+      i++
       const body = bodyLines.join('\n')
-      if (kind === 'abc') {
-        blocks.push({ kind: 'abc', body })
-      } else if (kind === 'fretboard') {
-        blocks.push({ kind: 'fretboard', params: parseFretboardBody(body) })
-      } else if (kind === 'chord' || kind === 'chord-diagram') {
-        blocks.push({ kind: 'chord', params: parseChordBody(body) })
-      } else {
-        // 알 수 없는 fence → 일반 코드 블록으로
-        textBuffer.push('```' + (fence[1] ?? ''), ...bodyLines, '```')
+
+      switch (kind) {
+        case 'abc':
+          blocks.push({ kind: 'abc', body })
+          break
+        case 'fretboard':
+          blocks.push({ kind: 'fretboard', params: parseFretboardBody(body) })
+          break
+        case 'chord':
+        case 'chord-diagram':
+          blocks.push({ kind: 'chord', params: parseChordBody(body) })
+          break
+        case 'quiz':
+          blocks.push({ kind: 'quiz', params: parseQuizBody(body) })
+          break
+        case 'callout':
+          blocks.push({ kind: 'callout', params: parseCalloutBody(body) })
+          break
+        case 'two-column':
+        case 'twocol':
+          blocks.push({ kind: 'two-column', params: parseTwoColumnBody(body) })
+          break
+        default:
+          textBuffer.push('```' + (fence[1] ?? ''), ...bodyLines, '```')
       }
       continue
     }
@@ -227,6 +350,8 @@ export function renderMarkdown(md: string): React.ReactNode {
           root={b.params.root}
           notes={b.params.notes}
           frets={b.params.frets}
+          positions={b.params.positions}
+          positionLabels={b.params.positionLabels}
           showDegrees={b.params.showDegrees}
         />
       )
@@ -241,6 +366,36 @@ export function renderMarkdown(md: string): React.ReactNode {
             </p>
           )}
         </div>
+      )
+    }
+    if (b.kind === 'quiz') {
+      return (
+        <Quiz
+          key={i}
+          question={b.params.question}
+          choices={b.params.choices}
+          correct={b.params.correct}
+          hint={b.params.hint}
+        />
+      )
+    }
+    if (b.kind === 'callout') {
+      return (
+        <Callout
+          key={i}
+          type={b.params.type}
+          title={b.params.title}
+          body={b.params.body}
+        />
+      )
+    }
+    if (b.kind === 'two-column') {
+      return (
+        <TwoColumn
+          key={i}
+          left={b.params.left}
+          right={b.params.right}
+        />
       )
     }
     return null
