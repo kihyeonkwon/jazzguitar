@@ -1,13 +1,13 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Chord } from 'tonal'
 import DrillFrame from './shared/DrillFrame'
 import DrillSelector, { SelectorState } from './shared/DrillSelector'
 import ScoreDisplay from './shared/ScoreDisplay'
 import { Button } from '@/components/ui'
 import { IconArrowRight, IconPlay } from '@/components/icons'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 const ROOTS = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'Db', 'Eb', 'Gb', 'Ab', 'Bb']
 const QUALITIES = ['maj7', 'm7', '7', 'm7b5', 'dim7']
@@ -67,6 +67,7 @@ export default function ChordToneId() {
   const [selected, setSelected] = useState<string | null>(null)
   const [state, setState] = useState<SelectorState>('idle')
   const [finished, setFinished] = useState(false)
+  const roundStartRef = useRef<number>(0)
 
   const start = () => {
     setRound(1)
@@ -75,6 +76,7 @@ export default function ChordToneId() {
     setProblem(generate())
     setSelected(null)
     setState('idle')
+    roundStartRef.current = Date.now()
   }
 
   const onSelect = useCallback(
@@ -93,7 +95,15 @@ export default function ChordToneId() {
     if (round >= ROUND_LENGTH) {
       setFinished(true)
       setState('idle')
-      saveDrillScore('chord-tone-id', Math.round((score / ROUND_LENGTH) * 100))
+      const durationSec = Math.max(
+        1,
+        Math.round((Date.now() - roundStartRef.current) / 1000)
+      )
+      saveDrillRound('chord-tone-id', {
+        correct: score,
+        total: ROUND_LENGTH,
+        durationSec,
+      })
       setProblem(null)
       return
     }

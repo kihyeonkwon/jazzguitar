@@ -7,7 +7,7 @@ import DrillSelector, { SelectorState } from './shared/DrillSelector'
 import ScoreDisplay from './shared/ScoreDisplay'
 import { Button } from '@/components/ui'
 import { IconPlay, IconArrowRight } from '@/components/icons'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 const QUALITIES = [
   { value: 'maj7', label: 'Maj7' },
@@ -43,6 +43,7 @@ export default function ChordQualityEar() {
   const [audioReady, setAudioReady] = useState(false)
   const polyRef = useRef<PolySynth | null>(null)
   const toneRef = useRef<ToneNS | null>(null)
+  const roundStartRef = useRef<number>(0)
 
   const ensure = useCallback(async () => {
     if (!toneRef.current) {
@@ -99,6 +100,7 @@ export default function ChordQualityEar() {
     setRound(1)
     setScore(0)
     setFinished(false)
+    roundStartRef.current = Date.now()
     await newQuestion()
   }
 
@@ -118,7 +120,15 @@ export default function ChordQualityEar() {
     if (round >= ROUND_LENGTH) {
       setFinished(true)
       setState('idle')
-      saveDrillScore('chord-quality-ear', Math.round((score / ROUND_LENGTH) * 100))
+      const durationSec = Math.max(
+        1,
+        Math.round((Date.now() - roundStartRef.current) / 1000)
+      )
+      saveDrillRound('chord-quality-ear', {
+        correct: score,
+        total: ROUND_LENGTH,
+        durationSec,
+      })
       return
     }
     setRound((r) => r + 1)

@@ -1,13 +1,13 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { Chord, Note } from 'tonal'
 import DrillFrame from './shared/DrillFrame'
 import Fretboard, { FretPosition, MarkedPosition, midiAt } from './shared/Fretboard'
 import ScoreDisplay from './shared/ScoreDisplay'
 import { Button } from '@/components/ui'
 import { IconArrowRight, IconCheck, IconPlay } from '@/components/icons'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 const ROOTS = ['C', 'D', 'E', 'F', 'G', 'A', 'Bb', 'Eb']
 const QUALITIES = ['maj7', 'm7', '7']
@@ -102,6 +102,7 @@ export default function VoicingFind() {
   const [picks, setPicks] = useState<FretPosition[]>([])
   const [revealed, setRevealed] = useState(false)
   const [finished, setFinished] = useState(false)
+  const roundStartRef = useRef<number>(0)
 
   const start = () => {
     setRound(1)
@@ -110,6 +111,7 @@ export default function VoicingFind() {
     setProblem(generateProblem())
     setPicks([])
     setRevealed(false)
+    roundStartRef.current = Date.now()
   }
 
   const onClick = useCallback(
@@ -136,7 +138,15 @@ export default function VoicingFind() {
     if (!problem) return
     if (round >= ROUND_LENGTH) {
       setFinished(true)
-      saveDrillScore('voicing-find', Math.round((score / ROUND_LENGTH) * 100))
+      const durationSec = Math.max(
+        1,
+        Math.round((Date.now() - roundStartRef.current) / 1000)
+      )
+      saveDrillRound('voicing-find', {
+        correct: score,
+        total: ROUND_LENGTH,
+        durationSec,
+      })
       setProblem(null)
       return
     }

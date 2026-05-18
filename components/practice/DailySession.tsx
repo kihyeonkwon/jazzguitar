@@ -5,7 +5,7 @@ import { useLocale } from 'next-intl'
 import { Link } from '@/lib/i18n/navigation'
 import { leaves } from '@/lib/curriculum/organic'
 import { pickTodaysDrill, pickTodaysLeaf, DRILL_LABELS } from '@/lib/practice/daily'
-import { DRILL_SCORES_EVENT, getDrillScore } from '@/lib/progress/drills'
+import { DRILL_SCORES_EVENT, getCurrentLevel, levelLabel } from '@/lib/progress/drills'
 import { getLeafScore, PROGRESS_STORE_EVENT } from '@/lib/progress/store'
 import { Locale, Leaf } from '@/lib/curriculum/types'
 import { IconArrowRight, IconPlay } from '@/components/icons'
@@ -14,7 +14,7 @@ import { Card, Stat } from '@/components/ui'
 interface DailyModel {
   mounted: boolean
   drillType: string
-  drillScore: number | null
+  drillBadge: string | null
   leaf: Leaf | null
   leafScore: number
 }
@@ -22,7 +22,7 @@ interface DailyModel {
 const EMPTY_DAILY_MODEL: DailyModel = {
   mounted: false,
   drillType: '',
-  drillScore: null,
+  drillBadge: null,
   leaf: null,
   leafScore: 0,
 }
@@ -44,10 +44,20 @@ function makeDailySnapshot() {
   return () => {
     const drillType = pickTodaysDrill()
     const leaf = pickTodaysLeaf(leaves)
+    const info = getCurrentLevel(drillType)
+    let drillBadge: string | null = null
+    if (info.roundsAnalyzed === 0) {
+      drillBadge = 'NEW'
+    } else if (info.level) {
+      const lvl = levelLabel(info.level).toUpperCase()
+      drillBadge = info.avgCpm != null ? `${lvl} · ${info.avgCpm} CPM` : lvl
+    } else if (info.avgCpm != null) {
+      drillBadge = `${info.avgCpm} CPM`
+    }
     const nextValue: DailyModel = {
       mounted: true,
       drillType,
-      drillScore: getDrillScore(drillType)?.bestScore ?? null,
+      drillBadge,
       leaf,
       leafScore: leaf
         ? getLeafScore(leaf.slug, leaf.checkpoints, leaf.selfCheck.length)
@@ -55,7 +65,7 @@ function makeDailySnapshot() {
     }
     const nextKey = JSON.stringify({
       drillType: nextValue.drillType,
-      drillScore: nextValue.drillScore,
+      drillBadge: nextValue.drillBadge,
       leafSlug: nextValue.leaf?.slug ?? null,
       leafScore: nextValue.leafScore,
     })
@@ -70,7 +80,7 @@ function makeDailySnapshot() {
 export default function DailySession() {
   const locale = useLocale() as Locale
   const getSnapshot = useMemo(() => makeDailySnapshot(), [])
-  const { mounted, drillType, drillScore, leaf, leafScore } = useSyncExternalStore(
+  const { mounted, drillType, drillBadge, leaf, leafScore } = useSyncExternalStore(
     subscribeDailySession,
     getSnapshot,
     () => EMPTY_DAILY_MODEL
@@ -181,7 +191,7 @@ export default function DailySession() {
               <span className="eyebrow">Warmup · 5 min</span>
             </div>
             <span className="text-[10px] font-mono tabular tracking-widest text-ink-faint">
-              {drillScore !== null ? `BEST ${drillScore}%` : 'NEW'}
+              {drillBadge ?? 'NEW'}
             </span>
           </div>
 

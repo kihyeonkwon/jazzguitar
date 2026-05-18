@@ -7,7 +7,7 @@ import DrillSelector, { SelectorState } from './shared/DrillSelector'
 import ScoreDisplay from './shared/ScoreDisplay'
 import { Button } from '@/components/ui'
 import { IconPlay, IconArrowRight } from '@/components/icons'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 const INTERVALS: { value: string; label: string; semitones: number }[] = [
   { value: 'm2', label: 'm2', semitones: 1 },
@@ -50,6 +50,7 @@ export default function IntervalEar() {
   const [finished, setFinished] = useState(false)
   const synthRef = useRef<ToneSynth | null>(null)
   const toneRef = useRef<ToneNS | null>(null)
+  const roundStartRef = useRef<number>(0)
   const [audioReady, setAudioReady] = useState(false)
 
   const ensureSynth = useCallback(async () => {
@@ -98,6 +99,7 @@ export default function IntervalEar() {
     setRound(1)
     setScore(0)
     setFinished(false)
+    roundStartRef.current = Date.now()
     await newQuestion()
   }
 
@@ -118,7 +120,15 @@ export default function IntervalEar() {
       const finalScore = score
       setFinished(true)
       setState('idle')
-      saveDrillScore('interval-ear', Math.round((finalScore / ROUND_LENGTH) * 100))
+      const durationSec = Math.max(
+        1,
+        Math.round((Date.now() - roundStartRef.current) / 1000)
+      )
+      saveDrillRound('interval-ear', {
+        correct: finalScore,
+        total: ROUND_LENGTH,
+        durationSec,
+      })
       return
     }
     setRound((r) => r + 1)

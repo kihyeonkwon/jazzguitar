@@ -1,12 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Note } from 'tonal'
 import DrillFrame from './shared/DrillFrame'
 import Fretboard, { FretPosition, MarkedPosition, midiAt } from './shared/Fretboard'
 import { Button } from '@/components/ui'
 import { IconPlay, IconStop } from '@/components/icons'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 // 모든 12음 (샵 표기)
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
@@ -35,6 +35,8 @@ export default function FretboardFind() {
   const [wrongFlash, setWrongFlash] = useState<FretPosition | null>(null)
   const [totalFound, setTotalFound] = useState(0)
   const [finished, setFinished] = useState(false)
+  const correctRef = useRef(0)
+  const wrongRef = useRef(0)
 
   // 타이머
   useEffect(() => {
@@ -44,14 +46,18 @@ export default function FretboardFind() {
         if (t <= 1) {
           setRunning(false)
           setFinished(true)
-          saveDrillScore('fretboard-find', totalFound, ROUND_SECONDS)
+          saveDrillRound('fretboard-find', {
+            correct: correctRef.current,
+            total: correctRef.current + wrongRef.current,
+            durationSec: ROUND_SECONDS,
+          })
           return 0
         }
         return t - 1
       })
     }, 1000)
     return () => clearTimeout(id)
-  }, [running, timeLeft, totalFound])
+  }, [running, timeLeft])
 
   const nextNote = useCallback(() => {
     setTargetNote((prev) => pickRandom(NOTES, prev))
@@ -65,12 +71,19 @@ export default function FretboardFind() {
     setTotalFound(0)
     setFoundPositions([])
     setTargetNote(pickRandom(NOTES))
+    correctRef.current = 0
+    wrongRef.current = 0
   }
 
   const stop = () => {
     setRunning(false)
     setFinished(true)
-    saveDrillScore('fretboard-find', totalFound, ROUND_SECONDS - timeLeft)
+    const elapsed = Math.max(1, ROUND_SECONDS - timeLeft)
+    saveDrillRound('fretboard-find', {
+      correct: correctRef.current,
+      total: correctRef.current + wrongRef.current,
+      durationSec: elapsed,
+    })
   }
 
   const handleClick = useCallback(
@@ -86,12 +99,14 @@ export default function FretboardFind() {
       if (isMatch) {
         setFoundPositions((prev) => [...prev, pos])
         setTotalFound((n) => n + 1)
+        correctRef.current += 1
         // 같은 음의 모든 위치를 찾았는지 검사
         const targetCount = countOccurrences(targetPc)
         if (foundPositions.length + 1 >= targetCount) {
           setTimeout(() => nextNote(), 350)
         }
       } else {
+        wrongRef.current += 1
         setWrongFlash(pos)
         setTimeout(() => setWrongFlash(null), 400)
       }

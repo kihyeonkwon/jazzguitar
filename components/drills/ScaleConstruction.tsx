@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import DrillFrame from './shared/DrillFrame'
 import { Button } from '@/components/ui'
 import { IconArrowRight } from '@/components/icons'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 const ROOTS = ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'G', 'D'] as const
 const NOTES_12 = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
@@ -121,6 +121,8 @@ export default function ScaleConstruction() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [shake, setShake] = useState(false)
   const roundStartRef = useRef<number>(0)
+  const lastSavedCorrectRef = useRef<number>(0)
+  const lastSavedTotalRef = useRef<number>(0)
 
   const activeScales = useMemo(
     () => SCALES.filter((scale) => activeScaleIds.includes(scale.id)),
@@ -175,8 +177,19 @@ export default function ScaleConstruction() {
         roundStartRef.current = Date.now()
       }
       if (nextScore.total > 0 && nextScore.total % ROUND_SIZE === 0) {
-        const elapsedSec = Math.round((Date.now() - roundStartRef.current) / 1000)
-        saveDrillScore('scale-construction', Math.round((nextScore.correct / nextScore.total) * 100), elapsedSec)
+        const elapsedSec = Math.max(
+          1,
+          Math.round((Date.now() - roundStartRef.current) / 1000)
+        )
+        const roundCorrect = nextScore.correct - lastSavedCorrectRef.current
+        const roundTotal = nextScore.total - lastSavedTotalRef.current
+        saveDrillRound('scale-construction', {
+          correct: roundCorrect,
+          total: roundTotal,
+          durationSec: elapsedSec,
+        })
+        lastSavedCorrectRef.current = nextScore.correct
+        lastSavedTotalRef.current = nextScore.total
         roundStartRef.current = Date.now()
       }
 

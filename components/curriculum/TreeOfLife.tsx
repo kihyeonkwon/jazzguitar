@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from '@/lib/i18n/navigation'
 import { useLocale } from 'next-intl'
 import { trunks, leaves, getLeavesByTrunk } from '@/lib/curriculum/organic'
@@ -68,6 +68,78 @@ export default function TreeOfLife() {
   const [hoveredTrunk, setHoveredTrunk]       = useState<string | null>(null)
   const [hoveredLeaf,  setHoveredLeaf]        = useState<string | null>(null)
 
+  // ─── 줌·팬 (Obsidian 스타일) ───────────────────────────────────────────
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const [view, setView] = useState<{ x: number; y: number; scale: number }>({
+    x: 0, y: 0, scale: 1,
+  })
+
+  // 처음 진입 시 뷰포트에 fit
+  const fitToViewport = () => {
+    const el = viewportRef.current
+    if (!el) return
+    const sx = el.clientWidth / CANVAS_W
+    const sy = el.clientHeight / CANVAS_H
+    const scale = Math.min(sx, sy) * 0.95
+    const x = (el.clientWidth - CANVAS_W * scale) / 2
+    const y = (el.clientHeight - CANVAS_H * scale) / 2
+    setView({ x, y, scale })
+  }
+  useEffect(() => {
+    fitToViewport()
+    const onResize = () => fitToViewport()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 드래그 팬
+  const dragRef = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null)
+  const onPointerDown = (e: React.PointerEvent) => {
+    const target = e.target as HTMLElement
+    if (target.closest('g[data-clickable]')) return
+    dragRef.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y }
+    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+  }
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = dragRef.current
+    if (!d) return
+    setView((v) => ({ ...v, x: d.vx + (e.clientX - d.x), y: d.vy + (e.clientY - d.y) }))
+  }
+  const onPointerEnd = () => { dragRef.current = null }
+
+  // 휠 줌 (포인터 위치 기준으로 줌) — passive: false로 직접 등록해야 preventDefault 가능
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el) return
+    const handler = (e: WheelEvent) => {
+      e.preventDefault()
+      const rect = el.getBoundingClientRect()
+      const px = e.clientX - rect.left
+      const py = e.clientY - rect.top
+      setView((v) => {
+        const factor = e.deltaY > 0 ? 0.9 : 1.1
+        const nextScale = Math.max(0.3, Math.min(2.5, v.scale * factor))
+        const k = nextScale / v.scale
+        return { x: px - (px - v.x) * k, y: py - (py - v.y) * k, scale: nextScale }
+      })
+    }
+    el.addEventListener('wheel', handler, { passive: false })
+    return () => el.removeEventListener('wheel', handler)
+  }, [])
+
+  const zoomBy = (factor: number) => {
+    const el = viewportRef.current
+    if (!el) return
+    const cx = el.clientWidth / 2
+    const cy = el.clientHeight / 2
+    setView((v) => {
+      const nextScale = Math.max(0.3, Math.min(2.5, v.scale * factor))
+      const k = nextScale / v.scale
+      return { x: cx - (cx - v.x) * k, y: cy - (cy - v.y) * k, scale: nextScale }
+    })
+  }
+
   const completedLeaves = useMemo(() => {
     return new Set(completedLeafSlugs)
   }, [completedLeafSlugs])
@@ -88,10 +160,10 @@ export default function TreeOfLife() {
   const completedCount = completedLeaves.size
 
   return (
-    <div className="relative w-full bg-paper">
+    <div className="relative w-full bg-paper" style={{ height: 'calc(100vh - 56px)' }}>
 
       {/* 헤더 */}
-      <div className="absolute top-8 left-8 z-10 max-w-xs">
+      <div className="absolute top-8 left-8 z-10 max-w-xs pointer-events-none">
         <div className="flex items-baseline gap-3 mb-3">
           <span className="section-no">00</span>
           <span className="eyebrow">The Forest</span>
@@ -100,7 +172,7 @@ export default function TreeOfLife() {
           Tree of Jazz
         </h1>
         <p className="text-ink-soft text-[13px] leading-relaxed mb-4">
-          뿌리에서 시작해 7개 큰 가지로. 잎을 클릭해 학습합니다.
+          뿌리에서 시작해 4개 큰 가지로. 잎을 클릭해 학습합니다.
         </p>
         <div className="flex items-baseline gap-3">
           <div className="flex-1 h-px bg-rule overflow-hidden">
@@ -116,7 +188,7 @@ export default function TreeOfLife() {
       </div>
 
       {/* 범례 */}
-      <div className="absolute top-8 right-8 z-10 flex flex-col gap-2 text-[10px] font-mono tracking-widest text-ink-faint">
+      <div className="absolute top-8 right-8 z-10 flex flex-col gap-2 text-[10px] font-mono tracking-widest text-ink-faint pointer-events-none">
         <div className="flex items-center gap-2.5 justify-end">
           <span>MASTERED</span>
           <span className="w-2.5 h-2.5 bg-ink inline-block" />
@@ -127,11 +199,30 @@ export default function TreeOfLife() {
         </div>
       </div>
 
-      {/* SVG 나무 */}
+      {/* 줌·팬 캔버스 — Obsidian 스타일 */}
+      <div
+        ref={viewportRef}
+        className="w-full h-full overflow-hidden touch-none select-none"
+        style={{ cursor: dragRef.current ? 'grabbing' : 'grab' }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
+      >
+      <div
+        style={{
+          transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`,
+          transformOrigin: '0 0',
+          width: CANVAS_W,
+          height: CANVAS_H,
+        }}
+      >
       <svg
         viewBox={`0 0 ${CANVAS_W} ${CANVAS_H}`}
-        className="w-full h-auto"
-        style={{ maxHeight: 'calc(100vh - 56px)' }}
+        width={CANVAS_W}
+        height={CANVAS_H}
+        className="block"
+        style={{ overflow: 'visible' }}
       >
         <defs>
           <pattern id="dots" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
@@ -194,6 +285,7 @@ export default function TreeOfLife() {
           return (
             <g
               key={`hdr-${trunk.slug}`}
+              data-clickable
               transform={`translate(${top.x}, ${top.y})`}
               style={{ cursor: 'pointer' }}
               onClick={() => router.push(`/trunk/${trunk.slug}`)}
@@ -246,6 +338,7 @@ export default function TreeOfLife() {
             return (
               <g
                 key={leaf.slug}
+                data-clickable
                 transform={`translate(${pos.x}, ${pos.y})`}
                 style={{ cursor: 'pointer' }}
                 onClick={() => router.push(`/leaf/${leaf.slug}`)}
@@ -268,6 +361,29 @@ export default function TreeOfLife() {
                   strokeWidth="1"
                   style={{ transition: 'all 150ms ease' }}
                 />
+
+                {/* 줌인 시 노출되는 짧은 이름 (scale >= 0.7) */}
+                {view.scale >= 0.7 && (() => {
+                  const short = leaf.shortTitle?.[locale] ?? leaf.title[locale]
+                  // 줄기에서 멀어지는 방향에 라벨을 둔다 — 잎의 각도로 결정
+                  const angle = pos.angle ?? 0
+                  const rad = ((angle - 90) * Math.PI) / 180
+                  const offset = 20
+                  const lx = offset * Math.cos(rad)
+                  const ly = offset * Math.sin(rad)
+                  return (
+                    <text
+                      x={lx} y={ly + 3}
+                      textAnchor={Math.abs(lx) < 4 ? 'middle' : lx > 0 ? 'start' : 'end'}
+                      fontSize="11"
+                      fontWeight="500"
+                      fill={isHovered ? '#0a0a0a' : '#525252'}
+                      style={{ transition: 'fill 200ms', pointerEvents: 'none' }}
+                    >
+                      {short}
+                    </text>
+                  )
+                })()}
 
                 {/* 완료 체크 */}
                 {isCompleted && (
@@ -337,6 +453,27 @@ export default function TreeOfLife() {
           </text>
         </g>
       </svg>
+      </div>
+      </div>
+
+      {/* 줌 컨트롤 */}
+      <div className="absolute bottom-6 right-6 z-10 flex flex-col gap-1.5">
+        <button
+          onClick={() => zoomBy(1.2)}
+          className="w-9 h-9 bg-paper-bright border border-rule hover:border-ink-soft text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-base font-mono"
+          aria-label="확대"
+        >+</button>
+        <button
+          onClick={() => zoomBy(1 / 1.2)}
+          className="w-9 h-9 bg-paper-bright border border-rule hover:border-ink-soft text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-base font-mono"
+          aria-label="축소"
+        >−</button>
+        <button
+          onClick={fitToViewport}
+          className="w-9 h-9 bg-paper-bright border border-rule hover:border-ink-soft text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-[9px] font-mono tracking-widest"
+          aria-label="화면에 맞춤"
+        >FIT</button>
+      </div>
     </div>
   )
 }

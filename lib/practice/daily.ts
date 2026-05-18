@@ -1,6 +1,6 @@
 'use client'
 
-import { getDrillScore } from '@/lib/progress/drills'
+import { getDrillScore, getRelativeStrength } from '@/lib/progress/drills'
 import {
   getLeafScore,
   getLeafLastActivity,
@@ -27,8 +27,9 @@ const LAST_DRILL_KEY = 'jazz-guitar-last-daily-drill'
 
 /**
  * 오늘의 드릴 선택 알고리즘
- *  - 점수 가장 낮은 드릴 우선 (안 한 드릴은 점수 0으로 취급)
- *  - 동률 → 마지막 플레이가 오래된 것 우선
+ *  - 각 드릴의 master 임계 CPM 대비 상대 강도(avgCpm / masterCpm)가 낮은 것 우선
+ *  - 안 한 드릴은 강도 0 → 우선 노출
+ *  - 동률 → 오래 안 한 것 우선
  *  - 직전 세션에 본 드릴은 제외 (반복 회피)
  */
 export function pickTodaysDrill(): string {
@@ -44,16 +45,14 @@ export function pickTodaysDrill(): string {
       const s = getDrillScore(type)
       return {
         type,
-        score:        s?.bestScore ?? 0,
+        strength:     getRelativeStrength(type),
         lastPlayedAt: s?.lastPlayedAt ?? '1970-01-01',
         totalPlayed:  s?.totalPlayed ?? 0,
       }
     })
     .sort((a, b) => {
-      if (a.score !== b.score) return a.score - b.score
-      // 점수 같으면 totalPlayed 적은 것 (덜 친숙한 것)
+      if (a.strength !== b.strength) return a.strength - b.strength
       if (a.totalPlayed !== b.totalPlayed) return a.totalPlayed - b.totalPlayed
-      // 그래도 같으면 오래된 것
       return new Date(a.lastPlayedAt).getTime() - new Date(b.lastPlayedAt).getTime()
     })
 

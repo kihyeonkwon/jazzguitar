@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from 'react'
 import ChordQuiz from '@/components/music/ChordQuiz'
 import DrillFrame from './shared/DrillFrame'
-import { saveDrillScore } from '@/lib/progress/drills'
+import { saveDrillRound } from '@/lib/progress/drills'
 
 const ROUND_SIZE = 10  // 10 chord attempts = 1 round
 
 export default function ChordConstruction() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const roundStartRef = useRef<number>(0)
+  const lastSavedCorrectRef = useRef<number>(0)
+  const lastSavedTotalRef = useRef<number>(0)
 
   // 라운드 완료 시 점수 저장
   useEffect(() => {
@@ -17,10 +19,17 @@ export default function ChordConstruction() {
       roundStartRef.current = Date.now()
     }
     if (score.total > 0 && score.total % ROUND_SIZE === 0) {
-      const accuracy = Math.round((score.correct / score.total) * 100)
       const startedAt = roundStartRef.current || Date.now()
-      const elapsedSec = Math.round((Date.now() - startedAt) / 1000)
-      saveDrillScore('chord-construction', accuracy, elapsedSec)
+      const elapsedSec = Math.max(1, Math.round((Date.now() - startedAt) / 1000))
+      const roundCorrect = score.correct - lastSavedCorrectRef.current
+      const roundTotal = score.total - lastSavedTotalRef.current
+      saveDrillRound('chord-construction', {
+        correct: roundCorrect,
+        total: roundTotal,
+        durationSec: elapsedSec,
+      })
+      lastSavedCorrectRef.current = score.correct
+      lastSavedTotalRef.current = score.total
       roundStartRef.current = Date.now()
     }
   }, [score])
