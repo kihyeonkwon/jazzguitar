@@ -8,6 +8,9 @@ export const SITE_URL =
 
 export const SITE_NAME = 'Jazz Guitar Tree'
 
+const NAVER_SITE_VERIFICATION =
+  'e8b4db747ec8a1b49b2bdce3e470c86c6167fc13'
+
 export const HOME_TITLE =
   '재즈기타 독학·레슨 복습 시스템'
 
@@ -130,7 +133,8 @@ export function buildPageMetadata({
 
 export function verificationMetadata(): Metadata['verification'] | undefined {
   const google = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-  const naver = process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
+  const naver =
+    process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION ?? NAVER_SITE_VERIFICATION
 
   if (!google && !naver) return undefined
 
