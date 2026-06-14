@@ -14,7 +14,7 @@ interface Props {
 
 export default function TwoColumn({ left, right }: Props) {
   return (
-    <div className="my-6 grid grid-cols-1 md:grid-cols-2 gap-px bg-rule border border-rule">
+    <div className="my-6 grid grid-cols-1 gap-3 md:grid-cols-2">
       <Column data={left} />
       <Column data={right} />
     </div>
@@ -23,7 +23,7 @@ export default function TwoColumn({ left, right }: Props) {
 
 function Column({ data }: { data: ColumnData }) {
   return (
-    <div className="bg-paper-bright p-5">
+    <div className="organic-card p-5">
       {data.header && (
         <div className="eyebrow mb-3">{data.header}</div>
       )}

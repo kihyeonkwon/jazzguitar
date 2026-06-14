@@ -79,7 +79,7 @@ export default function RecordCheck({ leafSlug, onComplete }: Props) {
           {checkedCount === 4 && ' 오늘 잘 하셨습니다.'}
         </p>
         <p className="text-xs text-ink-inv/60 leading-relaxed">
-          이 세션은 잎의 Bronze 진도에 자동 반영되었습니다. 내일 다시 같은 미션이 추천될 수 있습니다.
+          이 세션은 주제의 Bronze 진도에 자동 반영되었습니다. 내일 다시 같은 미션이 추천될 수 있습니다.
         </p>
       </div>
     )

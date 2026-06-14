@@ -88,7 +88,7 @@ export default function SessionWizard({ protocol }: Props) {
               onClick={() => router.push(`/leaf/${leaf.slug}`)}
               className="h-14 bg-paper-bright text-ink hover:bg-surface text-sm font-medium transition-colors"
             >
-              잎으로 돌아가기
+              주제로 돌아가기
             </button>
           )}
           <button

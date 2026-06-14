@@ -235,11 +235,8 @@ export function IconDownload(p: IconProps) {
 import type { TrunkSlug } from '@/lib/curriculum/types'
 
 export const TrunkIconMap: Record<TrunkSlug, React.ComponentType<IconProps>> = {
-  'foundation':       IconFoundation,
-  'blues':            IconBlues,
-  'harmony-comping':  IconHarmony,
-  'soloing':          IconSoloing,
-  'ear-training':     IconEar,
-  'standards':        IconStandards,
-  'artists':          IconArtist,
+  'solo':       IconSoloing,
+  'comping':    IconHarmony,
+  'repertoire': IconStandards,
+  'ear-time':   IconEar,
 }

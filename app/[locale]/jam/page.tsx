@@ -1,9 +1,29 @@
+import type { Metadata } from 'next'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { backingTracks } from '@/lib/curriculum/organic'
 import { Locale } from '@/lib/curriculum/types'
 import { SectionHeader } from '@/components/ui'
 import { IconPlay } from '@/components/icons'
+import { asLocale, buildPageMetadata } from '@/lib/seo'
+
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+
+  return buildPageMetadata({
+    locale,
+    path: '/jam',
+    title: '재즈기타 잼 트랙 | 블루스·스탠다드 즉흥 연습',
+    description:
+      '재즈기타 즉흥연주를 블루스와 스탠다드 백킹 트랙 위에서 연습하고 녹음해 확인하는 공간입니다.',
+    keywords: ['재즈기타 즉흥', '재즈기타 백킹트랙', '재즈 블루스 기타 연습'],
+  })
+}
 
 export default async function JamLibraryPage() {
   const locale = (await getLocale()) as Locale

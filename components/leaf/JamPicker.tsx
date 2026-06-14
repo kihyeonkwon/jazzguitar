@@ -10,10 +10,6 @@ const BackingTrackPlayer = dynamic(
   () => import('@/components/jam/BackingTrackPlayer'),
   { ssr: false, loading: () => <div className="border border-rule p-6 text-ink-faint text-sm">백킹 트랙 로딩…</div> },
 )
-const Recorder = dynamic(
-  () => import('@/components/jam/Recorder'),
-  { ssr: false, loading: () => <div className="border border-rule p-6 text-ink-faint text-sm">녹음기 로딩…</div> },
-)
 const YouTubeEmbed = dynamic(
   () => import('@/components/jam/YouTubeEmbed'),
   { ssr: false },
@@ -95,11 +91,8 @@ export default function JamPicker({ recommendedTrackIds, locale }: Props) {
         )}
       </div>
 
-      {/* 우리 백킹 */}
+      {/* 우리 백킹 (리드시트 + 재생 + 녹음 통합) */}
       <BackingTrackPlayer track={playedTrack} />
-
-      {/* 녹음 */}
-      <Recorder />
 
       {/* YouTube reference (옵션, 원키일 때만) */}
       {semitones === 0 && baseTrack.referenceYoutubeId && (

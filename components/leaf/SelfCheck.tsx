@@ -76,7 +76,7 @@ export default function SelfCheck({ leafSlug, items }: Props) {
         <div className="bg-ink text-ink-inv p-4 mt-4 flex items-center gap-3">
           <IconCheck size={16} />
           <p className="text-sm">
-            이 잎을 완전히 익혔습니다. 트렁크로 돌아가 다음 잎을 골라보세요.
+            이 주제를 완전히 익혔습니다. 트렁크로 돌아가 다음 주제를 골라보세요.
           </p>
         </div>
       )}

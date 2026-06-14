@@ -14,19 +14,21 @@ interface DrillFrameProps {
   title: string
   description?: string
   footerStats?: FooterStat[]
+  wide?: boolean
   children: React.ReactNode
 }
 
 export default function DrillFrame({
   number,
-  eyebrow = 'Drill',
+  eyebrow = 'Train',
   title,
   description,
   footerStats,
+  wide = false,
   children,
 }: DrillFrameProps) {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
+    <div className={`${wide ? 'max-w-7xl' : 'max-w-4xl'} mx-auto px-4 sm:px-6 py-12 space-y-8`}>
       <SectionHeader
         number={number}
         eyebrow={eyebrow}
@@ -41,9 +43,9 @@ export default function DrillFrame({
       {footerStats && footerStats.length > 0 && (
         <>
           <Divider />
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-4">
             {footerStats.map((s) => (
-              <div key={s.label} className="space-y-1">
+              <div key={s.label} className="organic-card space-y-1 p-4">
                 <div className="eyebrow">{s.label}</div>
                 <div className="text-2xl font-mono font-medium tabular text-ink leading-none">
                   {s.value}

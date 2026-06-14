@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
@@ -9,9 +10,37 @@ import {
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
 import { TrunkIconMap, IconArrowRight, IconArrowLeft } from '@/components/icons'
 import { Divider } from '@/components/ui'
+import { asLocale, buildPageMetadata } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+  const trunk = getTrunkBySlug(slug)
+
+  if (!trunk) {
+    return buildPageMetadata({
+      locale,
+      path: `/trunk/${slug}`,
+      title: '재즈기타 커리큘럼 가닥',
+      description: '재즈기타 학습 커리큘럼 가닥 페이지입니다.',
+    })
+  }
+
+  return buildPageMetadata({
+    locale,
+    path: `/trunk/${trunk.slug}`,
+    title: `${trunk.title[locale]} | 재즈기타 커리큘럼`,
+    description: trunk.description[locale],
+    keywords: [
+      `재즈기타 ${trunk.title.ko}`,
+      '재즈기타 커리큘럼',
+      '재즈기타 학습 순서',
+    ],
+  })
 }
 
 export default async function TrunkPage({ params }: Props) {

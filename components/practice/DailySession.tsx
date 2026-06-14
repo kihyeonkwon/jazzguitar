@@ -88,24 +88,24 @@ export default function DailySession() {
 
   if (!mounted) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-16">
-        <div className="h-64 bg-surface animate-pulse" />
+      <div className="max-w-3xl mx-auto px-6 py-16">
+        <div className="h-64 rounded-3xl bg-surface animate-pulse" />
       </div>
     )
   }
 
-  // 모든 잎 100점 졸업 상태
+  // 모든 주제 100점 졸업 상태
   if (!leaf) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-24 text-center space-y-6">
         <div className="eyebrow">Mastered</div>
-        <h1 className="display text-4xl text-ink">모든 잎을 졸업했습니다.</h1>
+        <h1 className="display text-5xl text-ink">모든 주제를 졸업했습니다.</h1>
         <p className="text-ink-soft">
-          새로운 잎이 추가될 때까지 잠시 쉬어가셔도 됩니다. 또는 Tree에서 더 깊이 파고들 잎을 직접 골라보세요.
+          새로운 주제가 추가될 때까지 잠시 쉬어가셔도 됩니다. 또는 Tree에서 더 깊이 파고들 주제를 직접 골라보세요.
         </p>
         <Link
           href="/curriculum"
-          className="inline-flex h-10 px-5 bg-ink text-ink-inv hover:bg-ink-soft text-sm font-medium items-center transition-colors"
+          className="inline-flex h-11 rounded-full px-5 bg-ink text-ink-inv hover:bg-terracotta text-sm font-semibold items-center transition-colors"
         >
           Tree로 가기
         </Link>
@@ -120,21 +120,21 @@ export default function DailySession() {
   const remainingScore = Math.max(0, 100 - leafScore)
 
   return (
-    <div className="max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-16 space-y-12 sm:space-y-14">
+    <div className="max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-20 space-y-12 sm:space-y-16">
 
       {/* Header */}
-      <header className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end">
-        <div className="space-y-7">
+      <header className="organic-vine grid gap-8 lg:grid-cols-[minmax(0,1fr)_430px] lg:items-end">
+        <div className="space-y-8">
           <div className="flex items-baseline gap-3">
             <span className="section-no">00</span>
             <span className="eyebrow">Today&rsquo;s Session</span>
           </div>
           <div className="space-y-5">
-            <h1 className="display text-[4.5rem] sm:text-8xl lg:text-[7.5rem] text-ink leading-[1.08]">
-              오늘,<br />한 잎.
+            <h1 className="display text-[4.75rem] sm:text-8xl lg:text-[7.75rem] text-ink leading-[1.18]">
+              오늘,<br />한 주제.
             </h1>
             <p className="text-ink-soft text-base sm:text-lg max-w-2xl leading-8">
-              짧은 워밍업 하나, 오늘의 잎 하나. 선택은 시스템이 하고 연습은 손이 합니다.
+              짧은 워밍업 하나, 오늘의 주제 하나. 선택은 시스템이 하고 연습은 손이 합니다.
             </p>
           </div>
         </div>
@@ -152,15 +152,15 @@ export default function DailySession() {
                   {DRILL_LABELS[drillType] ?? drillType}
                 </div>
                 <p className="text-sm leading-6 text-ink-soft">
-                  가장 낮은 점수의 드릴 한 라운드
+                  가장 낮은 점수의 Train 한 라운드
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-[72px_1fr] gap-5 px-5 py-5">
-              <Stat label="Leaf" value="40" />
+              <Stat label="Topic" value="40" />
               <div className="space-y-1.5">
                 <div className="display text-xl text-ink leading-tight">
-                  오늘의 잎 적용
+                  오늘의 주제 적용
                 </div>
                 <p className="text-sm leading-6 text-ink-soft">
                   새 재료보다 한 가지를 실제 연주에 붙입니다
@@ -197,7 +197,7 @@ export default function DailySession() {
 
           <Card className="p-6 sm:p-7 space-y-6 min-h-[300px] flex flex-col">
             <div className="space-y-3">
-              <div className="w-11 h-11 bg-surface border border-rule flex items-center justify-center text-ink">
+              <div className="w-12 h-12 rounded-full bg-surface border border-rule flex items-center justify-center text-ink shadow-[var(--shadow-tight)]">
                 <IconPlay size={16} />
               </div>
               <div>
@@ -205,13 +205,13 @@ export default function DailySession() {
                   {DRILL_LABELS[drillType] ?? drillType}
                 </div>
                 <div className="text-sm text-ink-soft mt-3 leading-6">
-                  가장 약한 드릴부터 한 라운드. 손가락과 머리를 같이 깨웁니다.
+                  가장 약한 Train부터 한 라운드. 손가락과 머리를 같이 깨웁니다.
                 </div>
               </div>
             </div>
             <Link
-              href={`/drill/${drillType}`}
-              className="mt-auto inline-flex items-center justify-center gap-2 h-11 px-5 bg-ink text-ink-inv hover:bg-ink-soft transition-colors text-sm font-medium"
+              href={`/train/${drillType}`}
+              className="mt-auto inline-flex items-center justify-center gap-2 h-11 rounded-full px-5 bg-ink text-ink-inv hover:bg-terracotta transition-colors text-sm font-semibold"
             >
               <IconPlay size={14} />
               시작
@@ -219,12 +219,12 @@ export default function DailySession() {
           </Card>
         </section>
 
-        {/* STEP 2: TODAY'S LEAF */}
+        {/* STEP 2: TODAY'S TOPIC */}
         <section className="space-y-4">
           <div className="flex items-baseline justify-between">
             <div className="flex items-baseline gap-3">
               <span className="section-no">02</span>
-              <span className="eyebrow">Today&rsquo;s Leaf</span>
+              <span className="eyebrow">오늘의 주제</span>
             </div>
             <span className="text-[10px] font-mono tabular tracking-widest text-ink-faint">
               PROGRESS {leafScore}<span className="text-ink-quiet"> / 100</span>
@@ -233,10 +233,10 @@ export default function DailySession() {
 
           <Link
             href={`/leaf/${leaf.slug}`}
-            className="group block border border-rule bg-paper-bright min-h-[300px] hover:bg-surface transition-colors"
+            className="group block organic-card min-h-[300px] overflow-hidden transition-colors hover:bg-surface-soft"
           >
             <div className="grid min-h-[300px] lg:grid-cols-[112px_minmax(0,1fr)]">
-              <div className="border-b border-rule p-5 lg:border-b-0 lg:border-r">
+              <div className="border-b border-rule bg-surface-soft/50 p-5 lg:border-b-0 lg:border-r">
                 <div className="sticky top-20 space-y-8">
                   <Stat label="Score" value={leafScore} hint="/ 100" />
                   <div>
@@ -251,11 +251,11 @@ export default function DailySession() {
               <div className="flex min-h-[300px] flex-col p-6 sm:p-8">
                 <div className="space-y-6">
                   <div className="flex items-center justify-between gap-4">
-                    <span className="eyebrow">Assigned Leaf</span>
+                    <span className="eyebrow">Assigned Topic</span>
                     <span className="section-no">AUTO PICK</span>
                   </div>
                   <div>
-                    <div className="display text-3xl sm:text-4xl lg:text-5xl text-ink leading-[1.18] max-w-3xl">
+                    <div className="display text-3xl sm:text-4xl lg:text-5xl text-ink leading-[1.25] max-w-3xl">
                       {leaf.title[locale]}
                     </div>
                     <div className="text-[15px] sm:text-base text-ink-soft mt-5 leading-7 max-w-2xl">
@@ -268,7 +268,7 @@ export default function DailySession() {
                   <div className="grid grid-cols-[1fr_auto] items-center gap-4">
                     <div className="h-px bg-rule overflow-hidden">
                       <div
-                        className="h-full bg-ink transition-all duration-700"
+                        className="h-full bg-terracotta transition-all duration-700"
                         style={{ width: `${leafScore}%` }}
                       />
                     </div>
@@ -292,8 +292,8 @@ export default function DailySession() {
       {/* Quick links */}
       <footer className="flex flex-wrap gap-6 text-xs text-ink-faint pt-8 border-t border-rule">
         <Link href="/jam"        className="hover:text-ink transition-colors">Jam 라이브러리</Link>
-        <Link href="/curriculum" className="hover:text-ink transition-colors">Tree of Jazz</Link>
-        <Link href="/drill"      className="hover:text-ink transition-colors">전체 드릴</Link>
+        <Link href="/curriculum" className="hover:text-ink transition-colors">Jazz Guitar Tree</Link>
+        <Link href="/train"      className="hover:text-ink transition-colors">Train 전체</Link>
         <span className="ml-auto font-mono tabular">v0.2</span>
       </footer>
     </div>

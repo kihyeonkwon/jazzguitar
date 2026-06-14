@@ -57,7 +57,7 @@ export default function DesignSystemPage() {
         <SectionHeader
           number={1}
           eyebrow="Typography"
-          title="Noto Sans Korean · JetBrains Mono"
+          title="Kakao Big Sans · Kakao Small Sans"
           description="한 가지 sans 패밀리로 모든 계층을 표현합니다. 굵기와 트래킹으로 위계를 만듭니다. 숫자는 모노 + tabular 정렬로 정밀함을 확보합니다."
         />
 

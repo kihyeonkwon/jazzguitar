@@ -22,8 +22,8 @@ export default function Callout({ type = 'note', title, body }: Props) {
   const isWarning = type === 'warning'
 
   return (
-    <div className={`my-6 border-l-2 pl-5 py-2 ${
-      isWarning ? 'border-red-400' : 'border-ink'
+    <div className={`my-6 rounded-3xl border bg-surface-soft px-5 py-4 ${
+      isWarning ? 'border-red-300' : 'border-rule'
     }`}>
       <div className={`eyebrow mb-1 ${
         isWarning ? 'text-red-500' : 'text-ink-faint'

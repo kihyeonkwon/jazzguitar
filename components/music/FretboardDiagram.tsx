@@ -129,7 +129,7 @@ function FretboardSvg({
             key={`fnum-${i}`}
             x={cellCenterX(i)} y={padTop - 8}
             fontSize={9} fill="#a3a3a3"
-            fontFamily="ui-monospace, monospace"
+            fontFamily="var(--font-mono)"
             textAnchor="middle"
           >{f}</text>
         )
@@ -191,7 +191,7 @@ function FretboardSvg({
             />
             <text x={cx} y={cy} fontSize={9}
               fill={m.isRoot ? '#fafafa' : '#0a0a0a'}
-              fontFamily="ui-monospace, monospace" fontWeight={600}
+              fontFamily="var(--font-mono)" fontWeight={600}
               textAnchor="middle" dominantBaseline="central"
             >{m.label}</text>
           </g>
@@ -203,7 +203,7 @@ function FretboardSvg({
         <text key={`slbl-${s}`}
           x={padLeft + cellW * fretCount + 6} y={stringY(s) + 3}
           fontSize={8} fill="#d4d4d4"
-          fontFamily="ui-monospace, monospace"
+          fontFamily="var(--font-mono)"
         >{s + 1}</text>
       ))}
     </svg>

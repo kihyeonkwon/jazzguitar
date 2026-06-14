@@ -50,6 +50,7 @@ export const DRILL_THRESHOLDS: Record<string, Record<DrillLevel, number>> = {
   'chord-tone-id':      { beginner: 0, proficient: 8,  fluent: 15, master: 25 },
   'chord-construction': { beginner: 0, proficient: 6,  fluent: 12, master: 20 },
   'scale-construction': { beginner: 0, proficient: 5,  fluent: 10, master: 18 },
+  'drop-voicing-misty': { beginner: 0, proficient: 8,  fluent: 14, master: 22 },
 }
 
 // 등급 인정 정확도 게이트: 90% 이상이어야 해당 라운드 CPM이 등급 산정·달성기록에 반영

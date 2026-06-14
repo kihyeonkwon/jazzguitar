@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
@@ -12,9 +13,39 @@ import BackingTrackPlayer from '@/components/jam/BackingTrackPlayer'
 import Recorder from '@/components/jam/Recorder'
 import { IconArrowLeft, IconArrowRight } from '@/components/icons'
 import { Stat, Hint } from '@/components/ui'
+import { asLocale, buildPageMetadata } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ trackId: string; locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { trackId, locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+  const track = getBackingTrackById(trackId)
+
+  if (!track) {
+    return buildPageMetadata({
+      locale,
+      path: `/jam/${trackId}`,
+      title: '재즈기타 잼 트랙',
+      description: '재즈기타 즉흥연주 백킹 트랙 페이지입니다.',
+    })
+  }
+
+  return buildPageMetadata({
+    locale,
+    path: `/jam/${track.id}`,
+    title: `${track.name[locale]} | 재즈기타 잼 트랙`,
+    description:
+      `${track.key.toUpperCase()} 키, ${track.bpm} BPM, ${track.bars}마디 ${track.style} 백킹 트랙으로 재즈기타 즉흥과 컴핑을 연습합니다.`,
+    keywords: [
+      `재즈기타 ${track.name.ko}`,
+      `${track.key.toUpperCase()} 재즈기타`,
+      '재즈기타 즉흥',
+      '재즈기타 백킹트랙',
+    ],
+  })
 }
 
 export default async function JamSessionPage({ params }: Props) {

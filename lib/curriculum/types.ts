@@ -39,14 +39,29 @@ export interface Stage {
 
 export type I18n = LocaleRecord
 
-export type TrunkSlug =
-  | 'foundation'
-  | 'blues'
-  | 'harmony-comping'
-  | 'soloing'
-  | 'ear-training'
-  | 'standards'
-  | 'artists'
+// ─── Branch (큰 가닥) ─────────────────────────────────────────────────────
+// 4개의 큰 가닥으로 커리큘럼이 나뉩니다.
+//   solo       — 솔로/즉흥: 코드 위에서 음을 고르는 법
+//   comping    — 컴핑/반주: 코드를 잡고 리듬을 새기는 법
+//   repertoire — 레퍼토리: 실제 곡을 외우고 연주하는 법
+//   ear-time   — 청음/그루브: 음을 듣고 박자를 새기는 법
+export type BranchSlug =
+  | 'solo'
+  | 'comping'
+  | 'repertoire'
+  | 'ear-time'
+
+// 레거시 이름 (페이지·컴포넌트에서 점진적으로 BranchSlug로 교체)
+export type TrunkSlug = BranchSlug
+
+// ─── Leaf 분류 ────────────────────────────────────────────────────────────
+// kind  : 가닥 안에서의 위치
+//   core        — 가닥의 척추. 직렬로 밟아야 다음이 풀린다.
+//   application — 특정 core leaf의 prereq를 매단 응용. 병렬, 골라 먹는다.
+// level : 전체 커리큘럼에서의 단계 (입문자 필터링용)
+//   beginner / intermediate / advanced
+export type LeafKind = 'core' | 'application'
+export type LeafLevel = 'beginner' | 'intermediate' | 'advanced'
 
 export interface Trunk {
   id: string
@@ -103,9 +118,22 @@ export interface QuickDrill {
 export interface Leaf {
   id: string
   slug: string
-  trunkSlug: TrunkSlug
+  /** 어느 가닥에 속하는지 (trunkSlug는 레거시 이름) */
+  trunkSlug: BranchSlug
+  /** 가닥 안에서 core leaf의 순서. application leaf는 0 또는 미사용. */
   order: number
+  /** core (척추, 직렬) | application (응용, 병렬) */
+  kind?: LeafKind
+  /** 입문자에게 노출할 단계 */
+  level?: LeafLevel
+  /** 해금 조건이 되는 leaf slug 목록 (보통 직전 core leaf) */
+  prereqLeafSlugs?: string[]
+  /** 길게 풀어 쓴 정식 제목 — leaf 상세 페이지 헤더와 트리 호버 라벨에 노출 */
   title: I18n
+  /** 트리에서 줌인 시 노출되는 짧은 이름 (예: "나이키", "어퍼 스트럭처") */
+  shortTitle?: I18n
+  /** 부제목 — leaf 상세 페이지에서 title 아래에 표시 */
+  subtitle?: I18n
   description: I18n
 
   // ─ 새 통합 구조 ─

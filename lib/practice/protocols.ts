@@ -215,7 +215,7 @@ export const practiceProtocols: PracticeProtocol[] = [
   {
     id: 'p-fd-gugudan',
     leafSlug: 'foundation-7th-chord-gugudan',
-    name: { ko: '코드 구구단 워밍업', en: 'Chord Drill Warmup', ja: 'コード九九' },
+    name: { ko: '코드 구구단 워밍업', en: 'Chord Train Warmup', ja: 'コード九九' },
     description: {
       ko: 'Triad → 7th 두 모드 연습. 짧고 매일. 8분.',
       en:  'Triad → 7th drill. Short and daily. 8 minutes.',
@@ -270,9 +270,9 @@ export const practiceProtocols: PracticeProtocol[] = [
   {
     id: 'p-fd-fretboard',
     leafSlug: 'foundation-fretboard-30s',
-    name: { ko: '지판 매핑 드릴', en: 'Fretboard Mapping', ja: '指板マッピング' },
+    name: { ko: '지판 매핑 Train', en: 'Fretboard Mapping', ja: '指板マッピング' },
     description: {
-      ko: '드릴로 30초 이내 한 음 모든 위치 찾기. 6분.',
+      ko: 'Train으로 30초 이내 한 음 모든 위치 찾기. 6분.',
       en:  'Find all positions of a note in 30s. 6 minutes.',
       ja: '指板上1音の全位置を30秒以内に。6分。',
     },
@@ -282,9 +282,9 @@ export const practiceProtocols: PracticeProtocol[] = [
         kind: 'echo',
         title: { ko: '6번줄·5번줄', en: 'Strings 6 & 5', ja: '6弦・5弦' },
         prompt: {
-          ko: '/drill/fretboard-find — 6번줄과 5번줄 음을 30초 안에 모두 찾기.',
-          en:  '/drill/fretboard-find — strings 6 & 5 in 30s.',
-          ja: '/drill/fretboard-find — 6弦・5弦を30秒以内。',
+          ko: '/train/fretboard-find — 6번줄과 5번줄 음을 30초 안에 모두 찾기.',
+          en:  '/train/fretboard-find — strings 6 & 5 in 30s.',
+          ja: '/train/fretboard-find — 6弦・5弦を30秒以内。',
         },
         durationSec: 120,
       },
@@ -292,7 +292,7 @@ export const practiceProtocols: PracticeProtocol[] = [
         kind: 'echo',
         title: { ko: '6줄 전체', en: 'All 6 strings', ja: '6弦すべて' },
         prompt: {
-          ko: '같은 드릴, 모든 줄에서 정답률 80% 목표.',
+          ko: '같은 Train, 모든 줄에서 정답률 80% 목표.',
           en:  'Same drill, all strings, aim 80% accuracy.',
           ja: '同じドリル、全弦、正解率80%目標。',
         },
@@ -469,21 +469,21 @@ export const practiceProtocols: PracticeProtocol[] = [
   {
     id: 'p-er-interval',
     leafSlug: 'ear-interval-recognition',
-    name: { ko: '인터벌 청음 드릴', en: 'Interval Ear Drill', ja: 'インターバル耳訓練' },
+    name: { ko: '인터벌 청음 Train', en: 'Interval Ear Train', ja: 'インターバル耳訓練' },
     description: {
-      ko: '드릴 1라운드 + 약한 인터벌 집중 연습. 8분.',
-      en:  '1 drill round + weak-interval focus. 8 minutes.',
+      ko: 'Train 1라운드 + 약한 인터벌 집중 연습. 8분.',
+      en:  '1 train round + weak-interval focus. 8 minutes.',
       ja: 'ドリル1ラウンド+苦手インターバル強化。8分。',
     },
     estimatedMin: 8,
     steps: [
       {
         kind: 'echo',
-        title: { ko: '드릴 1라운드', en: 'Drill round', ja: 'ドリル1ラウンド' },
+        title: { ko: 'Train 1라운드', en: 'Train round', ja: 'ドリル1ラウンド' },
         prompt: {
-          ko: '/drill/interval-ear — 10문제 한 라운드 진행. 정답률 기록.',
-          en:  '/drill/interval-ear — one round of 10. Note your accuracy.',
-          ja: '/drill/interval-ear — 10問1ラウンド。正解率を記録。',
+          ko: '/train/interval-ear — 10문제 한 라운드 진행. 정답률 기록.',
+          en:  '/train/interval-ear — one round of 10. Note your accuracy.',
+          ja: '/train/interval-ear — 10問1ラウンド。正解率を記録。',
         },
         durationSec: 240,
       },

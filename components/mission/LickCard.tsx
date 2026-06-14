@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo, useSyncExternalStore } from 'react'
 import dynamic from 'next/dynamic'
 import { LickSnippet, Locale } from '@/lib/curriculum/types'
 import {
@@ -18,21 +18,27 @@ interface Props {
 }
 
 export default function LickCard({ lick, locale }: Props) {
-  const [memorized, setMem] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const getSnapshot = useMemo(
+    () => () => getLickMastery(lick.id).memorized,
+    [lick.id]
+  )
+  const memorized = useSyncExternalStore(
+    (onChange) => {
+      window.addEventListener(PROGRESS_STORE_EVENT, onChange)
+      window.addEventListener('storage', onChange)
+      return () => {
+        window.removeEventListener(PROGRESS_STORE_EVENT, onChange)
+        window.removeEventListener('storage', onChange)
+      }
+    },
+    getSnapshot,
+    () => false
+  )
 
-  useEffect(() => {
-    setMem(getLickMastery(lick.id).memorized)
-    setMounted(true)
-    const onChange = () => setMem(getLickMastery(lick.id).memorized)
-    window.addEventListener(PROGRESS_STORE_EVENT, onChange)
-    return () => window.removeEventListener(PROGRESS_STORE_EVENT, onChange)
-  }, [lick.id])
 
   const toggle = () => {
     const next = !memorized
     setLickMemorized(lick.id, next)
-    setMem(next)
   }
 
   return (
@@ -47,15 +53,15 @@ export default function LickCard({ lick, locale }: Props) {
           )}
         </div>
         <button
-          onClick={toggle}
-          className={`inline-flex items-center gap-1.5 px-2.5 h-7 border text-[11px] font-mono tracking-widest transition-colors ${
-            mounted && memorized
+            onClick={toggle}
+            className={`inline-flex items-center gap-1.5 px-2.5 h-7 border text-[11px] font-mono tracking-widest transition-colors ${
+            memorized
               ? 'bg-ink text-ink-inv border-ink'
               : 'bg-paper-bright text-ink-faint border-rule hover:border-ink-soft hover:text-ink'
           }`}
         >
           <IconCheck size={12} />
-          {mounted && memorized ? 'MEMORIZED' : 'MEMORIZE'}
+          {memorized ? 'MEMORIZED' : 'MEMORIZE'}
         </button>
       </div>
 

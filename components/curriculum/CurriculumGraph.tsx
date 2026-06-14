@@ -461,7 +461,7 @@ export default function CurriculumGraph() {
                     textAnchor="middle" dominantBaseline="central"
                     fontSize={isFinal ? 13 : 10}
                     fill={isFinal ? '#6366f1' : '#334155'}
-                    fontFamily="system-ui"
+                    fontFamily="var(--font-sans)"
                   >✓</text>
                 )}
 
@@ -469,7 +469,7 @@ export default function CurriculumGraph() {
                 {state === 'locked' && (
                   <text
                     textAnchor="middle" dominantBaseline="central"
-                    fontSize={9} fill="#1e2937" fontFamily="system-ui"
+                    fontSize={9} fill="#1e2937" fontFamily="var(--font-sans)"
                   >🔒</text>
                 )}
 
@@ -484,7 +484,7 @@ export default function CurriculumGraph() {
                   textAnchor="middle"
                   fontSize={9}
                   fill={labelColor}
-                  fontFamily="system-ui"
+                  fontFamily="var(--font-sans)"
                   fontWeight={state === 'completed' ? '600' : '400'}
                   opacity={nodeStyle.opacity}
                 >
@@ -527,14 +527,14 @@ export default function CurriculumGraph() {
                   fill="#1e2433" stroke="rgba(255,255,255,0.1)" strokeWidth={1}
                   filter="drop-shadow(0 4px 16px rgba(0,0,0,0.6))"
                 />
-                <text x={tipX+12} y={tipY+18} fontSize={11} fontWeight="600" fill="#f1f5f9" fontFamily="system-ui">
+                <text x={tipX+12} y={tipY+18} fontSize={11} fontWeight="600" fill="#f1f5f9" fontFamily="var(--font-sans)">
                   {topic.title[locale]}
                 </text>
-                <text x={tipX+12} y={tipY+32} fontSize={9} fill={stateColor[state]} fontFamily="system-ui">
+                <text x={tipX+12} y={tipY+32} fontSize={9} fill={stateColor[state]} fontFamily="var(--font-sans)">
                   {stateLabel[state]}
                 </text>
                 <foreignObject x={tipX+12} y={tipY+40} width={196} height={28}>
-                  <p style={{ fontSize: 9, color: '#64748b', margin: 0, lineHeight: '1.4', fontFamily: 'system-ui' }}>
+                  <p style={{ fontSize: 9, color: '#64748b', margin: 0, lineHeight: '1.4', fontFamily: 'var(--font-sans)' }}>
                     {short}
                   </p>
                 </foreignObject>

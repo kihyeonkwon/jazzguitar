@@ -33,18 +33,18 @@ export default function LanguageSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex items-center gap-1.5 px-3 h-8 text-xs font-mono tracking-widest text-ink-soft hover:text-ink border border-rule hover:border-ink-soft transition-colors"
+        className="flex h-8 items-center gap-1.5 bg-surface-soft/80 px-3 text-xs font-mono text-ink-soft transition-colors hover:bg-surface hover:text-ink"
       >
         {locale.toUpperCase()}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 bg-paper-bright border border-rule overflow-hidden z-50 min-w-[160px] animate-fade-in">
+        <div className="absolute right-0 top-full z-50 mt-2 min-w-[160px] overflow-hidden bg-paper-bright shadow-[var(--shadow-tight)] animate-fade-in">
           {LOCALES.map(loc => (
             <button
               key={loc}
               onClick={() => select(loc)}
-              className={`w-full flex items-center justify-between px-4 py-2.5 text-sm transition-colors text-left border-b border-rule last:border-b-0 ${
+              className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors ${
                 locale === loc
                   ? 'text-ink bg-surface'
                   : 'text-ink-soft hover:bg-surface hover:text-ink'

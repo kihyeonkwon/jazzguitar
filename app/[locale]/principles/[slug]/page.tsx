@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
@@ -5,9 +6,33 @@ import { getPrincipleBySlug, leaves } from '@/lib/curriculum/organic'
 import { Locale } from '@/lib/curriculum/types'
 import { IconArrowLeft, IconArrowRight } from '@/components/icons'
 import { Divider } from '@/components/ui'
+import { asLocale, buildPageMetadata } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+  const principle = getPrincipleBySlug(slug)
+
+  if (!principle) {
+    return buildPageMetadata({
+      locale,
+      path: `/principles/${slug}`,
+      title: '재즈기타 이론',
+      description: '재즈기타 이론 페이지입니다.',
+    })
+  }
+
+  return buildPageMetadata({
+    locale,
+    path: `/principles/${principle.slug}`,
+    title: `${principle.title[locale]} | 재즈기타 이론`,
+    description: `${principle.title[locale]}을 재즈기타 연습에 적용하기 위한 핵심 원리입니다.`,
+    keywords: [`재즈기타 ${principle.title.ko}`, '재즈기타 이론', '재즈기타 원리'],
+  })
 }
 
 function renderInline(text: string): React.ReactNode {

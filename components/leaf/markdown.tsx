@@ -4,6 +4,9 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import FretboardDiagram from '@/components/music/FretboardDiagram'
 import PentatonicShape from '@/components/music/PentatonicShape'
+import DropVoicingMap from '@/components/music/DropVoicingMap'
+import VoicingDiagram from '@/components/music/VoicingDiagram'
+import VoicingCarousel, { type Voicing } from '@/components/music/VoicingCarousel'
 import Quiz from '@/components/leaf/blocks/Quiz'
 import Callout from '@/components/leaf/blocks/Callout'
 import TwoColumn from '@/components/leaf/blocks/TwoColumn'
@@ -197,12 +200,96 @@ function parseTwoColumnBody(body: string): TwoColumnParams {
 
 // ─── Block 파서 ───────────────────────────────────────────────────────
 
+interface VoicingParams {
+  title?: string
+  frets: Array<number | 'x'>
+  labels?: Array<string | undefined>
+  bass?: number
+}
+
+interface DropVoicingMapParams {
+  title?: string
+  root?: string
+  quality?: 'maj7' | 'm7' | '7' | 'm7b5' | 'dim7'
+  setId?: string
+}
+
+function parseVoicingsBody(body: string): { title?: string; voicings: Voicing[] } {
+  const lines = body.split('\n')
+  const sections: { title?: string; lines: string[] }[] = []
+  const topLines: string[] = []
+  let current: { title?: string; lines: string[] } | null = null
+
+  for (const line of lines) {
+    const m = line.match(/^---\s*(.*)$/)
+    if (m) {
+      if (current) sections.push(current)
+      const t = m[1].trim()
+      current = { title: t || undefined, lines: [] }
+      continue
+    }
+    if (current) current.lines.push(line)
+    else topLines.push(line)
+  }
+  if (current) sections.push(current)
+
+  const topKv = parseKeyValue(topLines.join('\n'))
+  const voicings: Voicing[] = sections.map((s) => {
+    const p = parseVoicingBody(s.lines.join('\n'))
+    return { ...p, title: s.title ?? p.title }
+  })
+  return { title: topKv.title, voicings }
+}
+
+function parseVoicingBody(body: string): VoicingParams {
+  const kv = parseKeyValue(body)
+  const fretsRaw = (kv.frets || '').trim()
+  const frets: Array<number | 'x'> = fretsRaw
+    .split(/[\s,]+/)
+    .filter(Boolean)
+    .map((s) => {
+      if (s.toLowerCase() === 'x') return 'x' as const
+      const n = parseInt(s, 10)
+      return Number.isFinite(n) ? n : ('x' as const)
+    })
+  const labelsRaw = (kv.labels || '').trim()
+  const labels = labelsRaw
+    ? labelsRaw.split(/[\s,]+/).filter(Boolean).map((s) => (s === '.' || s === '-' ? undefined : s))
+    : undefined
+  const bass = kv.bass ? parseInt(kv.bass, 10) : undefined
+  return {
+    title: kv.title,
+    frets,
+    labels,
+    bass: Number.isFinite(bass as number) ? (bass as number) : undefined,
+  }
+}
+
+function parseDropVoicingMapBody(body: string): DropVoicingMapParams {
+  const kv = parseKeyValue(body)
+  const quality = (kv.quality || 'maj7').toLowerCase()
+  const normalizedQuality =
+    quality === 'm7' || quality === '7' || quality === 'm7b5' || quality === 'dim7'
+      ? quality
+      : 'maj7'
+
+  return {
+    title: kv.title,
+    root: kv.root || 'C',
+    quality: normalizedQuality,
+    setId: kv.set || kv['set-id'],
+  }
+}
+
 type Block =
   | { kind: 'text';       lines: string[] }
   | { kind: 'abc';        body: string }
   | { kind: 'fretboard';  params: FretboardParams }
   | { kind: 'chord';      params: { chord: string; caption?: string } }
   | { kind: 'shape';      params: { type: 'A' | 'B'; title?: string } }
+  | { kind: 'voicing';    params: VoicingParams }
+  | { kind: 'voicings';   params: { title?: string; voicings: Voicing[] } }
+  | { kind: 'drop-map';   params: DropVoicingMapParams }
   | { kind: 'quiz';       params: QuizParams }
   | { kind: 'callout';    params: CalloutParams }
   | { kind: 'two-column'; params: TwoColumnParams }
@@ -252,6 +339,17 @@ function parseBlocks(md: string): Block[] {
           blocks.push({ kind: 'shape', params: { type: t, title: kv.title } })
           break
         }
+        case 'voicing':
+          blocks.push({ kind: 'voicing', params: parseVoicingBody(body) })
+          break
+        case 'voicings':
+        case 'voicing-set':
+          blocks.push({ kind: 'voicings', params: parseVoicingsBody(body) })
+          break
+        case 'drop-voicing-map':
+        case 'drop-map':
+          blocks.push({ kind: 'drop-map', params: parseDropVoicingMapBody(body) })
+          break
         case 'quiz':
           blocks.push({ kind: 'quiz', params: parseQuizBody(body) })
           break
@@ -280,6 +378,16 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
   const out: React.ReactNode[] = []
   let para: string[] = []
   let listItems: string[] = []
+  let orderedItems: string[] = []
+  let tableRows: string[][] = []
+  let tableHeader: string[] | null = null
+
+  const splitRow = (line: string): string[] =>
+    line
+      .replace(/^\s*\|/, '')
+      .replace(/\|\s*$/, '')
+      .split('|')
+      .map((c) => c.trim())
 
   const flushPara = (k: string) => {
     if (para.length > 0) {
@@ -306,33 +414,96 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
       listItems = []
     }
   }
+  const flushOrdered = (k: string) => {
+    if (orderedItems.length > 0) {
+      out.push(
+        <ol key={k} className="my-4 space-y-2">
+          {orderedItems.map((item, i) => (
+            <li key={i} className="flex gap-3 text-ink-soft text-[15px] leading-[1.7]">
+              <span className="font-mono text-ink-faint text-[12px] tracking-widest mt-1 shrink-0 w-5 text-right">{i + 1}.</span>
+              <span>{renderInline(item)}</span>
+            </li>
+          ))}
+        </ol>,
+      )
+      orderedItems = []
+    }
+  }
+  const flushTable = (k: string) => {
+    if (tableHeader && tableRows.length > 0) {
+      out.push(
+        <div key={k} className="my-6 overflow-x-auto">
+          <table className="w-full text-[14px] text-ink-soft border-collapse">
+            <thead>
+              <tr className="border-b border-ink">
+                {tableHeader.map((c, i) => (
+                  <th
+                    key={i}
+                    className="px-3 py-2 text-left font-mono text-[11px] tracking-widest uppercase text-ink-faint font-medium"
+                  >
+                    {renderInline(c)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map((row, ri) => (
+                <tr key={ri} className="border-b border-rule">
+                  {row.map((c, ci) => (
+                    <td key={ci} className="px-3 py-2 align-top">
+                      {renderInline(c)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>,
+      )
+    }
+    tableHeader = null
+    tableRows = []
+  }
 
   lines.forEach((line, i) => {
+    const orderedMatch = line.match(/^(\d+)\.\s+(.*)$/)
+    const isPipeRow = /^\s*\|.*\|\s*$/.test(line)
+    const isSeparator = /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)+\|?\s*$/.test(line)
+
     if (line.startsWith('## ')) {
-      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`)
+      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
       out.push(
         <h2 key={`${keyBase}-h2-${i}`} className="display text-2xl text-ink mt-12 mb-3 leading-snug">
           {line.replace(/^##\s+/, '')}
         </h2>,
       )
     } else if (line.startsWith('### ')) {
-      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`)
+      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
       out.push(
         <h3 key={`${keyBase}-h3-${i}`} className="text-base font-semibold text-ink mt-8 mb-2">
           {line.replace(/^###\s+/, '')}
         </h3>,
       )
     } else if (line.startsWith('- ')) {
-      flushPara(`${keyBase}-p-${i}`)
+      flushPara(`${keyBase}-p-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
       listItems.push(line.replace(/^-\s+/, ''))
+    } else if (orderedMatch) {
+      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`); flushTable(`${keyBase}-tb-${i}`)
+      orderedItems.push(orderedMatch[2])
+    } else if (isSeparator && tableHeader === null && para.length > 0 && /^\s*\|.*\|\s*$/.test(para[para.length - 1])) {
+      // 직전 줄이 헤더 행, 현재 줄이 구분자 — 테이블 시작
+      tableHeader = splitRow(para.pop()!)
+      if (para.length > 0) flushPara(`${keyBase}-p-${i}`)
+    } else if (isPipeRow && tableHeader !== null) {
+      tableRows.push(splitRow(line))
     } else if (line.trim() === '') {
-      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`)
+      flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
     } else {
-      flushList(`${keyBase}-l-${i}`)
+      flushList(`${keyBase}-l-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
       para.push(line)
     }
   })
-  flushPara(`${keyBase}-p-final`); flushList(`${keyBase}-l-final`)
+  flushPara(`${keyBase}-p-final`); flushList(`${keyBase}-l-final`); flushOrdered(`${keyBase}-o-final`); flushTable(`${keyBase}-tb-final`)
   return out
 }
 
@@ -344,30 +515,33 @@ export function renderMarkdown(md: string): React.ReactNode {
     if (b.kind === 'text') {
       return <React.Fragment key={i}>{renderTextBlock(b.lines, `t-${i}`)}</React.Fragment>
     }
+    // 모바일에서 본문 좌우 패딩(px-6)을 무력화해 풀-블리드로 표시
+    const bleed = '-mx-6 sm:mx-0'
     if (b.kind === 'abc') {
       return (
-        <div key={i} className="my-6">
-          <SheetMusic notation={b.body} />
+        <div key={i} className={`my-6 ${bleed}`}>
+          <SheetMusic notation={b.body} compact />
         </div>
       )
     }
     if (b.kind === 'fretboard') {
       return (
-        <FretboardDiagram
-          key={i}
-          title={b.params.title}
-          root={b.params.root}
-          notes={b.params.notes}
-          frets={b.params.frets}
-          positions={b.params.positions}
-          positionLabels={b.params.positionLabels}
-          showDegrees={b.params.showDegrees}
-        />
+        <div key={i} className={bleed}>
+          <FretboardDiagram
+            title={b.params.title}
+            root={b.params.root}
+            notes={b.params.notes}
+            frets={b.params.frets}
+            positions={b.params.positions}
+            positionLabels={b.params.positionLabels}
+            showDegrees={b.params.showDegrees}
+          />
+        </div>
       )
     }
     if (b.kind === 'chord') {
       return (
-        <div key={i} className="my-6 flex flex-col items-center">
+        <div key={i} className={`my-6 flex flex-col items-center ${bleed}`}>
           <ChordDiagram chordName={b.params.chord} />
           {b.params.caption && (
             <p className="mt-2 text-[11px] font-mono text-ink-faint tracking-widest">
@@ -379,41 +553,66 @@ export function renderMarkdown(md: string): React.ReactNode {
     }
     if (b.kind === 'shape') {
       return (
-        <PentatonicShape
-          key={i}
-          type={b.params.type}
-          title={b.params.title}
-        />
+        <div key={i} className={bleed}>
+          <PentatonicShape type={b.params.type} title={b.params.title} />
+        </div>
+      )
+    }
+    if (b.kind === 'voicing') {
+      return (
+        <div key={i} className={bleed}>
+          <VoicingDiagram
+            title={b.params.title}
+            frets={b.params.frets}
+            labels={b.params.labels}
+            bass={b.params.bass}
+          />
+        </div>
+      )
+    }
+    if (b.kind === 'voicings') {
+      return (
+        <div key={i} className={bleed}>
+          <VoicingCarousel title={b.params.title} voicings={b.params.voicings} />
+        </div>
+      )
+    }
+    if (b.kind === 'drop-map') {
+      return (
+        <div key={i} className={bleed}>
+          <DropVoicingMap
+            title={b.params.title}
+            root={b.params.root}
+            quality={b.params.quality}
+            setId={b.params.setId}
+          />
+        </div>
       )
     }
     if (b.kind === 'quiz') {
       return (
-        <Quiz
-          key={i}
-          question={b.params.question}
-          choices={b.params.choices}
-          correct={b.params.correct}
-          hint={b.params.hint}
-        />
+        <div key={i} className={bleed}>
+          <Quiz
+            question={b.params.question}
+            choices={b.params.choices}
+            correct={b.params.correct}
+            hint={b.params.hint}
+          />
+        </div>
       )
     }
     if (b.kind === 'callout') {
       return (
-        <Callout
-          key={i}
-          type={b.params.type}
-          title={b.params.title}
-          body={b.params.body}
-        />
+        <div key={i} className={bleed}>
+          <Callout type={b.params.type} title={b.params.title} body={b.params.body} />
+        </div>
       )
     }
     if (b.kind === 'two-column') {
       return (
-        <TwoColumn
-          key={i}
-          left={b.params.left}
-          right={b.params.right}
-        />
+        <div key={i} className={bleed}>
+          <TwoColumn left={b.params.left} right={b.params.right} />
+        </div>
       )
     }
     return null

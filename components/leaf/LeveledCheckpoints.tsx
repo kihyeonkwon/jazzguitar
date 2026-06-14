@@ -49,7 +49,7 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
   }
 
   return (
-    <section className="space-y-6">
+    <section className="organic-card space-y-6 px-5 py-6 sm:px-7">
       <div className="flex items-baseline justify-between">
         <div className="flex items-baseline gap-3">
           <span className="section-no">C</span>
@@ -63,7 +63,7 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
       {/* 전체 진행 바 */}
       <div className="h-px bg-rule overflow-hidden">
         <div
-          className="h-full bg-ink transition-all duration-500"
+          className="h-full bg-terracotta transition-all duration-500"
           style={{ width: `${totalScore}%` }}
         />
       </div>
@@ -86,20 +86,20 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
                   {done}/{group.items.length}
                 </span>
               </div>
-              <ul className="border-t border-rule">
+              <ul className="overflow-hidden rounded-3xl border border-rule bg-paper-bright/70">
                 {group.items.map((item, i) => {
                   const checked = !!checks[i]
                   return (
-                    <li key={i} className="border-b border-rule">
+                    <li key={i} className="border-b border-rule last:border-b-0">
                       <button
                         onClick={() => handleToggle(group.level, i)}
-                        className="w-full flex items-start gap-4 text-left py-3 hover:bg-surface/50 -mx-3 px-3 transition-colors group"
+                        className="w-full flex items-start gap-4 text-left px-4 py-3 hover:bg-surface/60 transition-colors group"
                       >
                         <span
-                          className={`mt-0.5 w-4 h-4 border flex items-center justify-center shrink-0 transition-all ${
+                          className={`mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all ${
                             checked
                               ? 'bg-ink border-ink text-paper'
-                              : 'bg-paper-bright border-rule group-hover:border-ink-soft'
+                              : 'bg-paper-bright border-rule group-hover:border-sage'
                           }`}
                         >
                           {checked && <IconCheck size={10} />}
@@ -122,10 +122,10 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
       </div>
 
       {totalScore >= 100 && (
-        <div className="bg-ink text-ink-inv p-4 flex items-center gap-3">
+        <div className="rounded-3xl bg-ink text-ink-inv p-4 flex items-center gap-3">
           <IconCheck size={16} />
           <p className="text-sm">
-            이 잎을 완전히 졸업했습니다. Tree에 채워진 노드로 표시됩니다.
+            이 주제를 완전히 졸업했습니다. Tree에 채워진 노드로 표시됩니다.
           </p>
         </div>
       )}

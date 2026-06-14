@@ -149,8 +149,8 @@ function FloatingMetronomeInner() {
       {/* FAB */}
       <button
         onClick={() => setOpen(o => !o)}
-        className={`fixed bottom-6 right-6 z-40 w-12 h-12 bg-paper-bright border flex items-center justify-center transition-all hover:bg-surface active:scale-95 ${
-          open ? 'border-ink' : 'border-rule'
+        className={`fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center bg-paper-bright shadow-[var(--shadow-tight)] transition-all hover:bg-surface active:scale-95 ${
+          open ? 'text-ink' : 'text-ink-soft'
         } ${isPlaying ? 'ring-1 ring-ink ring-offset-2 ring-offset-paper' : ''}`}
         aria-label="Metronome"
         title="Metronome"
@@ -168,7 +168,7 @@ function FloatingMetronomeInner() {
           />
 
           {/* 패널 */}
-          <div className="fixed bottom-20 right-6 z-40 bg-paper-bright border border-rule p-5 animate-metronome-up shadow-2xl">
+          <div className="fixed bottom-20 right-6 z-40 bg-paper-bright p-5 shadow-[var(--shadow-soft)] animate-metronome-up">
             <div className="flex items-center justify-between mb-4">
               <span className="eyebrow">Metronome</span>
               <button
@@ -181,7 +181,7 @@ function FloatingMetronomeInner() {
               {/* − */}
               <button
                 onClick={() => adjustBpm(-1)}
-                className="w-10 h-10 bg-paper-bright border border-rule hover:bg-surface hover:border-ink-soft active:scale-95 flex items-center justify-center text-ink-soft transition-colors"
+                className="flex h-10 w-10 items-center justify-center bg-surface-soft text-ink-soft transition-colors hover:bg-surface hover:text-ink active:scale-95"
               >
                 <span className="text-xl leading-none">−</span>
               </button>
@@ -214,7 +214,7 @@ function FloatingMetronomeInner() {
                     x={CENTER} y={CENTER + 3}
                     textAnchor="middle"
                     fontSize="22"
-                    fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+                    fontFamily="var(--font-mono)"
                     fontWeight="700"
                     fill="#111827"
                   >{bpm}</text>
@@ -222,7 +222,7 @@ function FloatingMetronomeInner() {
                     x={CENTER} y={CENTER + 16}
                     textAnchor="middle"
                     fontSize="7"
-                    fontFamily="ui-monospace, monospace"
+                    fontFamily="var(--font-mono)"
                     letterSpacing="2.5"
                     fill="#9ca3af"
                   >BPM</text>
@@ -232,14 +232,14 @@ function FloatingMetronomeInner() {
               {/* + */}
               <button
                 onClick={() => adjustBpm(1)}
-                className="w-10 h-10 bg-paper-bright border border-rule hover:bg-surface hover:border-ink-soft active:scale-95 flex items-center justify-center text-ink-soft transition-colors"
+                className="flex h-10 w-10 items-center justify-center bg-surface-soft text-ink-soft transition-colors hover:bg-surface hover:text-ink active:scale-95"
               >
                 <span className="text-xl leading-none">+</span>
               </button>
             </div>
 
             {/* 빠른 BPM 프리셋 */}
-            <div className="flex justify-center gap-px mt-4 border border-rule bg-rule">
+            <div className="mt-4 flex justify-center gap-1">
               {[60, 80, 100, 120, 140].map(p => (
                 <button
                   key={p}

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
@@ -5,9 +6,33 @@ import { getTipBySlug, leaves } from '@/lib/curriculum/organic'
 import { Locale } from '@/lib/curriculum/types'
 import { IconArrowRight, IconArrowLeft } from '@/components/icons'
 import { Divider } from '@/components/ui'
+import { asLocale, buildPageMetadata } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug, locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+  const tip = getTipBySlug(slug)
+
+  if (!tip) {
+    return buildPageMetadata({
+      locale,
+      path: `/tip/${slug}`,
+      title: '재즈기타 팁',
+      description: '재즈기타 연습 팁 페이지입니다.',
+    })
+  }
+
+  return buildPageMetadata({
+    locale,
+    path: `/tip/${tip.slug}`,
+    title: `${tip.title[locale]} | 재즈기타 팁`,
+    description: tip.summary[locale],
+    keywords: [`재즈기타 ${tip.title.ko}`, '재즈기타 팁', '재즈기타 연습법'],
+  })
 }
 
 function renderInline(text: string): React.ReactNode {

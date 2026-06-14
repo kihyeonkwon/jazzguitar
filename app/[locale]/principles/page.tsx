@@ -1,9 +1,29 @@
+import type { Metadata } from 'next'
 import { getLocale } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import { principles, trunks } from '@/lib/curriculum/organic'
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
 import { TrunkIconMap, IconArrowRight } from '@/components/icons'
 import { SectionHeader } from '@/components/ui'
+import { asLocale, buildPageMetadata } from '@/lib/seo'
+
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+
+  return buildPageMetadata({
+    locale,
+    path: '/principles',
+    title: '재즈기타 이론 사전 | 코드·스케일·즉흥 원리',
+    description:
+      '재즈기타 코드, 스케일, 즉흥, 컴핑을 연습할 때 필요한 핵심 이론을 찾아보는 참고용 사전입니다.',
+    keywords: ['재즈기타 이론', '재즈기타 코드 이론', '재즈기타 스케일 이론'],
+  })
+}
 
 export default async function PrinciplesIndex() {
   const locale = (await getLocale()) as Locale
@@ -23,7 +43,7 @@ export default async function PrinciplesIndex() {
         number={0}
         eyebrow="Principles"
         title="이론 사전"
-        description="필요할 때 찾아보는 참고용 원리 모음입니다. 학습의 중심은 잼과 잎 — 여기는 보조 사전입니다."
+        description="필요할 때 찾아보는 참고용 원리 모음입니다. 학습의 중심은 잼과 주제 — 여기는 보조 사전입니다."
       />
 
       <div className="space-y-14">

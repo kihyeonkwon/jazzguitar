@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from '@/lib/i18n/navigation'
 import { useLocale } from 'next-intl'
 import { trunks, leaves, getLeavesByTrunk } from '@/lib/curriculum/organic'
@@ -73,9 +73,10 @@ export default function TreeOfLife() {
   const [view, setView] = useState<{ x: number; y: number; scale: number }>({
     x: 0, y: 0, scale: 1,
   })
+  const [isDragging, setIsDragging] = useState(false)
 
   // 처음 진입 시 뷰포트에 fit
-  const fitToViewport = () => {
+  const fitToViewport = useCallback(() => {
     const el = viewportRef.current
     if (!el) return
     const sx = el.clientWidth / CANVAS_W
@@ -84,14 +85,14 @@ export default function TreeOfLife() {
     const x = (el.clientWidth - CANVAS_W * scale) / 2
     const y = (el.clientHeight - CANVAS_H * scale) / 2
     setView({ x, y, scale })
-  }
+  }, [])
+
   useEffect(() => {
     fitToViewport()
     const onResize = () => fitToViewport()
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fitToViewport])
 
   // 드래그 팬
   const dragRef = useRef<{ x: number; y: number; vx: number; vy: number } | null>(null)
@@ -99,6 +100,7 @@ export default function TreeOfLife() {
     const target = e.target as HTMLElement
     if (target.closest('g[data-clickable]')) return
     dragRef.current = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y }
+    setIsDragging(true)
     ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   }
   const onPointerMove = (e: React.PointerEvent) => {
@@ -106,7 +108,10 @@ export default function TreeOfLife() {
     if (!d) return
     setView((v) => ({ ...v, x: d.vx + (e.clientX - d.x), y: d.vy + (e.clientY - d.y) }))
   }
-  const onPointerEnd = () => { dragRef.current = null }
+  const onPointerEnd = () => {
+    dragRef.current = null
+    setIsDragging(false)
+  }
 
   // 휠 줌 (포인터 위치 기준으로 줌) — passive: false로 직접 등록해야 preventDefault 가능
   useEffect(() => {
@@ -160,7 +165,7 @@ export default function TreeOfLife() {
   const completedCount = completedLeaves.size
 
   return (
-    <div className="relative w-full bg-paper" style={{ height: 'calc(100vh - 56px)' }}>
+    <div className="relative w-full bg-paper" style={{ height: 'calc(100vh - 64px)' }}>
 
       {/* 헤더 */}
       <div className="absolute top-8 left-8 z-10 max-w-xs pointer-events-none">
@@ -169,15 +174,15 @@ export default function TreeOfLife() {
           <span className="eyebrow">The Forest</span>
         </div>
         <h1 className="display text-3xl text-ink leading-tight mb-2">
-          Tree of Jazz
+          Jazz Guitar Tree
         </h1>
         <p className="text-ink-soft text-[13px] leading-relaxed mb-4">
-          뿌리에서 시작해 4개 큰 가지로. 잎을 클릭해 학습합니다.
+          뿌리에서 시작해 4개 큰 가지로. 주제를 클릭해 학습합니다.
         </p>
         <div className="flex items-baseline gap-3">
           <div className="flex-1 h-px bg-rule overflow-hidden">
             <div
-              className="h-full bg-ink transition-all duration-500"
+              className="h-full bg-terracotta transition-all duration-500"
               style={{ width: `${(completedCount / totalLeaves) * 100}%` }}
             />
           </div>
@@ -203,7 +208,7 @@ export default function TreeOfLife() {
       <div
         ref={viewportRef}
         className="w-full h-full overflow-hidden touch-none select-none"
-        style={{ cursor: dragRef.current ? 'grabbing' : 'grab' }}
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
@@ -226,7 +231,7 @@ export default function TreeOfLife() {
       >
         <defs>
           <pattern id="dots" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
-            <circle cx="1" cy="1" r="0.5" fill="#e5e5e5"/>
+            <circle cx="1" cy="1" r="0.5" fill="#dccfc2"/>
           </pattern>
         </defs>
 
@@ -236,12 +241,12 @@ export default function TreeOfLife() {
         <line
           x1={ROOT_X - 240} y1={ROOT_Y + 22}
           x2={ROOT_X + 240} y2={ROOT_Y + 22}
-          stroke="#d4d4d4" strokeWidth="1"
+          stroke="#dccfc2" strokeWidth="1"
         />
         <line
           x1={ROOT_X - 150} y1={ROOT_Y + 36}
           x2={ROOT_X + 150} y2={ROOT_Y + 36}
-          stroke="#e5e5e5" strokeWidth="1"
+          stroke="#e6e2da" strokeWidth="1"
         />
 
         {/* 트렁크 */}
@@ -252,7 +257,7 @@ export default function TreeOfLife() {
               key={trunk.slug}
               d={trunkPath(top)}
               fill="none"
-              stroke={isHovered ? '#0a0a0a' : '#a3a3a3'}
+              stroke={isHovered ? '#2d3a31' : '#8c9a84'}
               strokeWidth={isHovered ? 2.5 : 1.5}
               strokeLinecap="round"
               style={{ transition: 'all 250ms ease' }}
@@ -269,7 +274,7 @@ export default function TreeOfLife() {
                 key={`branch-${leaf.slug}`}
                 d={branchPath(top, pos)}
                 fill="none"
-                stroke={isTrunkHovered ? '#525252' : '#d4d4d4'}
+                stroke={isTrunkHovered ? '#59665d' : '#dccfc2'}
                 strokeWidth="1"
                 strokeLinecap="round"
                 style={{ transition: 'all 200ms' }}
@@ -293,11 +298,11 @@ export default function TreeOfLife() {
               onMouseLeave={() => setHoveredTrunk(null)}
             >
               {/* 트렁크 결절점 */}
-              <circle r={5} fill="white" stroke="#0a0a0a" strokeWidth={isHovered ? 2 : 1.5}/>
+              <circle r={5} fill="#fffdf8" stroke="#2d3a31" strokeWidth={isHovered ? 2 : 1.5}/>
 
               {/* 아이콘 (위쪽 50px) */}
               <foreignObject x={-14} y={-58} width={28} height={28}>
-                <div style={{ color: isHovered ? '#0a0a0a' : '#525252', transition: 'color 200ms' }}>
+                <div style={{ color: isHovered ? '#2d3a31' : '#59665d', transition: 'color 200ms' }}>
                   <Icon size={28} />
                 </div>
               </foreignObject>
@@ -307,9 +312,9 @@ export default function TreeOfLife() {
                 y={-68}
                 textAnchor="middle"
                 fontSize="9"
-                fontFamily="ui-monospace, monospace"
+                fontFamily="var(--font-mono)"
                 letterSpacing="2"
-                fill="#a3a3a3"
+                fill="#8c9a84"
               >
                 {String(i + 1).padStart(2, '0')}
               </text>
@@ -320,7 +325,7 @@ export default function TreeOfLife() {
                 textAnchor="middle"
                 fontSize="12"
                 fontWeight="600"
-                fill={isHovered ? '#0a0a0a' : '#525252'}
+                fill={isHovered ? '#2d3a31' : '#59665d'}
                 style={{ transition: 'fill 200ms' }}
               >
                 {trunk.title[locale]}
@@ -329,7 +334,7 @@ export default function TreeOfLife() {
           )
         })}
 
-        {/* 잎 */}
+        {/* 주제 */}
         {trunkLayout.map(({ leafPositions }) =>
           leafPositions.map(({ leaf, pos }) => {
             const isCompleted = completedLeaves.has(leaf.slug)
@@ -349,15 +354,15 @@ export default function TreeOfLife() {
 
                 {/* 호버 ring */}
                 {isHovered && (
-                  <circle r={10} fill="none" stroke="#0a0a0a" strokeWidth="1" opacity="0.25"/>
+                  <circle r={10} fill="none" stroke="#c27b66" strokeWidth="1" opacity="0.45"/>
                 )}
 
-                {/* 잎 본체 — 작은 사각형 */}
+                {/* 주제 본체 — 작은 사각형 */}
                 <rect
                   x={isHovered ? -7 : -6} y={isHovered ? -7 : -6}
                   width={isHovered ? 14 : 12} height={isHovered ? 14 : 12}
-                  fill={isCompleted ? '#0a0a0a' : 'white'}
-                  stroke={isCompleted ? '#0a0a0a' : '#a3a3a3'}
+                  fill={isCompleted ? '#2d3a31' : '#fffdf8'}
+                  stroke={isCompleted ? '#2d3a31' : '#8c9a84'}
                   strokeWidth="1"
                   style={{ transition: 'all 150ms ease' }}
                 />
@@ -365,7 +370,7 @@ export default function TreeOfLife() {
                 {/* 줌인 시 노출되는 짧은 이름 (scale >= 0.7) */}
                 {view.scale >= 0.7 && (() => {
                   const short = leaf.shortTitle?.[locale] ?? leaf.title[locale]
-                  // 줄기에서 멀어지는 방향에 라벨을 둔다 — 잎의 각도로 결정
+                  // 줄기에서 멀어지는 방향에 라벨을 둔다 — 주제의 각도로 결정
                   const angle = pos.angle ?? 0
                   const rad = ((angle - 90) * Math.PI) / 180
                   const offset = 20
@@ -377,7 +382,7 @@ export default function TreeOfLife() {
                       textAnchor={Math.abs(lx) < 4 ? 'middle' : lx > 0 ? 'start' : 'end'}
                       fontSize="11"
                       fontWeight="500"
-                      fill={isHovered ? '#0a0a0a' : '#525252'}
+                      fill={isHovered ? '#2d3a31' : '#59665d'}
                       style={{ transition: 'fill 200ms', pointerEvents: 'none' }}
                     >
                       {short}
@@ -407,20 +412,20 @@ export default function TreeOfLife() {
                       <rect
                         x={14} y={-18}
                         width={labelW} height={36}
-                        fill="#0a0a0a"
+                        fill="#2d3a31"
                       />
                       <text
                         x={26} y={-3}
                         fontSize="11" fontWeight="600"
-                        fill="white"
+                        fill="#fffdf8"
                       >
                         {leaf.title[locale]}
                       </text>
                       <text
                         x={26} y={11}
                         fontSize="9"
-                        fill="#a3a3a3"
-                        fontFamily="ui-monospace, monospace"
+                        fill="#dccfc2"
+                        fontFamily="var(--font-mono)"
                         letterSpacing="1.5"
                       >
                         {isCompleted ? 'MASTERED' : 'CLICK TO STUDY'}
@@ -436,7 +441,7 @@ export default function TreeOfLife() {
         {/* 뿌리 */}
         <g transform={`translate(${ROOT_X}, ${ROOT_Y})`}>
           <foreignObject x={-14} y={-14} width={28} height={28}>
-            <div style={{ color: '#0a0a0a' }}>
+            <div style={{ color: '#2d3a31' }}>
               <IconRoot size={28} />
             </div>
           </foreignObject>
@@ -444,9 +449,9 @@ export default function TreeOfLife() {
             y={48}
             textAnchor="middle"
             fontSize="11"
-            fontFamily="ui-monospace, monospace"
+            fontFamily="var(--font-mono)"
             letterSpacing="3"
-            fill="#525252"
+            fill="#59665d"
           >
             START
           </text>
@@ -454,8 +459,8 @@ export default function TreeOfLife() {
             y={64}
             textAnchor="middle"
             fontSize="9"
-            fill="#a3a3a3"
-            fontFamily="ui-monospace, monospace"
+            fill="#8c9a84"
+            fontFamily="var(--font-mono)"
             letterSpacing="2"
           >
             ROOT OF ALL BRANCHES
@@ -469,17 +474,17 @@ export default function TreeOfLife() {
       <div className="absolute bottom-6 right-6 z-10 flex flex-col gap-1.5">
         <button
           onClick={() => zoomBy(1.2)}
-          className="w-9 h-9 bg-paper-bright border border-rule hover:border-ink-soft text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-base font-mono"
+          className="w-10 h-10 rounded-full bg-paper-bright border border-rule hover:border-sage text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-base font-mono shadow-[var(--shadow-tight)]"
           aria-label="확대"
         >+</button>
         <button
           onClick={() => zoomBy(1 / 1.2)}
-          className="w-9 h-9 bg-paper-bright border border-rule hover:border-ink-soft text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-base font-mono"
+          className="w-10 h-10 rounded-full bg-paper-bright border border-rule hover:border-sage text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-base font-mono shadow-[var(--shadow-tight)]"
           aria-label="축소"
         >−</button>
         <button
           onClick={fitToViewport}
-          className="w-9 h-9 bg-paper-bright border border-rule hover:border-ink-soft text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-[9px] font-mono tracking-widest"
+          className="w-10 h-10 rounded-full bg-paper-bright border border-rule hover:border-sage text-ink-soft hover:text-ink transition-colors flex items-center justify-center text-[9px] font-mono shadow-[var(--shadow-tight)]"
           aria-label="화면에 맞춤"
         >FIT</button>
       </div>

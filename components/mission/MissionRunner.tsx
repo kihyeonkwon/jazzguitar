@@ -34,7 +34,7 @@ export default function MissionRunner({ leaf: leafProp }: Props) {
   const locale = useLocale() as Locale
   const scoreMap = useLeafScoreMap(leaves)
 
-  // 잎이 지정 안 됐으면 자동 선택
+  // 주제가 지정 안 됐으면 자동 선택
   const leaf = useMemo(() => leafProp ?? pickTodaysLeaf(leaves), [leafProp])
 
   const [step, setStep] = useState<Step>('overview')
@@ -43,7 +43,7 @@ export default function MissionRunner({ leaf: leafProp }: Props) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-24 text-center space-y-6">
         <div className="eyebrow">Mastered</div>
-        <h1 className="display text-4xl text-ink">모든 잎을 졸업했습니다.</h1>
+        <h1 className="display text-4xl text-ink">모든 주제를 졸업했습니다.</h1>
         <Link
           href="/curriculum"
           className="inline-flex h-10 px-5 bg-ink text-ink-inv hover:bg-ink-soft text-sm font-medium items-center transition-colors"
@@ -117,7 +117,7 @@ export default function MissionRunner({ leaf: leafProp }: Props) {
           <LickStep lick={lick} locale={locale} />
         )}
         {step === 'lick' && !lick && (
-          <NoContentStep label="이 잎에는 아직 외울 릭이 없습니다." />
+          <NoContentStep label="이 주제에는 아직 외울 릭이 없습니다." />
         )}
 
         {step === 'jam' && backingTrack && (
@@ -130,7 +130,7 @@ export default function MissionRunner({ leaf: leafProp }: Props) {
           </div>
         )}
         {step === 'jam' && !backingTrack && (
-          <NoContentStep label="이 잎에는 아직 연결된 백킹 트랙이 없습니다." />
+          <NoContentStep label="이 주제에는 아직 연결된 백킹 트랙이 없습니다." />
         )}
 
         {step === 'review' && (
@@ -232,7 +232,7 @@ function OverviewStep({ leaf, locale }: { leaf: Leaf; locale: Locale }) {
         href={`/leaf/${leaf.slug}`}
         className="inline-flex items-center gap-2 text-xs text-ink-faint hover:text-ink font-mono tracking-widest"
       >
-        잎 전체 보기 <IconArrowRight size={12} />
+        주제 전체 보기 <IconArrowRight size={12} />
       </Link>
     </div>
   )
@@ -266,11 +266,11 @@ function DrillStep({ leaf, drillSlug }: { leaf: Leaf; drillSlug: string }) {
           </div>
         )}
         <Link
-          href={`/drill/${drillSlug}`}
+          href={`/train/${drillSlug}`}
           className="inline-flex items-center gap-2 h-10 px-5 bg-ink text-ink-inv hover:bg-ink-soft text-sm font-medium transition-colors"
         >
           <IconPlay size={14} />
-          드릴 한 라운드 시작
+          Train 한 라운드 시작
         </Link>
       </div>
     </div>

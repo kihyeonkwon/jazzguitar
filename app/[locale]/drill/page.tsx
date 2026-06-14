@@ -1,6 +1,8 @@
+import type { Metadata } from 'next'
 import { Link } from '@/lib/i18n/navigation'
 import { SectionHeader, Card } from '@/components/ui'
 import DrillLibraryStats from './DrillLibraryStats'
+import { asLocale, localePath } from '@/lib/seo'
 
 const DRILLS = [
   {
@@ -45,34 +47,60 @@ const DRILLS = [
     title: '스케일 구구단',
     description: '루트와 스케일 이름을 보고 구성음을 빠르게 선택한다.',
   },
+  {
+    type: 'drop-voicing-misty',
+    number: 8,
+    title: 'Drop 2 / Drop 3 · Misty',
+    description: 'Misty 전체 진행을 하나의 스트링셋으로 끝까지 연결한다.',
+  },
 ]
+
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale: rawLocale } = await params
+  const locale = asLocale(rawLocale)
+
+  return {
+    title: 'Train',
+    robots: {
+      index: false,
+      follow: true,
+    },
+    alternates: {
+      canonical: localePath(locale, '/train'),
+    },
+  }
+}
 
 export default function DrillLibraryPage() {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-12 space-y-10">
+    <div className="max-w-7xl mx-auto px-5 sm:px-6 py-14 sm:py-20 space-y-12">
       <SectionHeader
         number={0}
-        eyebrow="Drills"
-        title="Daily Drills"
-        description="짧고 즉각적인 워밍업. 매일 5분 권장."
+        eyebrow="Train"
+        title="Train"
+        description="짧게 반복하며 손과 귀의 반응을 확인하는 기본기 훈련."
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {DRILLS.map((d) => (
-          <Card key={d.type} className="p-5 space-y-4">
+          <Card key={d.type} className="p-5 sm:p-6 space-y-5 transition-transform hover:-translate-y-0.5">
             <div className="flex items-baseline gap-2">
               <span className="section-no">{String(d.number).padStart(2, '0')}</span>
-              <span className="eyebrow">Drill</span>
+              <span className="eyebrow">Train</span>
             </div>
             <div className="space-y-1">
-              <h3 className="display text-lg text-ink leading-tight">{d.title}</h3>
+              <h3 className="display text-2xl text-ink leading-tight">{d.title}</h3>
               <p className="text-sm text-ink-soft leading-relaxed">{d.description}</p>
             </div>
             <DrillLibraryStats drillType={d.type} />
             <div className="pt-2">
               <Link
-                href={`/drill/${d.type}`}
-                className="inline-flex items-center gap-2 text-sm font-medium text-ink border-b border-ink hover:text-ink-soft hover:border-ink-soft transition-colors"
+                href={`/train/${d.type}`}
+                className="inline-flex h-10 items-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-ink-inv transition-colors hover:bg-terracotta"
               >
                 시작
               </Link>

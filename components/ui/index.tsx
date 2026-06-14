@@ -18,11 +18,11 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center gap-2 font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed select-none'
+    'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed select-none'
 
   const variants = {
-    primary:   'bg-ink text-ink-inv hover:bg-ink-soft',
-    secondary: 'bg-paper-bright text-ink border border-rule hover:border-ink-soft',
+    primary:   'bg-ink text-ink-inv hover:bg-terracotta',
+    secondary: 'bg-paper-bright text-ink border border-rule hover:border-sage hover:bg-surface-soft',
     ghost:     'bg-transparent text-ink-soft hover:text-ink hover:bg-surface',
   }[variant]
 
@@ -55,7 +55,7 @@ export function Card({
 } & React.HTMLAttributes<HTMLElement>) {
   return (
     <Tag
-      className={`bg-paper-bright border border-rule ${className}`}
+      className={`organic-card ${className}`}
       {...rest}
     >
       {children}
@@ -92,7 +92,7 @@ export function SectionHeader({
           {eyebrow && <span className="eyebrow">{eyebrow}</span>}
         </div>
       )}
-      <h2 className="display text-2xl md:text-3xl text-ink leading-tight">
+      <h2 className="display text-3xl md:text-4xl text-ink leading-tight">
         {title}
       </h2>
       {description && (
@@ -154,7 +154,7 @@ export function Pill({
     solid:   'bg-ink text-ink-inv',
   }[variant]
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium tracking-wider uppercase ${styles} ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase ${styles} ${className}`}>
       {children}
     </span>
   )
@@ -195,7 +195,7 @@ export function Hint({
   label?: string
 }) {
   return (
-    <div className="flex items-start gap-3 border-l border-ink pl-4 py-1">
+    <div className="flex items-start gap-3 rounded-3xl border border-rule bg-surface-soft px-5 py-4">
       <span className="eyebrow shrink-0 mt-0.5">{label}</span>
       <p className="text-sm text-ink-soft leading-relaxed">{children}</p>
     </div>

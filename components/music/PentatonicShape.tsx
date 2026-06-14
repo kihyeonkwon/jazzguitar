@@ -104,7 +104,7 @@ export default function PentatonicShape({ type, title, className = '' }: Props) 
                 <g key={`m-${ri}-${ci}`}>
                   <text x={cx} y={cy} fontSize={20} fontWeight={700}
                     fill="#0a0a0a" textAnchor="middle" dominantBaseline="central"
-                    fontFamily="ui-monospace, monospace"
+                    fontFamily="var(--font-mono)"
                   >R</text>
                 </g>
               )
@@ -128,7 +128,7 @@ export default function PentatonicShape({ type, title, className = '' }: Props) 
                   />
                   <text x={cx} y={cy} fontSize={12} fontWeight={600}
                     fill="#0a0a0a" textAnchor="middle" dominantBaseline="central"
-                    fontFamily="ui-monospace, monospace"
+                    fontFamily="var(--font-mono)"
                   >♭5</text>
                 </g>
               )
@@ -161,7 +161,7 @@ export default function PentatonicShape({ type, title, className = '' }: Props) 
               />
               <text x={cx} y={cy} fontSize={12} fontWeight={600}
                 fill="#0a0a0a" textAnchor="middle" dominantBaseline="central"
-                fontFamily="ui-monospace, monospace"
+                fontFamily="var(--font-mono)"
               >♭5</text>
             </g>
           )

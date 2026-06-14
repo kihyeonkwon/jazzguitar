@@ -1,31 +1,95 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Kakao Big Sans";
+  src: url("/fonts/kakao/KakaoBigSans-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kakao Big Sans";
+  src: url("/fonts/kakao/KakaoBigSans-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kakao Big Sans";
+  src: url("/fonts/kakao/KakaoBigSans-ExtraBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kakao Small Sans";
+  src: url("/fonts/kakao/KakaoSmallSans-Light.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kakao Small Sans";
+  src: url("/fonts/kakao/KakaoSmallSans-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kakao Small Sans";
+  src: url("/fonts/kakao/KakaoSmallSans-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 /* ──────────────────────────────────────────────────────────────────
-   Design Tokens — Monochrome editorial
-   ECM Records inspired. No accent color. Hierarchy by typography
-   and whitespace only.
+   Design Tokens — Botanical / Organic Serif
+   Warm paper, forest ink, quiet garden accents.
    ────────────────────────────────────────────────────────────────── */
 
 @theme inline {
   /* Surfaces */
-  --color-paper:        #fafafa;  /* page background */
-  --color-paper-bright: #ffffff;  /* elevated surfaces */
-  --color-surface:      #f4f4f4;  /* subtle wash */
-  --color-rule:         #e5e5e5;  /* hairline */
-  --color-rule-strong:  #d4d4d4;
+  --color-paper:        #f9f8f4;
+  --color-paper-bright: #fffdf8;
+  --color-surface:      #f1eee7;
+  --color-surface-soft: #f6f3ed;
+  --color-rule:         #e6e2da;
+  --color-rule-strong:  #dccfc2;
 
   /* Ink */
-  --color-ink:        #0a0a0a;  /* headings, primary */
-  --color-ink-soft:   #525252;  /* body, secondary */
-  --color-ink-faint:  #a3a3a3;  /* caption, tertiary */
-  --color-ink-quiet:  #d4d4d4;  /* placeholder */
+  --color-ink:        #2d3a31;
+  --color-ink-soft:   #59665d;
+  --color-ink-faint:  #8c9a84;
+  --color-ink-quiet:  #c8c2b8;
+  --color-sage:       #8c9a84;
+  --color-clay:       #dccfc2;
+  --color-terracotta: #c27b66;
 
   /* Inverse */
-  --color-ink-inv:    #fafafa;  /* on dark */
+  --color-ink-inv:    #fffdf8;
 
   /* Fonts */
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --font-sans: "Kakao Small Sans";
+  --font-display: "Kakao Big Sans";
+  --font-mono: "Kakao Small Sans";
+
+  --shadow-soft: 0 20px 60px rgba(45, 58, 49, 0.08);
+  --shadow-tight: 0 8px 24px rgba(45, 58, 49, 0.06);
+  --radius-organic: 28px;
+  --radius-pill: 999px;
+}
+
+:root {
+  --font-sans: "Kakao Small Sans";
+  --font-display: "Kakao Big Sans";
+  --font-mono: "Kakao Small Sans";
+  --font-fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /* ──────────────────────────────────────────────────────────────────
@@ -35,12 +99,29 @@
 html {
   font-feature-settings: 'ss01', 'cv11';
   text-rendering: optimizeLegibility;
+  background: var(--color-paper);
 }
 
 body {
-  font-family: var(--font-sans), system-ui, sans-serif;
+  font-family: var(--font-sans), var(--font-fallback);
   font-weight: 400;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
+  background:
+    radial-gradient(circle at top left, rgba(220, 207, 194, 0.34), transparent 34rem),
+    linear-gradient(180deg, #f9f8f4 0%, #f6f3ed 100%);
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  outline-color: var(--color-terracotta);
+}
+
+::selection {
+  background: rgba(194, 123, 102, 0.22);
+  color: var(--color-ink);
 }
 
 /* Tabular numbers — for BPM, scores, dates */
@@ -50,16 +131,20 @@ body {
 
 /* Display headings — tighter tracking */
 .display {
-  letter-spacing: -0.02em;
+  font-family: var(--font-display), var(--font-sans), var(--font-fallback);
+  letter-spacing: 0;
   font-weight: 700;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  text-wrap: balance;
 }
 
 /* Eyebrow / overline labels */
 .eyebrow {
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--color-ink-faint);
 }
 
@@ -67,9 +152,38 @@ body {
 .section-no {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   color: var(--color-ink-faint);
   font-feature-settings: 'tnum';
+}
+
+.tracking-widest,
+.tracking-wide,
+.tracking-tight {
+  letter-spacing: 0 !important;
+}
+
+.organic-card {
+  border-radius: var(--radius-organic);
+  border: 1px solid var(--color-rule);
+  background: rgba(255, 253, 248, 0.86);
+  box-shadow: var(--shadow-tight);
+}
+
+.organic-vine {
+  position: relative;
+}
+
+.organic-vine::before {
+  content: "";
+  position: absolute;
+  inset: 14px auto auto -26px;
+  width: 42px;
+  height: 76px;
+  border-left: 1px solid rgba(140, 154, 132, 0.34);
+  border-bottom: 1px solid rgba(140, 154, 132, 0.34);
+  border-bottom-left-radius: 42px;
+  pointer-events: none;
 }
 
 /* ──────────────────────────────────────────────────────────────────
@@ -122,3 +236,32 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in { animation: fade-in 240ms ease-out; }
+
+@keyframes landing-rise {
+  from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes landing-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%      { transform: translate3d(0, -12px, 0) rotate(0.35deg); }
+}
+
+.landing-reveal {
+  animation: landing-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.landing-reveal-delay-1 { animation-delay: 90ms; }
+.landing-reveal-delay-2 { animation-delay: 180ms; }
+.landing-reveal-delay-3 { animation-delay: 270ms; }
+
+.landing-float {
+  animation: landing-float 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-reveal,
+  .landing-float {
+    animation: none;
+  }
+}
