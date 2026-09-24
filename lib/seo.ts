@@ -15,7 +15,7 @@ export const HOME_TITLE =
   '도수·코드·스케일 암산 훈련'
 
 export const HOME_DESCRIPTION =
-  '도수(인터벌), 코드 구성음, 스케일 구성음을 악기 없이 머리로 푸는 재즈 구구단 3종. 분당 정답 수(CPM)로 실력을 잽니다.'
+  '도수(인터벌), 코드 구성음, 스케일 구성음을 악기 없이 머리로 푸는 재즈 구구단 3종. 정답 하나에 걸린 시간, 반응속도로 실력을 잽니다.'
 
 export const SEO_KEYWORDS = [
   '재즈 구구단',
