@@ -367,5 +367,14 @@
     "builtBy": "Built by Kihyeon Kwon",
     "leaderboard": "Leaderboard",
     "version": "Version / 0.3"
+  },
+  "install": {
+    "button": "Install",
+    "iosTitle": "Add to Home Screen",
+    "iosStep1": "Tap the Share button at the bottom of Safari (the square with an arrow pointing up).",
+    "iosStep2": "Choose \"Add to Home Screen\" from the list.",
+    "iosStep3": "Tap \"Add\" in the top right. The Jazz 9×9 icon appears on your home screen.",
+    "iosNote": "On iPhone and iPad, only Safari can add sites to the home screen.",
+    "close": "Close"
   }
 }

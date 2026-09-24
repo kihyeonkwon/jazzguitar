@@ -367,5 +367,14 @@
     "builtBy": "Built by 권기현",
     "leaderboard": "리더보드",
     "version": "Version / 0.3"
+  },
+  "install": {
+    "button": "설치",
+    "iosTitle": "홈 화면에 추가하기",
+    "iosStep1": "Safari 아래쪽의 공유 버튼(네모에서 화살표가 올라오는 모양)을 누릅니다.",
+    "iosStep2": "목록에서 \"홈 화면에 추가\"를 고릅니다.",
+    "iosStep3": "오른쪽 위 \"추가\"를 누르면 홈 화면에 재즈 구구단 아이콘이 생깁니다.",
+    "iosNote": "iPhone·iPad에서는 Safari에서만 홈 화면에 추가할 수 있습니다.",
+    "close": "닫기"
   }
 }

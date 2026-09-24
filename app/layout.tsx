@@ -11,6 +11,7 @@ import {
   verificationMetadata,
 } from '@/lib/seo'
 import RegisterServiceWorker from '@/components/pwa/RegisterServiceWorker'
+import PendingSync from '@/components/leaderboard/PendingSync'
 
 // Helvetica Neue가 없는 기기용 그로테스크 + 작은 라벨용 모노스페이스 (globals.css의 --font-* 가 참조)
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap' })
@@ -95,6 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-full flex flex-col bg-paper text-ink font-sans">
         {children}
         <RegisterServiceWorker />
+        <PendingSync />
       </body>
     </html>
   )

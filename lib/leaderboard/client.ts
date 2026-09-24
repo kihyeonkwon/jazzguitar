@@ -35,6 +35,8 @@ export function openAccount(mode: 'join' | 'login' = 'join'): void {
   window.dispatchEvent(new CustomEvent(OPEN_ACCOUNT_EVENT, { detail: mode }))
 }
 const PENDING_KEY = 'gugudan:pending-scores'
+// 마지막으로 확인한 로그인 계정 — 오프라인일 때 getMe()가 이 값으로 답한다
+const ME_KEY = 'gugudan:me'
 
 export interface RoundInput {
   correct: number
@@ -118,10 +120,37 @@ export async function getMe(): Promise<Me | null> {
   const userId = session.session?.user.id
   if (!userId) return null
 
-  const { data: link } = await sb.from('devices').select('profile_id').eq('user_id', userId).maybeSingle()
-  if (!link) return null
+  const { data: link, error } = await sb.from('devices').select('profile_id').eq('user_id', userId).maybeSingle()
+  // 네트워크가 끊겼으면 마지막으로 확인한 계정을 그대로 믿는다 (지하철에서도 내 이름은 보여야 한다)
+  if (error) return readCachedMe(userId)
+  if (!link) {
+    writeCachedMe(null)
+    return null
+  }
   const { data: profile } = await sb.from('profiles').select('nickname').eq('id', link.profile_id).maybeSingle()
-  return profile ? { profileId: link.profile_id, nickname: profile.nickname } : null
+  const me = profile ? { profileId: link.profile_id, nickname: profile.nickname } : null
+  writeCachedMe(me ? { userId, ...me } : null)
+  return me
+}
+
+function readCachedMe(userId: string): Me | null {
+  try {
+    const raw = localStorage.getItem(ME_KEY)
+    if (!raw) return null
+    const cached = JSON.parse(raw) as Me & { userId: string }
+    return cached.userId === userId ? { profileId: cached.profileId, nickname: cached.nickname } : null
+  } catch {
+    return null
+  }
+}
+
+function writeCachedMe(me: (Me & { userId: string }) | null): void {
+  try {
+    if (me) localStorage.setItem(ME_KEY, JSON.stringify(me))
+    else localStorage.removeItem(ME_KEY)
+  } catch {
+    // 무시
+  }
 }
 
 async function ensureGuestSession(captchaToken?: string): Promise<ErrorCode | null> {
@@ -181,14 +210,17 @@ export async function logout(): Promise<void> {
   const sb = getSupabase()
   if (!sb) return
   await sb.rpc('logout_account')
+  writeCachedMe(null)
   emit()
 }
 
 // ── 점수 ──
 
-async function insertScore(profileId: string, game: GameType, round: RoundInput): Promise<boolean> {
+// 'retry' 는 네트워크가 끊긴 경우 — 보관해 두었다가 연결되면 다시 올린다.
+// 'drop' 은 서버가 거절한 경우(규칙 위반 등) — 다시 보내도 소용없다.
+async function insertScore(profileId: string, game: GameType, round: RoundInput): Promise<'ok' | 'retry' | 'drop'> {
   const sb = getSupabase()
-  if (!sb) return false
+  if (!sb) return 'retry'
   const { error } = await sb.from('scores').insert({
     profile_id: profileId,
     game,
@@ -196,31 +228,34 @@ async function insertScore(profileId: string, game: GameType, round: RoundInput)
     total: round.total,
     duration_sec: Math.round(round.durationSec * 10) / 10,
   })
-  return !error
+  if (!error) return 'ok'
+  // PostgREST·Postgres 오류에는 코드가 있고, fetch 실패에는 없다
+  return error.code ? 'drop' : 'retry'
 }
 
-async function flushPending(): Promise<void> {
+/** 보관해 둔 라운드를 올린다. 가입·로그인 직후와 네트워크가 돌아왔을 때 부른다. */
+export async function flushPending(): Promise<void> {
   const list = readPending()
   if (list.length === 0) return
   const me = await getMe()
   if (!me) return
   const rest: Pending[] = []
+  let uploaded = false
   for (const p of list) {
-    const ok = await insertScore(me.profileId, p.game, p)
-    if (!ok) rest.push(p)
+    const r = await insertScore(me.profileId, p.game, p)
+    if (r === 'retry') rest.push(p)
+    if (r === 'ok') uploaded = true
   }
   writePending(rest)
+  if (uploaded) emit()
 }
 
-/** 라운드가 끝날 때마다 호출. 로그인돼 있으면 바로 올리고, 아니면 보관한다. */
+/** 라운드가 끝날 때마다 호출. 로그인돼 있으면 바로 올리고, 못 올리면(오프라인·미로그인) 보관한다. */
 export async function submitRound(game: GameType, round: RoundInput): Promise<void> {
   if (!LEADERBOARD_ENABLED) return
   const me = await getMe()
-  if (me) {
-    await insertScore(me.profileId, game, round)
-  } else {
-    writePending([...readPending(), { game, ...round }])
-  }
+  const r = me ? await insertScore(me.profileId, game, round) : 'retry'
+  if (r === 'retry') writePending([...readPending(), { game, ...round }])
   emit()
 }
 

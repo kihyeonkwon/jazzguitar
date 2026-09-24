@@ -367,5 +367,14 @@
     "builtBy": "Built by Kihyeon Kwon",
     "leaderboard": "ランキング",
     "version": "Version / 0.3"
+  },
+  "install": {
+    "button": "インストール",
+    "iosTitle": "ホーム画面に追加",
+    "iosStep1": "Safari下部の共有ボタン(四角から矢印が出ている形)をタップします。",
+    "iosStep2": "一覧から「ホーム画面に追加」を選びます。",
+    "iosStep3": "右上の「追加」をタップすると、ホーム画面にジャズ九九のアイコンができます。",
+    "iosNote": "iPhone・iPadではSafariからのみホーム画面に追加できます。",
+    "close": "閉じる"
   }
 }

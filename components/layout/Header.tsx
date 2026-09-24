@@ -6,6 +6,7 @@ import { Link } from '@/lib/i18n/navigation'
 import { usePathname } from '@/lib/i18n/navigation'
 import LanguageSwitcher from './LanguageSwitcher'
 import AccountMenu from '@/components/leaderboard/AccountMenu'
+import InstallButton from '@/components/pwa/InstallButton'
 import { IconClose, IconMenu } from '@/components/icons'
 import { GAMES } from '@/lib/train/games'
 
@@ -59,6 +60,7 @@ export default function Header() {
           <div className="hidden items-stretch border-l border-ink sm:flex">
             <LanguageSwitcher />
           </div>
+          <InstallButton />
           <AccountMenu />
           <button
             type="button"
