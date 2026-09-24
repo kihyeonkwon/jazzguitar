@@ -138,7 +138,7 @@ function FloatingMetronomeInner() {
         key={i}
         cx={x} cy={y}
         r={isActive ? 2.5 : isTop ? 2 : 1.5}
-        fill={isActive ? '#111827' : isTop ? '#6b7280' : '#d1d5db'}
+        fill={isActive ? '#1b1b1b' : isTop ? '#63635e' : '#a9a9a4'}
         style={{ transition: 'fill 80ms ease, r 80ms ease' }}
       />
     )
@@ -149,9 +149,9 @@ function FloatingMetronomeInner() {
       {/* FAB */}
       <button
         onClick={() => setOpen(o => !o)}
-        className={`fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center bg-paper-bright shadow-[var(--shadow-tight)] transition-all hover:bg-surface active:scale-95 ${
-          open ? 'text-ink' : 'text-ink-soft'
-        } ${isPlaying ? 'ring-1 ring-ink ring-offset-2 ring-offset-paper' : ''}`}
+        className={`fixed bottom-6 right-4 sm:right-6 z-40 flex h-12 w-12 items-center justify-center border border-ink shadow-[4px_4px_0_#1b1b1b] transition-colors duration-100 hover:bg-pink active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_#1b1b1b] ${
+          isPlaying ? 'bg-pink' : open ? 'bg-gray' : 'bg-paper-bright'
+        }`}
         aria-label="Metronome"
         title="Metronome"
       >
@@ -168,7 +168,7 @@ function FloatingMetronomeInner() {
           />
 
           {/* 패널 */}
-          <div className="fixed bottom-20 right-6 z-40 bg-paper-bright p-5 shadow-[var(--shadow-soft)] animate-metronome-up">
+          <div className="fixed bottom-24 right-4 sm:right-6 z-40 border border-ink bg-paper-bright p-5 shadow-[6px_6px_0_#1b1b1b] animate-metronome-up">
             <div className="flex items-center justify-between mb-4">
               <span className="eyebrow">Metronome</span>
               <button
@@ -192,8 +192,8 @@ function FloatingMetronomeInner() {
                   {/* 안쪽 원 */}
                   <circle
                     cx={CENTER} cy={CENTER} r={RADIUS - 6}
-                    fill={isPlaying ? '#fafafa' : 'white'}
-                    stroke="#e5e7eb" strokeWidth="1"
+                    fill={isPlaying ? '#d8ecf4' : '#f4f3ee'}
+                    stroke="#1b1b1b" strokeWidth="1"
                   />
 
                   {/* 16 세그먼트 */}
@@ -205,7 +205,7 @@ function FloatingMetronomeInner() {
                       ref={dotRef}
                       cx={CENTER} cy={CENTER - RADIUS}
                       r="4"
-                      fill="#111827"
+                      fill="#1b1b1b"
                     />
                   )}
 
@@ -216,7 +216,7 @@ function FloatingMetronomeInner() {
                     fontSize="22"
                     fontFamily="var(--font-mono)"
                     fontWeight="700"
-                    fill="#111827"
+                    fill="#1b1b1b"
                   >{bpm}</text>
                   <text
                     x={CENTER} y={CENTER + 16}
@@ -224,7 +224,7 @@ function FloatingMetronomeInner() {
                     fontSize="7"
                     fontFamily="var(--font-mono)"
                     letterSpacing="2.5"
-                    fill="#9ca3af"
+                    fill="#63635e"
                   >BPM</text>
                 </svg>
               </button>

@@ -74,8 +74,7 @@
   "language": {
     "ko": "한국어",
     "en": "English",
-    "ja": "日本語",
-    "comingSoon": "준비중"
+    "ja": "日本語"
   },
   "stages": {
     "1": {
@@ -94,5 +93,279 @@
       "name": "스탠다드",
       "subtitle": "Jazz Standards"
     }
+  },
+  "site": {
+    "name": "ジャズ九九",
+    "mega1": "ジャズ",
+    "mega2": "九九",
+    "homeTitle": "度数・コード・スケールの暗算トレーニング",
+    "homeDescription": "度数(インターバル)、コードの構成音、スケールの構成音を、楽器なしで頭の中だけで解くジャズ九九3種。正解1つにかかった時間、反応速度で実力を測ります。",
+    "ogAlt": "ジャズ九九 — 楽器なしでできるジャズの暗算トレーニング"
+  },
+  "menu": {
+    "degree": "度数",
+    "chord": "コード",
+    "scale": "スケール",
+    "rank": "Rank",
+    "leaderboard": "ランキング",
+    "language": "Language",
+    "open": "メニューを開く"
+  },
+  "games": {
+    "degree-id": {
+      "title": "度数九九",
+      "description": "音が2つ出ます。1つ目から見て2つ目が何度かを、12個の中から選びます。",
+      "rules": "音が2つ出ます。1つ目の音から見て2つ目の音が何度かを、12個の中から選んでください。1ラウンドは20問で、答えるとすぐ次の問題に進みます。",
+      "round": "1ラウンド20問",
+      "seoDescription": "度数九九 — 2つの音を見て度数をすぐに答える、ジャズの暗算トレーニングです。楽器は要りません。"
+    },
+    "chord-construction": {
+      "title": "コード九九",
+      "description": "コード名を見て構成音を選びます。Triad / 7th の2モード。",
+      "rules": "コード名を見て構成音を選びます。必要な数を選ぶと自動で採点されます。Triad と 7th の2モード、1ラウンドは10問です。",
+      "round": "1ラウンド10問",
+      "seoDescription": "コード九九 — コード名を見て構成音をすぐに選ぶ、ジャズの暗算トレーニングです。楽器は要りません。"
+    },
+    "scale-construction": {
+      "title": "スケール九九",
+      "description": "ルートとスケール名を見て、構成音をすばやく選びます。",
+      "rules": "ルートとスケール名を見て構成音を選びます。必要な数を選ぶと自動で採点されます。1ラウンドは10問で、出題範囲は下の設定で絞れます。",
+      "round": "12キー × スケール9個",
+      "seoDescription": "スケール九九 — ルートとスケール名を見て構成音をすぐに選ぶ、ジャズの暗算トレーニングです。楽器は要りません。"
+    }
+  },
+  "levels": {
+    "beginner": "入門",
+    "proficient": "熟練",
+    "fluent": "流暢",
+    "master": "マスター"
+  },
+  "scales": {
+    "major": "メジャー",
+    "natural-minor": "ナチュラルマイナー",
+    "jazz-minor": "ジャズマイナー",
+    "harmonic-minor": "ハーモニックマイナー",
+    "minor-pentatonic": "マイナーペンタトニック",
+    "blues": "ブルーススケール",
+    "dorian": "ドリアン",
+    "mixolydian": "ミクソリディアン",
+    "lydian": "リディアン"
+  },
+  "landing": {
+    "metaCenter": "Mental drills for jazz",
+    "metaGames": "3 games",
+    "h1a": "楽器なしでできる",
+    "h1b": "ジャズの練習3つ",
+    "heroBody": "2 × 7 = 14 がすぐ出るように、Dm7 = D F A C もすぐ出なければなりません。度数、コード、スケール。電車の中でも昼休みでも、楽器なしで解けて、正解1つに何秒かかったかで記録します。",
+    "sampleAria": "Bb7の構成音: Bb D F Ab",
+    "indexLabel": "Index / Games",
+    "indexUnit": "Unit — Reaction (s) · 正解1つにかかった時間",
+    "play": "Play",
+    "stat1Unit": "音",
+    "stat1Body": "コードとスケールの問題の答えは、いつも12個の音名の中にあります。楽器は使わず、画面のキーを押すだけです。",
+    "stat2Unit": "スケール",
+    "stat2Body": "メジャー、マイナー3種、ペンタトニック、ブルース、ドリアン、ミクソリディアン、リディアン。",
+    "stat3Unit": "%",
+    "stat3Body": "正確度がこの線を超えたラウンドだけがレベルに反映されます。当てずっぽうでは上がれません。",
+    "scoringLabel": "Scoring",
+    "scoringTitle": "速く、正確に。それで上がります。",
+    "scoringBody": "ラウンドが終わると、かかった時間を正解数で割って反応速度を計算します。単位は秒(s)で、数字が小さいほど速い記録です。レベルは直近のラウンドの平均で決まり、到達した記録は日付と一緒に残ります。",
+    "scoringLogAria": "ラウンド採点ログの例",
+    "levelLine": "level   熟練 → 流暢まで 0.22秒",
+    "tableGame": "Game",
+    "notice": "正確度が{gate}%未満のラウンドはレベルに反映されません。",
+    "faqTitle": "よくある質問",
+    "faqArchive": "Archive — {count} entries",
+    "faq": [
+      {
+        "q": "楽器は必要ですか?",
+        "a": "必要ありません。3つのゲームはどれも画面で音名や度数を選ぶ方式なので、頭の中だけで解きます。"
+      },
+      {
+        "q": "なぜこの3つなのですか?",
+        "a": "音と音の間の度数、コードの構成音、スケールの構成音は、即興演奏で毎小節くり返す計算です。九九のように自動で出てくるようにするのが目標です。"
+      },
+      {
+        "q": "反応速度はどう計算しますか?",
+        "a": "正解1つにかかった時間です。ラウンドの時間を正解数で割った値で、単位は秒(s)です。数字が小さいほど速いということです。直近のラウンドの平均で熟練・流暢・マスターのレベルを決めます。"
+      },
+      {
+        "q": "記録はどこに保存されますか?",
+        "a": "レベルと練習の記録はこのブラウザに保存されます。ニックネームとパスワードで登録すると、ラウンドの記録がランキングにも載ります。"
+      },
+      {
+        "q": "ランキングにはどう参加しますか?",
+        "a": "1ラウンド終えると、結果画面でニックネームとパスワードの2つだけ決めて記録を載せられます。メールアドレスは要りません。正確度90%以上のラウンドのうち、いちばん速い記録1つが順位になります。コード九九は7thモード、スケール九九は出題範囲を絞っていないラウンドだけが対象です。"
+      },
+      {
+        "q": "レッスンとTreeはどこへ行きましたか?",
+        "a": "いったん下げています。今は九九3つだけに集中しています。"
+      }
+    ],
+    "exitLabel": "Next / Play",
+    "exitTitle": "1つ選んで、1ラウンドだけ。",
+    "painA": "手が遅いのではなく、",
+    "painB": "音が思い浮かばないのです。",
+    "painBody": "コードを見て構成音がすぐに浮かばないなら、楽器の練習より先にジャズ九九です。",
+    "painLabel": "Diagnosis / 01",
+    "painNext": "↓ One stop",
+    "commuteLabel": "When / 02",
+    "commuteNum": "2",
+    "commuteUnit": "分",
+    "commuteTitle": "地下鉄ひと駅ぶんで1ラウンド。",
+    "commuteBody": "熟練レベルで20問が約2分です。楽器なしでできる練習は移動時間に済ませて、楽器を持つ時間は演奏だけに使います。",
+    "commuteExample": "G7 = G B D F — 考えなくても出てくるまで。"
+  },
+  "train": {
+    "metaLeft": "Sys / 02",
+    "metaRight": "Index — {count} games",
+    "intro": "楽器なしで頭の中だけで解く九九3つ。記録は正解1つにかかった時間、反応速度で残ります。",
+    "seoTitle": "九九3種 — 度数・コード・スケール",
+    "seoDescription": "度数(インターバル)、コードの構成音、スケールの構成音を楽器なしで頭の中だけで解くジャズ九九3種です。正解1つにかかった時間、反応速度で実力を測ります。"
+  },
+  "stats": {
+    "level": "Level",
+    "none": "まだ記録がありません",
+    "measuring": "測定中",
+    "measuringCount": "{n}/3回 測定中",
+    "gated": "正確度不足で降格",
+    "recentAvg": "直近{n}回の平均",
+    "accuracy": "正確度 {pct}%",
+    "achieved": "到達",
+    "notYet": "未到達",
+    "spc": "Reaction"
+  },
+  "game": {
+    "eyebrow": "Game",
+    "rank": "Rank",
+    "pendingNudge": "記録{n}件がこのブラウザにだけあります — 載せる",
+    "statQuestion": "Question",
+    "statScore": "Score",
+    "statRate": "Rate",
+    "statRound": "Round",
+    "statProgress": "Progress",
+    "statAccuracy": "Accuracy",
+    "windowAria": "問題",
+    "start": "スタート",
+    "login": "ログイン",
+    "playingAs": "Playing as",
+    "startHint": "{n}問 · Enterでスタート",
+    "startHintLogin": " · ログインすると記録が順位に残ります",
+    "example": "Example",
+    "rootNote": "Root → Note = ?",
+    "correct": "○ Correct — 正解",
+    "wrongPicked": "× Wrong — 選んだ答え",
+    "wrongAnswerIs": "· 正解は",
+    "statusReady": "Ready",
+    "statusCorrect": "Correct",
+    "statusWrong": "Wrong →",
+    "statusSelectDegree": "Select a degree",
+    "chordCorrect": "○ Correct —",
+    "chordWrong": "× Wrong — 正解は",
+    "statusSelectN": "Select {selected}/{target} — auto-grade",
+    "statusCorrectNotes": "Correct —",
+    "reset": "Reset",
+    "retry": "Retry",
+    "next": "Next →",
+    "mode": "Mode",
+    "settingsTitle": "Settings — 出題範囲",
+    "settingsAria": "出題範囲",
+    "roots": "Roots",
+    "scalesLabel": "Scales",
+    "on": "{n}/{total} on",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "soundToggle": "サウンドのオン/オフ",
+    "replay": "もう一度聞く",
+    "statTime": "Time",
+    "statSpc": "Reaction"
+  },
+  "result": {
+    "title": "Round result",
+    "first": "このゲームで最初の記録です。",
+    "newBest": "自己ベストより {diff}秒 速くなりました — 新記録",
+    "sameBest": "自己ベストと同じです。",
+    "toBest": "自己ベストまであと {diff}秒",
+    "lowAccuracy": "正確度が{gate}%未満のため、このラウンドは順位に反映されません。",
+    "unranked": "このラウンドは順位に反映されません。",
+    "unrankedScale": "出題範囲を絞ったラウンドは順位に反映されません。",
+    "unrankedChord": "Triadモードが混ざったラウンドは順位に反映されません。順位は7thモードで競います。",
+    "checking": "順位を確認中…",
+    "boardOf": "{name} — ランキング",
+    "rankUp": "順位が上がりました。",
+    "firstRank": "最初の順位が記録されました。",
+    "bestRank": "自己ベストでの順位です。",
+    "leaderboard": "Leaderboard",
+    "wouldBePrefix": "今の記録なら",
+    "joinPitch": "ニックネームとパスワードを決めるだけで、今の記録も一緒に載ります。",
+    "upload": "記録を載せる",
+    "saved": "Round saved",
+    "again": "もう一度 →",
+    "againSkip": "載せずにもう一度 →",
+    "unit": "s",
+    "noCorrect": "正解がなかったため、記録を計算できませんでした。",
+    "topPercent": "上位 {pct}%",
+    "ofPlayers": "{total}人中 {rank}位",
+    "speedNote": "反応速度 · 正解1つにかかった時間"
+  },
+  "account": {
+    "title": "アカウント",
+    "tabJoin": "はじめて — Join",
+    "tabLogin": "登録済み — Login",
+    "tabsAria": "参加方法",
+    "nickname": "ニックネーム",
+    "nicknamePh": "ニックネーム 2〜12文字",
+    "password": "パスワード",
+    "passwordPh": "パスワード {min}文字以上",
+    "join": "Join",
+    "login": "Login",
+    "joinNote": "メールアドレスは要りません。パスワードを忘れると取り戻せないので、覚えておいてください。",
+    "loginNote": "登録したときのニックネームとパスワード。ほかの端末でも同じ記録に続きます。",
+    "player": "Player",
+    "logout": "ログアウト",
+    "logoutNote": "記録はアカウントに残ります。同じニックネームとパスワードでまた入れます。",
+    "pendingNote": "このブラウザにだけある記録{n}件 — 登録すると一緒に載ります。",
+    "close": "閉じる",
+    "captchaLoad": "本人確認を読み込めませんでした。しばらくしてからもう一度お試しください。",
+    "captchaClosed": "本人確認がキャンセルされました。",
+    "captchaLocalhost": "hCaptchaはlocalhostでは動きません。実際のドメインでお試しください。",
+    "captchaFailed": "本人確認に失敗しました。しばらくしてからもう一度お試しください。"
+  },
+  "errors": {
+    "bad_nickname": "ニックネームは2〜12文字にしてください。",
+    "bad_password": "パスワードは{min}文字以上にしてください。",
+    "nickname_taken": "そのニックネームはすでに使われています。ご本人ならログインしてください。",
+    "bad_credentials": "ニックネームまたはパスワードが違います。",
+    "locked": "何度も間違えたため一時的にロックされました。5分後にもう一度お試しください。",
+    "not_signed_in": "サーバーに接続できませんでした。しばらくしてからもう一度お試しください。",
+    "captcha_failed": "本人確認(キャプチャ)を通過できませんでした。もう一度お試しください。",
+    "connect_failed": "サーバーに接続できませんでした。しばらくしてからもう一度お試しください。",
+    "offline": "ランキングサーバーに接続されていません。",
+    "generic": "処理できませんでした。しばらくしてからもう一度お試しください。"
+  },
+  "rank": {
+    "metaLeft": "Sys / 03",
+    "metaRight": "Unit — Reaction (s) · best round · accuracy ≥ 90%",
+    "body": "ゲームごとに、1人につき自己ベスト1つで競います。1ラウンド終えると、その場でニックネームとパスワードだけ決めて記録を載せられます。",
+    "joinLogin": "Join / Login",
+    "playingAs": "Playing as",
+    "play": "Play",
+    "top": "Top {n}",
+    "empty": "まだ記録がありません。最初の記録を残してみてください。",
+    "loading": "Loading…",
+    "offline": "Status / offline — ランキングサーバーがまだ接続されていません。",
+    "boardAria": "{game} の順位",
+    "seoTitle": "ランキング — 度数・コード・スケールの順位",
+    "seoDescription": "ジャズ九九3ゲームの、反応速度(正解1つにかかった時間)ランキングです。正確度90%以上のラウンドの自己ベストで競います。",
+    "unit": "Reaction (s)"
+  },
+  "footer": {
+    "colophon": "Colophon",
+    "blurb": "Three mental drills for jazz: degree, chord, scale. Set in Helvetica and JetBrains Mono.",
+    "index": "Index",
+    "credits": "Credits",
+    "builtBy": "Built by Kihyeon Kwon",
+    "leaderboard": "ランキング",
+    "version": "Version / 0.3"
   }
 }

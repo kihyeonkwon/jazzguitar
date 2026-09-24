@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { Inter, JetBrains_Mono } from 'next/font/google'
+import { getLocale } from 'next-intl/server'
 import './globals.css'
 import {
   HOME_DESCRIPTION,
@@ -8,6 +10,10 @@ import {
   SITE_URL,
   verificationMetadata,
 } from '@/lib/seo'
+
+// Helvetica Neue가 없는 기기용 그로테스크 + 작은 라벨용 모노스페이스 (globals.css의 --font-* 가 참조)
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap' })
+const jetbrains = JetBrains_Mono({ subsets: ['latin'], weight: ['300', '400', '500'], variable: '--font-jetbrains', display: 'swap' })
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -39,7 +45,7 @@ export const metadata: Metadata = {
         url: '/assets/landing/tree-workspace.png',
         width: 1672,
         height: 941,
-        alt: 'Jazz Guitar Tree 재즈기타 학습 시스템',
+        alt: '재즈 구구단 — 악기 없이 하는 재즈 암산 훈련',
       },
     ],
   },
@@ -62,22 +68,15 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale()
+
   return (
     <html
-      lang="ko"
-      className="h-full antialiased"
+      lang={locale}
+      className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink font-sans">
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 z-[100] opacity-[0.035] mix-blend-multiply"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 1px 1px, rgba(45,58,49,0.48) 1px, transparent 0)',
-            backgroundSize: '6px 6px',
-          }}
-        />
         {children}
       </body>
     </html>

@@ -1,94 +1,20 @@
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 import { Link } from '@/lib/i18n/navigation'
 import {
-  HOME_DESCRIPTION,
-  HOME_TITLE,
-  SITE_NAME,
+  LOCALE_BCP47,
   SITE_URL,
   asLocale,
   buildPageMetadata,
   jsonLd,
 } from '@/lib/seo'
-import {
-  IconArrowRight,
-  IconBlues,
-  IconCheck,
-  IconHarmony,
-  IconMetronome,
-  IconRoot,
-  IconStandards,
-} from '@/components/icons'
+import { GAMES } from '@/lib/train/games'
+import { ACCURACY_GATE, DRILL_THRESHOLDS, cpmToSpc } from '@/lib/progress/thresholds'
 
-const TRUST_ROW = ['Lesson Notes', 'Tree', 'Train', 'Voicing', 'Standards', 'Ear']
-
-const LANDING_IMAGES = {
-  tree: '/assets/landing/tree-workspace.png',
-  practice: '/assets/landing/practice-flow.png',
-  train: '/assets/landing/train-tools.png',
-}
-
-const PLANNER_ROWS = [
-  ['오늘 시간', '60분'],
-  ['현재 주제', 'Drop 2/3 코드 보이싱'],
-  ['확인 도구', '스케일 구성음 · 지판 음 · 코드 진행'],
-]
-
-const OUTCOMES = [
-  ['10분', '워밍업', '지판 음과 스케일 구성음을 짧게 확인합니다.'],
-  ['40분', '주제 연습', '오늘의 주제를 단계별 체크포인트로 진행합니다.'],
-  ['10분', '곡 적용', '연습한 내용을 실제 진행 위에서 점검합니다.'],
-]
-
-const STATS = [
-  ['1 주제', '한 세션에서 다룰 핵심을 하나로 제한합니다.'],
-  ['5분', '기본기는 짧은 라운드로 자주 확인합니다.'],
-  ['1 곡', '마지막 기준은 설명이 아니라 곡 위의 적용입니다.'],
-]
-
-const TOPIC_TABS = ['이론', '실습', '체크리스트', 'Train', '곡 적용']
-
-const TOOL_GRID = [
-  {
-    title: 'Tree',
-    body: '흩어진 레슨 자료를 주제와 단계로 정리합니다.',
-    icon: <IconHarmony size={18} />,
-  },
-  {
-    title: 'Train',
-    body: '지판, 스케일, 코드 구성음을 짧은 라운드로 확인합니다.',
-    icon: <IconBlues size={18} />,
-  },
-  {
-    title: '코드 진행 악보',
-    body: '연습한 보이싱을 실제 진행 위에서 바로 들어봅니다.',
-    icon: <IconStandards size={18} />,
-  },
-  {
-    title: '오늘의 주제',
-    body: '이론, 실습, 체크리스트를 한 화면에서 따라갑니다.',
-    icon: <IconRoot size={18} />,
-  },
-]
-
-const BENEFITS = [
-  ['레슨 후 정리', '선생님에게 받은 자료를 주제 단위로 정리합니다.'],
-  ['기본기 확인', '반복 확인이 필요한 항목은 Train으로 분리합니다.'],
-  ['단계별 진행', '체크포인트를 따라가며 다음 단계로 이동합니다.'],
-  ['곡 위 적용', '마지막에는 코드 진행과 곡 위에서 확인합니다.'],
-  ['과한 메뉴 제거', '지금 필요한 학습 흐름만 남깁니다.'],
-  ['확장 가능한 구조', '새로운 레슨 자료를 기존 Tree에 붙일 수 있습니다.'],
-]
-
-const FAQ = [
-  ['이 서비스는 누구를 위한 건가요?', '재즈 기타를 체계적으로 시작하고 싶은 학습자를 위한 개인 학습 시스템입니다.'],
-  ['재즈기타 독학에도 도움이 되나요?', '레슨을 받지 않는 학습자도 주제, Train, 곡 적용 순서로 재즈기타 기본기를 정리할 수 있습니다.'],
-  ['재즈기타 레슨 복습용으로 쓸 수 있나요?', '선생님에게 받은 자료를 주제별로 모으고, 다음 연습에서 바로 확인할 수 있게 구성합니다.'],
-  ['Tree와 Train은 어떻게 다른가요?', 'Tree는 학습 지도를 보는 공간이고, Train은 손과 귀의 반응을 짧게 확인하는 공간입니다.'],
-  ['레슨 자료가 계속 늘어나도 괜찮나요?', '주제 단위로 묶는 구조라 자료가 늘어나도 기존 흐름 안에 배치할 수 있습니다.'],
-  ['연습은 어느 정도 분량을 기준으로 하나요?', '기본은 1시간 세션입니다. 워밍업 10분, 메인 40분, 곡 적용 10분으로 나눕니다.'],
-]
+const KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+const SAMPLE_CHORD = ['Bb', 'D', 'F', 'Ab']
 
 type PageProps = {
   params: Promise<{ locale: string }>
@@ -97,67 +23,49 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale: rawLocale } = await params
   const locale = asLocale(rawLocale)
+  const t = await getTranslations({ locale, namespace: 'site' })
 
-  return buildPageMetadata({
+  const meta = buildPageMetadata({
     locale,
-    title: HOME_TITLE,
-    description: HOME_DESCRIPTION,
-    keywords: [
-      '재즈기타 배우기',
-      '재즈기타 입문',
-      '재즈기타 학습',
-      '재즈기타 연습 앱',
-    ],
+    title: t('homeTitle'),
+    description: t('homeDescription'),
+    siteName: t('name'),
+    imageAlt: t('ogAlt'),
   })
+  // 홈은 [locale] 레이아웃과 같은 세그먼트라 레이아웃의 제목 템플릿이 적용되지 않는다 — 직접 붙인다
+  return { ...meta, title: { absolute: `${t('homeTitle')} | ${t('name')}` } }
 }
 
-export default function HomePage() {
+export default async function HomePage({ params }: PageProps) {
+  const locale = asLocale((await params).locale)
+  const t = await getTranslations({ locale, namespace: 'site' })
+  const name = t('name')
+  const description = t('homeDescription')
+
   const structuredData = [
     {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: SITE_NAME,
+      name,
       url: SITE_URL,
-      inLanguage: 'ko-KR',
-      description: HOME_DESCRIPTION,
+      inLanguage: LOCALE_BCP47[locale],
+      description,
     },
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: SITE_NAME,
+      name,
       url: SITE_URL,
       logo: `${SITE_URL}/icon.svg`,
     },
     {
       '@context': 'https://schema.org',
-      '@type': 'Course',
-      name: '재즈기타 입문부터 즉흥연주까지',
-      description:
-        '재즈기타 코드 보이싱, 스케일, 릭, 컴핑, 블루스 즉흥을 주제별로 배우는 한국어 재즈 기타 학습 과정입니다.',
-      url: `${SITE_URL}/ko`,
-      inLanguage: 'ko-KR',
-      educationalLevel: 'Beginner to Intermediate',
-      teaches: [
-        '재즈기타 코드 보이싱',
-        '재즈기타 스케일',
-        '재즈 블루스 즉흥',
-        '드롭2 드롭3 코드',
-        '컴핑과 레퍼토리 적용',
-      ],
-      provider: {
-        '@type': 'Organization',
-        name: SITE_NAME,
-        sameAs: SITE_URL,
-      },
-    },
-    {
-      '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
-      name: SITE_NAME,
+      name,
       applicationCategory: 'EducationalApplication',
       operatingSystem: 'Web',
       url: SITE_URL,
-      description: HOME_DESCRIPTION,
+      description,
       offers: {
         '@type': 'Offer',
         price: '0',
@@ -173,415 +81,475 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
       />
       <Hero />
+      <Diagnosis />
+      <Commute />
+      <GameIndex />
+      <Numerics />
+      <Scoring />
+      <Archive />
+      <Exit />
+    </div>
+  )
+}
 
-      <Section>
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="eyebrow">Practice System</p>
-          <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-            더 빠르고, 더 정확하게.
-          </h2>
-          <p className="mt-5 break-keep text-pretty text-base leading-8 text-ink-soft">
-            매번 “오늘 뭐 하지?”에서 시작하지 않도록, 학습 시간과 현재 주제를 기준으로
-            오늘의 연습 흐름을 한 화면에 정리합니다.
-          </p>
-        </div>
+/* ── 01 · Atmospheric bitmap hero ─────────────────────────────── */
 
-        <PracticePlanner />
-      </Section>
+function Hero() {
+  const t = useTranslations('landing')
+  const tSite = useTranslations('site')
+  const tMenu = useTranslations('menu')
 
-      <Section subtle>
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="eyebrow">Learning Standard</p>
-          <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-            재즈 기타 학습을 작게 나누고, 끝까지 연결합니다.
-          </h2>
-        </div>
+  return (
+    <section className="relative overflow-hidden border-b border-ink bg-blue">
+      {/* 하늘 위의 핑크 비트맵 구름 — 위쪽 양 모서리에서 피어올라 아래로 흩어진다 */}
+      <Cloud className="-left-[12%] -top-[18%] h-[62%] w-[58%]" />
+      <Cloud className="-right-[10%] -top-[22%] h-[78%] w-[62%]" />
+      <Cloud className="right-[18%] top-[38%] h-[46%] w-[40%] opacity-70" />
+      <div
+        aria-hidden
+        className="dither-dense fade-t pointer-events-none absolute inset-x-0 bottom-0 h-56 text-paper"
+      />
 
-          <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-3">
-            {STATS.map(([value, body]) => (
-            <div key={value} className="bg-paper-bright/70 p-6">
-              <div className="display text-4xl text-ink">{value}</div>
-              <p className="mt-4 break-keep text-sm leading-7 text-ink-soft">{body}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
+      <div className="relative grid grid-cols-2 gap-y-2 px-4 pt-5 sm:px-6 md:grid-cols-12">
+        <Label className="md:col-span-3">System / 001</Label>
+        <Label className="text-right md:col-span-5 md:text-left">{t('metaCenter')}</Label>
+        <Label className="md:col-span-2">2026 / 09</Label>
+        <Label className="text-right md:col-span-2">{t('metaGames')}</Label>
+      </div>
 
-      <Section>
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="eyebrow">Topic Workspace</p>
-          <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-            레슨에서 연주까지 한 주제 안에서 진행합니다.
-          </h2>
-          <p className="mt-5 break-keep text-pretty text-base leading-8 text-ink-soft">
-            처음 조금 설명하고 “나머지는 다 바꿔서 해보세요”로 끝나지 않게,
-            이론, 실습, 체크리스트, 적용을 한 흐름으로 둡니다.
-          </p>
-        </div>
+      <div className="relative px-4 pb-10 pt-14 sm:px-6 sm:pt-20">
+        <p
+          aria-hidden
+          className="mega-ko"
+          style={{ fontSize: 'clamp(4.5rem, 19vw, 21rem)', lineHeight: 0.94 }}
+        >
+          {tSite('mega1')}
+          <br />
+          <span className="ml-[10vw]">{tSite('mega2')}</span>
+        </p>
 
-        <TopicWorkspace />
-
-        <LandingImage
-          src={LANDING_IMAGES.practice}
-          alt="기타 연습 흐름과 체크리스트를 정리한 라인 일러스트"
-          width={1672}
-          height={941}
-          className="mt-10"
-        />
-      </Section>
-
-      <QuoteSection />
-
-      <Section>
-        <div className="max-w-2xl">
-          <p className="eyebrow">Tools</p>
-          <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-            한국에서 만나는 재즈 기타 학습 도구.
-          </h2>
-          <p className="mt-5 break-keep text-pretty text-base leading-8 text-ink-soft">
-            연습 앱이 아니라, 레슨 자료와 실제 연주 사이를 연결하는 학습 운영체제를 목표로 합니다.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
-            {TOOL_GRID.map((tool) => (
-              <div key={tool.title} className="grid min-h-40 bg-paper-bright/70 p-6">
-                <div className="flex items-center gap-3 text-ink-soft">
-                  <span className="grid h-9 w-9 place-items-center bg-surface-soft text-ink">
-                    {tool.icon}
-                  </span>
-                  <span className="eyebrow">{tool.title}</span>
-                </div>
-                <div className="self-end">
-                  <h3 className="display text-2xl text-ink">{tool.title}</h3>
-                  <p className="mt-3 break-keep text-sm leading-7 text-ink-soft">{tool.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <LandingImage
-            src={LANDING_IMAGES.train}
-            alt="기타 기본기 훈련 도구를 보여주는 라인 일러스트"
-            width={1536}
-            height={1024}
-            imageClassName="object-cover"
-          />
-        </div>
-      </Section>
-
-      <Section subtle>
-        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <div>
-            <p className="eyebrow">Jazz Guitar OS</p>
-            <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-              완전한 스타터 시스템
-            </h2>
-            <p className="mt-5 break-keep text-pretty text-base leading-8 text-ink-soft">
-              주제 지도와 연습 도구를 분리하지 않고, 같은 디자인 언어 안에서 이어지게 만듭니다.
+        <div className="mt-12 grid gap-10 md:grid-cols-12 md:gap-6 lg:mt-16">
+          <div className="md:col-span-6 lg:col-span-5">
+            <Label>Fig. 00 — 9 × 9</Label>
+            <h1 className="display mt-4 text-[2rem] leading-[1.08] sm:text-5xl">
+              {t('h1a')}
+              <br />
+              {t('h1b')}
+            </h1>
+            <p className="mt-6 max-w-md break-keep text-[17px] leading-[1.7] text-ink-soft">
+              {t('heroBody')}
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <ProductPanel title="Tree Map" />
-            <ProductPanel title="Train Session" train />
-          </div>
-        </div>
-      </Section>
-
-      <Section>
-        <div className="max-w-2xl">
-          <p className="eyebrow">Benefits</p>
-          <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-            자격 요건과 혜택
-          </h2>
-        </div>
-
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {BENEFITS.map(([title, body]) => (
-            <div key={title} className="bg-paper-bright/70 p-6">
-              <IconCheck size={18} className="text-sage" />
-              <h3 className="mt-8 text-base font-bold text-ink">{title}</h3>
-              <p className="mt-3 break-keep text-sm leading-7 text-ink-soft">{body}</p>
+          <div className="md:col-span-6 xl:absolute xl:right-[5vw] xl:top-[7.5rem] xl:w-[25rem]">
+            <div className="os-window">
+              <div className="os-titlebar">
+                <span className="os-ctl" aria-hidden />
+                <span className="flex-1 truncate">question.014</span>
+                <span className="os-ctl" aria-hidden />
+              </div>
+              <div className="os-body">
+                <div className="flex items-baseline justify-between border-b border-ink px-3 py-3">
+                  <span className="font-sans text-4xl font-semibold tracking-[-0.05em]">Bb7 = ?</span>
+                  <span className="text-[11px] text-ink-faint">4 / 4</span>
+                </div>
+                <div
+                  className="grid grid-cols-6 gap-px bg-ink"
+                  role="img"
+                  aria-label={t('sampleAria')}
+                >
+                  {KEYS.map((note) => {
+                    const on = SAMPLE_CHORD.includes(note)
+                    return (
+                      <span
+                        key={note}
+                        className={`grid h-11 place-items-center text-[11px] ${
+                          on
+                            ? note === 'Bb'
+                              ? 'bg-pink font-bold'
+                              : 'bg-ink text-ink-inv'
+                            : 'bg-paper-bright text-ink-quiet'
+                        }`}
+                      >
+                        {note}
+                      </span>
+                    )
+                  })}
+                </div>
+                <div className="flex flex-wrap gap-3 border-t border-ink bg-gray px-3 py-3">
+                  {GAMES.map((g) => (
+                    <Link key={g.type} href={`/train/${g.type}`} className="os-btn arrow-shift">
+                      {tMenu(g.menuKey)} <span className="arrow">→</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div className="os-statusbar">
+                <span>Correct</span>
+                <span>2.4s</span>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative overflow-hidden border-t border-ink bg-blue py-2" aria-hidden>
+        <div className="ticker-track label">
+          {[0, 1].map((dup) => (
+            <span key={dup} className="inline-flex">
+              {[...KEYS, ...KEYS].map((item, i) => (
+                <span key={`${dup}-${i}`} className="px-6">
+                  {item} <span className="pl-10">/</span>
+                </span>
+              ))}
+            </span>
           ))}
         </div>
-      </Section>
+      </div>
+    </section>
+  )
+}
 
-      <Section subtle>
-        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="eyebrow">FAQ</p>
-            <h2 className="display mt-4 break-keep text-balance text-3xl leading-[1.18] sm:text-5xl">
-              자주 묻는 질문
-            </h2>
-          </div>
-          <div className="px-0 py-2">
-            {FAQ.map(([question, answer]) => (
-              <details key={question} className="group border-b border-rule/80 py-5 last:border-b-0">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-bold text-ink">
-                  <span className="break-keep">{question}</span>
-                  <span className="text-ink-faint transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-4 break-keep text-sm leading-7 text-ink-soft">{answer}</p>
-              </details>
-            ))}
-          </div>
+/* ── 02 · Diagnosis — the moment it goes blank ────────────────── */
+
+function Diagnosis() {
+  const t = useTranslations('landing')
+
+  return (
+    <section className="border-b border-ink bg-pink">
+      <div className="grid min-h-[80svh] grid-cols-1 px-4 py-6 sm:px-6 md:grid-cols-12 md:gap-6">
+        <div className="flex justify-between md:col-span-12">
+          <Label>{t('painLabel')}</Label>
+          <Label>Fig. 01</Label>
         </div>
-      </Section>
+        <h2
+          className="display self-center break-keep py-16 md:col-span-9"
+          style={{ fontSize: 'clamp(2.5rem, 7.2vw, 7.5rem)', lineHeight: 1.04, letterSpacing: '-0.05em' }}
+        >
+          {t('painA')}
+          <br />
+          {t('painB')}
+        </h2>
+        <div className="self-end border-t border-ink pt-4 md:col-span-3">
+          <p className="break-keep text-[17px] font-semibold leading-[1.6]">{t('painBody')}</p>
+          <p className="label mt-6">{t('painNext')}</p>
+        </div>
+      </div>
+    </section>
+  )
+}
 
-      <section className="bg-ink text-ink-inv">
-        <div className="mx-auto max-w-6xl px-5 py-16 text-center sm:px-6 sm:py-20">
-          <p className="eyebrow text-clay">Jazz Guitar Tree</p>
-          <h2 className="display mx-auto mt-4 max-w-3xl break-keep text-balance text-3xl leading-[1.16] sm:text-5xl">
-            오늘 할 일을 줄이고, 다음 단계는 선명하게.
+/* ── 02b · When — the commute ─────────────────────────────────── */
+
+function Commute() {
+  const t = useTranslations('landing')
+
+  return (
+    <section className="border-b border-ink bg-paper">
+      <div className="grid gap-y-10 px-4 py-10 sm:px-6 md:grid-cols-12 md:gap-x-6 md:py-16">
+        <div className="md:col-span-5">
+          <Label>{t('commuteLabel')}</Label>
+          <p className="mt-6 flex items-end gap-3" aria-hidden>
+            <span className="mega-num">{t('commuteNum')}</span>
+            <span className="display pb-[0.12em] text-5xl leading-none sm:text-7xl">{t('commuteUnit')}</span>
+          </p>
+        </div>
+        <div className="self-end md:col-span-6 md:col-start-7">
+          <h2 className="display break-keep text-3xl leading-[1.08] sm:text-5xl">{t('commuteTitle')}</h2>
+          <p className="mt-6 max-w-xl break-keep text-[17px] leading-[1.7] text-ink-soft">{t('commuteBody')}</p>
+          <p className="mt-8 inline-block border border-ink bg-paper-bright px-3 py-2 font-mono text-xs">
+            {t('commuteExample')}
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ── 03 · Game index ──────────────────────────────────────────── */
+
+function GameIndex() {
+  const t = useTranslations('landing')
+  const tGames = useTranslations('games')
+  const tLevel = useTranslations('levels')
+
+  return (
+    <section className="border-b border-ink bg-paper">
+      <div className="flex justify-between border-b border-ink px-4 py-3 sm:px-6">
+        <Label>{t('indexLabel')}</Label>
+        <Label>{t('indexUnit')}</Label>
+      </div>
+      <ol>
+        {GAMES.map((g) => {
+          const th = DRILL_THRESHOLDS[g.type]
+          return (
+            <li key={g.type} className="border-b border-ink last:border-b-0">
+              <Link
+                href={`/train/${g.type}`}
+                className="arrow-shift grid gap-x-6 gap-y-5 px-4 py-8 transition-colors duration-100 hover:bg-pink sm:px-6 md:grid-cols-12 md:items-start md:py-12"
+              >
+                <span className="label md:col-span-1">{g.index}</span>
+                <div className="md:col-span-6">
+                  <h3 className="display text-[2.75rem] leading-[0.98] sm:text-7xl">{tGames(`${g.type}.title`)}</h3>
+                  <p className="mt-4 max-w-md break-keep text-[17px] leading-[1.7] text-ink-soft">{tGames(`${g.type}.description`)}</p>
+                </div>
+                <div className="md:col-span-4">
+                  <div className="border border-ink bg-paper-bright font-mono text-xs">
+                    <div className="flex items-baseline justify-between gap-3 border-b border-ink px-3 py-2">
+                      <span className="font-bold">{g.example[0]}</span>
+                      <span>= {g.example[1]}</span>
+                    </div>
+                    <div className="grid grid-cols-3 text-center">
+                      {([
+                        [tLevel('proficient'), th.proficient],
+                        [tLevel('fluent'), th.fluent],
+                        [tLevel('master'), th.master],
+                      ] as const).map(([name, cpm], i) => (
+                        <div key={name} className={`px-2 py-2 ${i < 2 ? 'border-r border-ink' : ''}`}>
+                          <div className="text-[10px] text-ink-faint">{name}</div>
+                          <div className="font-sans text-2xl font-semibold tabular tracking-[-0.04em]">{cpmToSpc(cpm).toFixed(1)}<span className="text-sm">s</span></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="label mt-2 text-ink-faint">{tGames(`${g.type}.round`)}</p>
+                </div>
+                <span className="label text-right md:col-span-1">
+                  {t('play')} <span className="arrow">→</span>
+                </span>
+              </Link>
+            </li>
+          )
+        })}
+      </ol>
+    </section>
+  )
+}
+
+/* ── 04 · Giant numeric composition (dark) ────────────────────── */
+
+function Numerics() {
+  const t = useTranslations('landing')
+  const offsets = ['md:col-start-1', 'md:col-start-5', 'md:col-start-3']
+  const STATS = [
+    ['12', t('stat1Unit'), t('stat1Body')],
+    ['9', t('stat2Unit'), t('stat2Body')],
+    [String(Math.round(ACCURACY_GATE * 100)), t('stat3Unit'), t('stat3Body')],
+  ]
+
+  return (
+    <section className="border-b border-ink bg-paper text-ink">
+      <div className="flex justify-between px-4 pt-6 sm:px-6">
+        <Label className="text-ink-faint">Parameters</Label>
+        <Label className="text-ink-faint">Chapter 03</Label>
+      </div>
+      <div className="px-4 pb-10 pt-10 sm:px-6">
+        {STATS.map(([num, unit, body], i) => (
+          <div
+            key={`${num}-${unit}`}
+            className="grid grid-cols-1 items-end gap-x-6 border-b border-ink/30 py-6 md:grid-cols-12"
+          >
+            <div className={`flex items-end gap-4 md:col-span-6 ${offsets[i]}`}>
+              <span className="mega-num">{num}</span>
+              <span className="display pb-[0.15em] text-5xl leading-none sm:text-7xl">{unit}</span>
+            </div>
+            <p className="mt-4 max-w-[18rem] break-keep text-[15px] leading-[1.7] text-ink-soft md:col-span-3 md:col-start-10 md:mt-0">
+              <span className="label mb-2 block text-ink-faint">{`N.0${i + 1}`}</span>
+              {body}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ── 05 · Retro operating-system desktop — how a round is scored ─ */
+
+function Scoring() {
+  const t = useTranslations('landing')
+  const tGames = useTranslations('games')
+  const tLevel = useTranslations('levels')
+
+  return (
+    <section className="border-b border-ink bg-gray">
+      <div className="os-menubar overflow-hidden whitespace-nowrap">
+        <span className="bg-ink text-ink-inv">9×9</span>
+        <span>File</span>
+        <span>Round</span>
+        <span>Score</span>
+        <span className="ml-auto text-ink-faint">Sys/04 — Scoring</span>
+      </div>
+
+      <div className="grid gap-8 px-4 py-12 sm:px-6 md:grid-cols-12 md:gap-6 md:py-20">
+        <div className="md:col-span-4">
+          <Label>{t('scoringLabel')}</Label>
+          <h2 className="display mt-5 break-keep text-4xl leading-[1.04] lg:text-[3.25rem]">
+            {t('scoringTitle')}
           </h2>
-          <div className="mt-8 flex justify-center gap-3">
-            <LandingButton href="/curriculum" tone="light">
-              Tree 보기
-            </LandingButton>
-            <LandingButton href="/train" tone="ghost-dark">
-              Train 시작
-            </LandingButton>
-          </div>
-        </div>
-      </section>
-    </div>
-  )
-}
-
-function Hero() {
-  return (
-    <section className="bg-paper">
-      <div className="mx-auto max-w-6xl px-5 pb-16 pt-20 text-center sm:px-6 sm:pb-20 sm:pt-24">
-        <p className="eyebrow">Jazz Guitar Tree</p>
-        <h1 className="display mx-auto mt-5 max-w-4xl break-keep text-balance text-4xl leading-[1.16] text-ink sm:text-6xl">
-          재즈 기타 학습을
-          <br className="hidden sm:block" />
-          하나의 워크스페이스에서
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl break-keep text-pretty text-base leading-8 text-ink-soft sm:text-lg">
-          재즈기타 독학과 레슨 복습에 필요한 노트, 주제 지도, 반복 훈련, 곡 적용을
-          한 흐름으로 정리합니다. 초보자가 시킨 대로 따라가도 재즈 즉흥의 기본기를
-          쌓을 수 있게 만듭니다.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <LandingButton href="/curriculum" tone="dark">
-            Tree 보기
-          </LandingButton>
-          <LandingButton href="/train">
-            Train 시작
-          </LandingButton>
-        </div>
-
-        <div className="mx-auto mt-12 flex max-w-4xl flex-wrap items-center justify-center gap-x-8 gap-y-4 py-5 text-sm font-bold text-ink-faint">
-          {TRUST_ROW.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-
-        <LandingImage
-          src={LANDING_IMAGES.tree}
-          alt="재즈 기타 학습 주제가 나무처럼 확장되는 라인 일러스트"
-          width={1672}
-          height={941}
-          priority
-          className="mt-10"
-        />
-      </div>
-    </section>
-  )
-}
-
-function Section({ children, subtle = false }: { children: ReactNode; subtle?: boolean }) {
-  return (
-    <section className={subtle ? 'bg-paper-bright/45' : 'bg-paper'}>
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20">
-        {children}
-      </div>
-    </section>
-  )
-}
-
-function LandingButton({
-  href,
-  tone = 'plain',
-  children,
-}: {
-  href: string
-  tone?: 'plain' | 'dark' | 'light' | 'ghost-dark'
-  children: ReactNode
-}) {
-  const styles = {
-    plain: 'border border-rule bg-paper-bright text-ink hover:border-sage hover:bg-surface-soft',
-    dark: 'bg-ink text-ink-inv hover:bg-terracotta',
-    light: 'bg-paper-bright text-ink hover:bg-surface',
-    'ghost-dark': 'border border-clay text-ink-inv hover:bg-paper-bright/10',
-  }
-
-  return (
-    <Link
-      href={href}
-      className={`inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold transition-colors ${styles[tone]}`}
-    >
-      {children}
-      <IconArrowRight size={14} />
-    </Link>
-  )
-}
-
-function PracticePlanner() {
-  return (
-    <div className="mx-auto mt-10 max-w-5xl">
-      <div className="grid gap-3 md:grid-cols-3">
-        {PLANNER_ROWS.map(([label, value]) => (
-          <div key={label} className="bg-paper-bright/65 p-5">
-            <div className="section-no">{label}</div>
-            <div className="mt-3 break-keep text-sm font-bold text-ink">{value}</div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-3 grid gap-3 md:grid-cols-3">
-        {OUTCOMES.map(([time, title, body]) => (
-          <div key={title} className="bg-surface-soft/60 p-6">
-            <div className="display text-3xl text-ink">{time}</div>
-            <h3 className="mt-4 text-base font-bold text-ink">{title}</h3>
-            <p className="mt-3 break-keep text-sm leading-7 text-ink-soft">{body}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function TopicWorkspace() {
-  return (
-    <div className="mx-auto mt-12 max-w-5xl">
-      <div className="grid gap-2 sm:grid-cols-5">
-        {TOPIC_TABS.map((tab) => (
-          <div key={tab} className="bg-surface-soft/75 px-4 py-4 text-center text-xs font-bold text-ink-soft">
-            {tab}
-          </div>
-        ))}
-      </div>
-
-      <div className="grid gap-10 px-2 py-8 sm:p-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-        <div>
-          <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-terracotta text-ink-inv">
-            <IconMetronome size={18} />
-          </div>
-          <h3 className="display mt-8 break-keep text-3xl leading-tight text-ink sm:text-4xl">
-            Drop 2/3 코드 보이싱
-          </h3>
-          <p className="mt-5 break-keep text-sm leading-7 text-ink-soft">
-            드롭2 3세트, 드롭3 2세트를 M7, D7, m7, m7b5, dim7에 대해 익히고,
-            같은 스트링셋 안에서 짧은 진행에 적용합니다.
+          <p className="mt-6 max-w-sm break-keep text-[15px] leading-[1.7] text-ink-soft">
+            {t('scoringBody')}
           </p>
         </div>
 
-        <div className="grid gap-3">
-          {[
-            ['T', '지판을 형태로 인식합니다.'],
-            ['P', '각 세트의 네 인버전을 확인합니다.'],
-            ['C', '코드 진행 위에서 가까운 다음 모양으로 이동합니다.'],
-          ].map(([tag, text]) => (
-            <div key={tag} className="grid grid-cols-[2.5rem_1fr] bg-paper-bright/65 px-4 py-4">
-              <span className="section-no">{tag}</span>
-              <span className="break-keep text-sm leading-7 text-ink-soft">{text}</span>
-            </div>
-          ))}
+        <div className="os-window md:col-span-8">
+          <div className="os-titlebar">
+            <span className="os-ctl" aria-hidden />
+            <span className="flex-1 truncate">terminal — round</span>
+          </div>
+          <div className="terminal text-[11px] sm:text-xs" aria-label={t('scoringLogAria')}>
+            <span className="dim">gugudan@train:~$</span> play scale-construction{'\n'}
+            <span className="dim">[21:40:02]</span> q01  F  Dorian         F G Ab Bb C D Eb    <span className="ok">ok</span>    4.1s{'\n'}
+            <span className="dim">[21:40:07]</span> q02  Ab Major          Ab Bb C Db Eb F G   <span className="ok">ok</span>    5.0s{'\n'}
+            <span className="dim">[21:40:13]</span> q03  E  Mixolydian     E F# G# A B C# D#   <span className="hl">miss</span>  → D{'\n'}
+            <span className="dim">[21:40:19]</span> q04  Bb Blues Scale    Bb Db Eb E F Ab     <span className="ok">ok</span>    5.6s{'\n'}
+            <span className="dim">           </span> …{'\n'}
+            <span className="dim">[21:40:58]</span> round   10 questions · 56s{'\n'}
+            <span className="dim">[21:40:58]</span> result  9/10 · accuracy 90% · <span className="hl">reaction 6.22s</span>{'\n'}
+            <span className="dim">[21:40:58]</span> {t('levelLine')}{'\n'}
+            <span className="dim">gugudan@train:~$</span> <span className="cursor" />
+          </div>
         </div>
-      </div>
-    </div>
-  )
-}
 
-function LandingImage({
-  src,
-  alt,
-  width,
-  height,
-  priority = false,
-  className = '',
-  imageClassName = '',
-}: {
-  src: string
-  alt: string
-  width: number
-  height: number
-  priority?: boolean
-  className?: string
-  imageClassName?: string
-}) {
-  return (
-    <figure className={`mx-auto overflow-hidden ${className}`}>
-      <Image
-        src={src}
-        alt={alt}
-        width={width}
-        height={height}
-        priority={priority}
-        sizes="(min-width: 1024px) 960px, calc(100vw - 40px)"
-        className={`h-auto w-full mix-blend-multiply ${imageClassName}`}
-      />
-    </figure>
-  )
-}
+        <div className="os-window self-start md:col-span-7">
+          <div className="os-titlebar">
+            <span className="os-ctl" aria-hidden />
+            <span className="flex-1 truncate">levels.tbl</span>
+            <span className="os-ctl" aria-hidden />
+          </div>
+          <table className="os-body w-full text-left text-[11px]">
+            <thead>
+              <tr className="border-b border-ink bg-gray">
+                <th className="border-r border-ink px-3 py-1.5 font-normal">{t('tableGame')}</th>
+                <th className="border-r border-ink px-3 py-1.5 text-right font-normal">{tLevel('proficient')}</th>
+                <th className="border-r border-ink px-3 py-1.5 text-right font-normal">{tLevel('fluent')}</th>
+                <th className="px-3 py-1.5 text-right font-normal">{tLevel('master')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {GAMES.map((g) => {
+                const th = DRILL_THRESHOLDS[g.type]
+                return (
+                  <tr key={g.type} className="border-b border-ink last:border-b-0">
+                    <td className="border-r border-ink px-3 py-2 font-sans text-[13px] font-bold">{tGames(`${g.type}.title`)}</td>
+                    <td className="border-r border-ink px-3 py-2 text-right tabular">{cpmToSpc(th.proficient).toFixed(1)}s</td>
+                    <td className="border-r border-ink px-3 py-2 text-right tabular">{cpmToSpc(th.fluent).toFixed(1)}s</td>
+                    <td className="bg-pink px-3 py-2 text-right tabular font-bold">{cpmToSpc(th.master).toFixed(1)}s</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+          <div className="os-statusbar">
+            <span>Unit / Reaction (s)</span>
+            <span>Max. to enter</span>
+          </div>
+        </div>
 
-function QuoteSection() {
-  return (
-    <section className="bg-paper">
-      <div className="mx-auto max-w-4xl px-5 py-16 text-center sm:px-6 sm:py-20">
-        <p className="display break-keep text-balance text-2xl leading-[1.45] text-ink sm:text-3xl">
-          “자료는 많아질 수 있습니다. 중요한 것은 매번 새로 시작하지 않도록,
-          오늘의 연습이 다음 단계와 연결되어 있는지 보는 것입니다.”
-        </p>
-        <div className="mt-7 text-sm font-bold text-ink-soft">Jazz Guitar Tree</div>
+        <div className="md:col-span-4 md:col-start-9 md:mt-10">
+          <div className="os-window">
+            <div className="os-titlebar is-light">
+              <span className="os-ctl" aria-hidden />
+              <span>Notice</span>
+            </div>
+            <div className="os-body flex gap-4 border-t border-ink p-4">
+              <span aria-hidden className="grid h-8 w-8 shrink-0 place-items-center border border-ink bg-pink font-sans text-lg font-semibold">!</span>
+              <p className="break-keep font-sans text-[13px] leading-[1.6]">
+                {t('notice', { gate: Math.round(ACCURACY_GATE * 100) })}
+              </p>
+            </div>
+            <div className="flex justify-end border-t border-ink bg-gray p-3">
+              <Link href="/train" className="os-btn">OK</Link>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   )
 }
 
-function ProductPanel({ title, train = false }: { title: string; train?: boolean }) {
+/* ── 06 · Dark archive / accordion ────────────────────────────── */
+
+function Archive() {
+  const t = useTranslations('landing')
+  const FAQ = t.raw('faq') as Array<{ q: string; a: string }>
+
   return (
-    <div className="min-h-80 bg-paper-bright/70 p-6">
-      <div className="flex items-center justify-between pb-4">
-        <span className="eyebrow">{title}</span>
-        <span className="section-no">LIVE</span>
+    <section className="on-dark bg-ink text-ink-inv">
+      <div className="grid items-end gap-6 px-4 pb-10 pt-8 sm:px-6 md:grid-cols-12">
+        <h2 className="md:col-span-8">
+          <span aria-hidden className="mega block" style={{ fontSize: 'clamp(5rem, 16vw, 18rem)' }}>FAQ</span>
+          <span className="display mt-4 block text-2xl sm:text-3xl">{t('faqTitle')}</span>
+        </h2>
+        <Label className="text-ink-inv/60 md:col-span-4 md:text-right">{t('faqArchive', { count: FAQ.length })}</Label>
       </div>
-      {train ? (
-        <div className="mt-8">
-          <div className="display text-4xl text-ink">F Dorian</div>
-          <div className="mt-8 grid grid-cols-4 gap-2">
-            {['F', 'G', 'Ab', 'Bb', 'C', 'D', 'E', 'Gb'].map((note, index) => (
-              <div
-                key={note}
-                className={`grid aspect-square place-items-center rounded-full text-xs font-bold ${
-                  index < 6 ? 'bg-ink text-ink-inv' : 'bg-surface-soft text-ink-soft'
-                }`}
-              >
-                {note}
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="relative mt-8 h-48">
-          <div className="absolute left-1/2 top-0 h-full w-px bg-rule-strong" />
-          {['Foundation', 'Blues', 'Harmony', 'Standards'].map((node, index) => (
-            <div
-              key={node}
-              className={`absolute flex items-center gap-2 text-xs font-bold text-ink ${
-                index % 2 === 0 ? 'left-2' : 'right-2'
-              }`}
-              style={{ top: `${index * 25 + 4}%` }}
-            >
-              <span className="h-2 w-2 rounded-full bg-sage" />
-              {node}
+      <div className="border-t border-ink-inv/40">
+        {FAQ.map(({ q: question, a: answer }, i) => (
+          <details key={question} className="group border-b border-ink-inv/40">
+            <summary className="grid cursor-pointer list-none grid-cols-[3rem_1fr_auto] items-baseline gap-x-4 px-4 py-6 transition-colors duration-100 hover:bg-pink hover:text-ink sm:px-6 md:grid-cols-[6rem_1fr_auto] [&::-webkit-details-marker]:hidden">
+              <span className="label">{`Q.0${i + 1}`}</span>
+              <span className="break-keep text-xl font-bold leading-snug tracking-[-0.02em] sm:text-2xl">{question}</span>
+              <span aria-hidden className="grid h-6 w-6 place-items-center self-center border border-current font-mono text-sm leading-none">
+                <span className="group-open:hidden">+</span>
+                <span className="hidden group-open:inline">−</span>
+              </span>
+            </summary>
+            <div className="grid grid-cols-[3rem_1fr] gap-x-4 px-4 pb-8 sm:px-6 md:grid-cols-[6rem_1fr]">
+              <span className="label text-ink-inv/60">A.</span>
+              <p className="max-w-2xl break-keep text-[17px] leading-[1.7] text-ink-inv/80">{answer}</p>
             </div>
-          ))}
-        </div>
-      )}
+          </details>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ── 07 · Exit — three enormous links ─────────────────────────── */
+
+function Exit() {
+  const t = useTranslations('landing')
+  const tGames = useTranslations('games')
+
+  return (
+    <section className="bg-paper">
+      <div className="grid gap-6 px-4 py-10 sm:px-6 md:grid-cols-12">
+        <Label className="md:col-span-3">{t('exitLabel')}</Label>
+        <h2 className="display break-keep text-3xl leading-[1.1] sm:text-5xl md:col-span-8">
+          {t('exitTitle')}
+        </h2>
+      </div>
+      <div className="border-t border-ink">
+        {GAMES.map((g) => (
+          <Link
+            key={g.type}
+            href={`/train/${g.type}`}
+            className="arrow-shift block border-b border-ink px-4 pb-5 pt-4 transition-colors duration-100 last:border-b-0 hover:bg-pink sm:px-6"
+          >
+            <span className="flex justify-between">
+              <span className="label">{g.index}</span>
+              <span className="label">{tGames(`${g.type}.title`)}</span>
+            </span>
+            <span className="mega mt-6 flex items-baseline justify-between" style={{ fontSize: 'clamp(3.5rem, 12vw, 13rem)' }}>
+              {g.short}
+              <span className="arrow" aria-hidden>→</span>
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function Cloud({ className = '' }: { className?: string }) {
+  return (
+    <div aria-hidden className={`pointer-events-none absolute text-cloud ${className}`}>
+      <div className="dither-coarse mask-blob-wide absolute inset-0" />
+      <div className="dither-dense mask-blob absolute inset-[14%]" />
     </div>
   )
+}
+
+function Label({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <p className={`label ${className}`}>{children}</p>
 }

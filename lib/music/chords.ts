@@ -1,29 +1,33 @@
 import { Chord } from 'tonal'
 
+// 코드 풀 — 12키 전부. 루트 표기는 구성음에 겹임시표(Bbb, F## 등)가 생기지 않는 쪽으로 골랐다
+// (예: Dbm7 대신 C#m7, Bbdim7 대신 A#dim7). 어느 표기로도 깔끔하지 않은 루트는 뺐다:
+// aug는 B, dim7은 C와 F — 대칭 코드라 같은 음 묶음이 다른 루트로 이미 나온다.
+
 // ─── Triad 코드 목록 ──────────────────────────────────────────────────────
 export const triadChords = [
   // Major
-  'C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B',
+  'C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B',
   // Minor
-  'Cm', 'Dbm', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'Abm', 'Am', 'Bbm', 'Bm',
+  'Cm', 'C#m', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm',
   // Diminished
-  'Cdim', 'Ddim', 'Edim', 'Fdim', 'Gdim', 'Adim', 'Bdim',
+  'Cdim', 'C#dim', 'Ddim', 'D#dim', 'Edim', 'Fdim', 'F#dim', 'Gdim', 'G#dim', 'Adim', 'A#dim', 'Bdim',
   // Augmented
-  'Caug', 'Daug', 'Eaug', 'Faug', 'Gaug',
+  'Caug', 'Dbaug', 'Daug', 'Ebaug', 'Eaug', 'Faug', 'Gbaug', 'Gaug', 'Abaug', 'Aaug', 'Bbaug',
 ]
 
 // ─── 7th 코드 목록 ───────────────────────────────────────────────────────
 export const seventhChords = [
   // Major 7
-  'Cmaj7', 'Dbmaj7', 'Dmaj7', 'Ebmaj7', 'Fmaj7', 'Gmaj7', 'Abmaj7', 'Amaj7', 'Bbmaj7',
+  'Cmaj7', 'Dbmaj7', 'Dmaj7', 'Ebmaj7', 'Emaj7', 'Fmaj7', 'Gbmaj7', 'Gmaj7', 'Abmaj7', 'Amaj7', 'Bbmaj7', 'Bmaj7',
   // Minor 7
-  'Cm7', 'Dm7', 'Em7', 'Fm7', 'Gm7', 'Am7', 'Bm7',
+  'Cm7', 'C#m7', 'Dm7', 'Ebm7', 'Em7', 'Fm7', 'F#m7', 'Gm7', 'G#m7', 'Am7', 'Bbm7', 'Bm7',
   // Dominant 7
-  'C7', 'D7', 'E7', 'F7', 'G7', 'A7', 'B7', 'Bb7', 'Eb7', 'Ab7',
+  'C7', 'Db7', 'D7', 'Eb7', 'E7', 'F7', 'F#7', 'G7', 'Ab7', 'A7', 'Bb7', 'B7',
   // Half-diminished
-  'Cm7b5', 'Dm7b5', 'Em7b5', 'F#m7b5', 'Gm7b5', 'Bm7b5',
+  'Cm7b5', 'C#m7b5', 'Dm7b5', 'D#m7b5', 'Em7b5', 'Fm7b5', 'F#m7b5', 'Gm7b5', 'G#m7b5', 'Am7b5', 'A#m7b5', 'Bm7b5',
   // Diminished 7
-  'Cdim7', 'Ddim7', 'Edim7', 'Gdim7',
+  'C#dim7', 'Ddim7', 'D#dim7', 'Edim7', 'F#dim7', 'Gdim7', 'G#dim7', 'Adim7', 'A#dim7', 'Bdim7',
 ]
 
 // ─── 이명동음 → 샵 기준으로 정규화 ────────────────────────────────────────

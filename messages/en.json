@@ -74,8 +74,7 @@
   "language": {
     "ko": "한국어",
     "en": "English",
-    "ja": "日本語",
-    "comingSoon": "준비중"
+    "ja": "日本語"
   },
   "stages": {
     "1": {
@@ -94,5 +93,279 @@
       "name": "스탠다드",
       "subtitle": "Jazz Standards"
     }
+  },
+  "site": {
+    "name": "Jazz 9×9",
+    "mega1": "Jazz",
+    "mega2": "9×9",
+    "homeTitle": "Degree, chord and scale drills you do in your head",
+    "homeDescription": "Three mental drills for jazz: intervals by degree, chord tones and scale notes. No instrument needed. Your reaction time is how long each correct answer takes you.",
+    "ogAlt": "Jazz 9×9 — mental drills for jazz, no instrument needed"
+  },
+  "menu": {
+    "degree": "Degree",
+    "chord": "Chord",
+    "scale": "Scale",
+    "rank": "Rank",
+    "leaderboard": "Leaderboard",
+    "language": "Language",
+    "open": "Open menu"
+  },
+  "games": {
+    "degree-id": {
+      "title": "Degree tables",
+      "description": "Two notes appear. Pick which degree the second note is from the first, out of 12.",
+      "rules": "Two notes appear. Pick which degree the second note is, counted from the first, out of 12. A round is 20 questions, and the next one comes up as soon as you answer.",
+      "round": "20 questions per round",
+      "seoDescription": "Degree tables: see two notes and name the degree instantly. A mental drill for jazz, no instrument needed."
+    },
+    "chord-construction": {
+      "title": "Chord tables",
+      "description": "Read the chord name and pick its notes. Triad and 7th modes.",
+      "rules": "Read the chord name and pick its notes. It grades itself once you've picked enough. Triad and 7th modes, 10 questions per round.",
+      "round": "10 questions per round",
+      "seoDescription": "Chord tables: read a chord name and pick its notes instantly. A mental drill for jazz, no instrument needed."
+    },
+    "scale-construction": {
+      "title": "Scale tables",
+      "description": "Read the root and scale name and pick the notes fast.",
+      "rules": "Read the root and scale name and pick the notes. It grades itself once you've picked enough. A round is 10 questions, and you can narrow the question pool in the settings below.",
+      "round": "12 keys × 9 scales",
+      "seoDescription": "Scale tables: read a root and a scale name and pick the notes instantly. A mental drill for jazz, no instrument needed."
+    }
+  },
+  "levels": {
+    "beginner": "Beginner",
+    "proficient": "Proficient",
+    "fluent": "Fluent",
+    "master": "Master"
+  },
+  "scales": {
+    "major": "Major",
+    "natural-minor": "Natural minor",
+    "jazz-minor": "Jazz minor",
+    "harmonic-minor": "Harmonic minor",
+    "minor-pentatonic": "Minor pentatonic",
+    "blues": "Blues scale",
+    "dorian": "Dorian",
+    "mixolydian": "Mixolydian",
+    "lydian": "Lydian"
+  },
+  "landing": {
+    "metaCenter": "Mental drills for jazz",
+    "metaGames": "3 games",
+    "h1a": "Three jazz drills",
+    "h1b": "you do without an instrument",
+    "heroBody": "2 × 7 = 14 comes out without thinking. Dm7 = D F A C should too. Degrees, chords, scales. Play on the train or over lunch, no instrument needed, and track how many seconds each correct answer takes you.",
+    "sampleAria": "Notes of Bb7: Bb D F Ab",
+    "indexLabel": "Index / Games",
+    "indexUnit": "Unit — Reaction (s) · time per correct answer",
+    "play": "Play",
+    "stat1Unit": "notes",
+    "stat1Body": "Every chord and scale answer is somewhere in the 12 note names. No instrument, just the keys on screen.",
+    "stat2Unit": "scales",
+    "stat2Body": "Major, three minors, pentatonic, blues, Dorian, Mixolydian, Lydian.",
+    "stat3Unit": "%",
+    "stat3Body": "Only rounds above this accuracy count toward your level. Guessing won't move you up.",
+    "scoringLabel": "Scoring",
+    "scoringTitle": "Fast and accurate moves you up.",
+    "scoringBody": "When a round ends, your time is divided by your correct answers to get your reaction time, in seconds. Lower is faster. Your level comes from the average of your recent rounds, and each level you reach is saved with its date.",
+    "scoringLogAria": "Sample scoring log for a round",
+    "levelLine": "level   proficient → 0.22s to fluent",
+    "tableGame": "Game",
+    "notice": "Rounds under {gate}% accuracy don't count toward your level.",
+    "faqTitle": "Frequently asked questions",
+    "faqArchive": "Archive — {count} entries",
+    "faq": [
+      {
+        "q": "Do I need an instrument?",
+        "a": "No. In all three games you pick note names or degrees on screen, so it's all done in your head."
+      },
+      {
+        "q": "Why these three?",
+        "a": "Degrees between notes, chord tones and scale notes are the sums you repeat every bar when you improvise. The goal is to make them automatic, like times tables."
+      },
+      {
+        "q": "How is reaction time worked out?",
+        "a": "It's the time each correct answer takes you: your round time divided by your correct answers, in seconds, so lower is faster. The average of your recent rounds sets your level: proficient, fluent or master."
+      },
+      {
+        "q": "Where are my records saved?",
+        "a": "Your level and practice history are saved in this browser. If you join with a nickname and password, your rounds also go on the leaderboard."
+      },
+      {
+        "q": "How do I get on the leaderboard?",
+        "a": "Finish a round, then set a nickname and a password on the result screen. No email needed. Your single fastest round with 90% accuracy or better is what ranks. Chord tables only counts 7th mode, and Scale tables only counts rounds with the full question pool."
+      },
+      {
+        "q": "Where did the lessons and the Tree go?",
+        "a": "They're taken down for now. The site is focused on the three tables."
+      }
+    ],
+    "exitLabel": "Next / Play",
+    "exitTitle": "Pick one. Play one round.",
+    "painA": "Your hands aren't slow.",
+    "painB": "The notes just aren't coming to mind.",
+    "painBody": "If a chord's notes don't come to you the moment you see it, Jazz 9×9 comes before more time on your instrument.",
+    "painLabel": "Diagnosis / 01",
+    "painNext": "↓ One stop",
+    "commuteLabel": "When / 02",
+    "commuteNum": "2",
+    "commuteUnit": "min",
+    "commuteTitle": "One round fits in a single subway stop.",
+    "commuteBody": "At the proficient level, 20 questions take about 2 minutes. Get the part you can do without an instrument done on the way, and spend your time on the instrument just playing.",
+    "commuteExample": "G7 = G B D F — until it comes out without thinking."
+  },
+  "train": {
+    "metaLeft": "Sys / 02",
+    "metaRight": "Index — {count} games",
+    "intro": "Three tables you solve in your head, no instrument needed. Records are kept as reaction time: the seconds each correct answer takes.",
+    "seoTitle": "Three tables — degree, chord, scale",
+    "seoDescription": "Three mental drills for jazz: degrees, chord tones and scale notes, no instrument needed. Your reaction time is the seconds each correct answer takes you."
+  },
+  "stats": {
+    "level": "Level",
+    "none": "No records yet",
+    "measuring": "Measuring",
+    "measuringCount": "{n}/3 rounds measured",
+    "gated": "Dropped for low accuracy",
+    "recentAvg": "Average of last {n} rounds",
+    "accuracy": "Accuracy {pct}%",
+    "achieved": "Reached",
+    "notYet": "Not reached yet",
+    "spc": "Reaction"
+  },
+  "game": {
+    "eyebrow": "Game",
+    "rank": "Rank",
+    "pendingNudge": "{n} record(s) only in this browser — upload",
+    "statQuestion": "Question",
+    "statScore": "Score",
+    "statRate": "Rate",
+    "statRound": "Round",
+    "statProgress": "Progress",
+    "statAccuracy": "Accuracy",
+    "windowAria": "Question",
+    "start": "Start",
+    "login": "Log in",
+    "playingAs": "Playing as",
+    "startHint": "{n} questions · press Enter to start",
+    "startHintLogin": " · log in to put your records on the leaderboard",
+    "example": "Example",
+    "rootNote": "Root → Note = ?",
+    "correct": "○ Correct",
+    "wrongPicked": "× Wrong — you picked",
+    "wrongAnswerIs": "· the answer is",
+    "statusReady": "Ready",
+    "statusCorrect": "Correct",
+    "statusWrong": "Wrong →",
+    "statusSelectDegree": "Select a degree",
+    "chordCorrect": "○ Correct —",
+    "chordWrong": "× Wrong — the answer is",
+    "statusSelectN": "Select {selected}/{target} — auto-grade",
+    "statusCorrectNotes": "Correct —",
+    "reset": "Reset",
+    "retry": "Retry",
+    "next": "Next →",
+    "mode": "Mode",
+    "settingsTitle": "Settings — question pool",
+    "settingsAria": "Question pool",
+    "roots": "Roots",
+    "scalesLabel": "Scales",
+    "on": "{n}/{total} on",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "soundToggle": "Turn sound on or off",
+    "replay": "Play again",
+    "statTime": "Time",
+    "statSpc": "Reaction"
+  },
+  "result": {
+    "title": "Round result",
+    "first": "Your first record in this game.",
+    "newBest": "{diff}s faster than your best — new record",
+    "sameBest": "Same as your best.",
+    "toBest": "{diff}s off your best",
+    "lowAccuracy": "Accuracy was under {gate}%, so this round doesn't count for ranking.",
+    "unranked": "This round doesn't count for ranking.",
+    "unrankedScale": "Rounds with a narrowed question pool don't count for ranking.",
+    "unrankedChord": "Rounds that include Triad mode don't count for ranking. Rankings use 7th mode.",
+    "checking": "Checking your rank…",
+    "boardOf": "{name} — leaderboard",
+    "rankUp": "You moved up.",
+    "firstRank": "Your first rank is on the board.",
+    "bestRank": "Ranked by your best round.",
+    "leaderboard": "Leaderboard",
+    "wouldBePrefix": "This round puts you in the",
+    "joinPitch": "Set a nickname and a password and this round goes up too.",
+    "upload": "Upload record",
+    "saved": "Round saved",
+    "again": "Play again →",
+    "againSkip": "Just play again →",
+    "unit": "s",
+    "noCorrect": "No correct answers, so there is no time to record.",
+    "topPercent": "top {pct}%",
+    "ofPlayers": "#{rank} of {total} players",
+    "speedNote": "Reaction time · per correct answer"
+  },
+  "account": {
+    "title": "Account",
+    "tabJoin": "New — Join",
+    "tabLogin": "Have an account — Login",
+    "tabsAria": "Join or log in",
+    "nickname": "Nickname",
+    "nicknamePh": "Nickname, 2–12 characters",
+    "password": "Password",
+    "passwordPh": "Password, {min}+ characters",
+    "join": "Join",
+    "login": "Login",
+    "joinNote": "No email needed. A forgotten password can't be recovered, so remember it.",
+    "loginNote": "The nickname and password you joined with. Your records follow you to other devices.",
+    "player": "Player",
+    "logout": "Log out",
+    "logoutNote": "Your records stay with your account. Log back in with the same nickname and password.",
+    "pendingNote": "{n} record(s) only in this browser — they go up when you join.",
+    "close": "Close",
+    "captchaLoad": "Couldn't load the human check. Try again in a moment.",
+    "captchaClosed": "The human check was cancelled.",
+    "captchaLocalhost": "hCaptcha doesn't run on localhost. Try on the real domain.",
+    "captchaFailed": "The human check failed. Try again in a moment."
+  },
+  "errors": {
+    "bad_nickname": "Nicknames are 2–12 characters.",
+    "bad_password": "Passwords need at least {min} characters.",
+    "nickname_taken": "That nickname's already taken. If it's yours, log in instead.",
+    "bad_credentials": "The nickname or password doesn't match.",
+    "locked": "Too many wrong tries. Try again in 5 minutes.",
+    "not_signed_in": "Couldn't reach the server. Try again in a moment.",
+    "captcha_failed": "The human check didn't pass. Try again.",
+    "connect_failed": "Couldn't reach the server. Try again in a moment.",
+    "offline": "The leaderboard server isn't connected.",
+    "generic": "That didn't work. Try again in a moment."
+  },
+  "rank": {
+    "metaLeft": "Sys / 03",
+    "metaRight": "Unit — Reaction (s) · best round · accuracy ≥ 90%",
+    "body": "Each game ranks one best round per player. Finish a round and you can upload it right there with just a nickname and a password.",
+    "joinLogin": "Join / Login",
+    "playingAs": "Playing as",
+    "play": "Play",
+    "top": "Top {n}",
+    "empty": "No records yet. Be the first.",
+    "loading": "Loading…",
+    "offline": "Status / offline — the leaderboard server isn't connected yet.",
+    "boardAria": "{game} rankings",
+    "seoTitle": "Leaderboard — degree, chord and scale rankings",
+    "seoDescription": "Reaction-time rankings for the three Jazz 9×9 games, in seconds per correct answer. Ranked by each player's best round at 90% accuracy or better.",
+    "unit": "Reaction (s)"
+  },
+  "footer": {
+    "colophon": "Colophon",
+    "blurb": "Three mental drills for jazz: degree, chord, scale. Set in Helvetica and JetBrains Mono.",
+    "index": "Index",
+    "credits": "Credits",
+    "builtBy": "Built by Kihyeon Kwon",
+    "leaderboard": "Leaderboard",
+    "version": "Version / 0.3"
   }
 }

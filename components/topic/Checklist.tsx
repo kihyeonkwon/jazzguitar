@@ -43,17 +43,17 @@ export default function Checklist({ topic }: ChecklistProps) {
             <button
               key={idx}
               onClick={() => handleToggle(idx)}
-              className={`w-full flex items-start gap-3 p-3 rounded-lg border text-left transition-all group ${
+              className={`w-full flex items-start gap-3 p-3 border text-left transition-all group ${
                 checked
-                  ? 'border-gray-300 bg-gray-50'
-                  : 'border-gray-200 bg-white hover:bg-gray-50'
+                  ? 'border-rule bg-surface-soft'
+                  : 'border-rule bg-paper-bright hover:bg-surface'
               }`}
             >
               <div
-                className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                className={`w-5 h-5 border flex items-center justify-center shrink-0 mt-0.5 transition-all ${
                   checked
-                    ? 'bg-gray-900 border-gray-900'
-                    : 'bg-white border-gray-300'
+                    ? 'bg-ink border-rule'
+                    : 'bg-paper-bright border-rule'
                 }`}
               >
                 {checked && (
@@ -64,7 +64,7 @@ export default function Checklist({ topic }: ChecklistProps) {
               </div>
               <span
                 className={`text-sm transition-colors ${
-                  checked ? 'text-gray-400 line-through' : 'text-gray-700'
+                  checked ? 'text-ink-faint line-through' : 'text-ink'
                 }`}
               >
                 {checkpoint[locale]}
@@ -76,27 +76,27 @@ export default function Checklist({ topic }: ChecklistProps) {
 
       <div className="pt-2">
         <div className="flex items-center gap-2 mb-1">
-          <div className="h-1.5 flex-1 rounded-full bg-gray-100 overflow-hidden">
+          <div className="h-1.5 flex-1 bg-surface-soft overflow-hidden">
             <div
-              className="h-full rounded-full bg-gray-900 transition-all duration-500"
+              className="h-full bg-ink transition-all duration-500"
               style={{ width: `${(checkedItems.length / topic.checkpoints.length) * 100}%` }}
             />
           </div>
-          <span className="text-gray-400 text-xs">
+          <span className="text-ink-faint text-xs">
             {checkedItems.length}/{topic.checkpoints.length}
           </span>
         </div>
       </div>
 
       {allDone && (
-        <div className="rounded-lg p-4 text-center space-y-3 border border-gray-200 bg-gray-50">
-          <div className="text-lg font-semibold text-gray-900">
+        <div className=" p-4 text-center space-y-3 border border-rule bg-surface-soft">
+          <div className="text-lg font-semibold text-ink">
             {justCompleted ? '🎸 ' : ''}{t('allCheckpointsDone')}
           </div>
           {nextTopic && (
             <Link
               href={`/topic/${nextTopic.slug}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-black text-white hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-ink text-ink-inv hover:bg-pink hover:text-ink transition-colors"
             >
               {t('proceedNext')}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

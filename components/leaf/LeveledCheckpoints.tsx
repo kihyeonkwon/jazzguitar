@@ -86,7 +86,7 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
                   {done}/{group.items.length}
                 </span>
               </div>
-              <ul className="overflow-hidden rounded-3xl border border-rule bg-paper-bright/70">
+              <ul className="overflow-hidden border border-rule bg-paper-bright/70">
                 {group.items.map((item, i) => {
                   const checked = !!checks[i]
                   return (
@@ -96,7 +96,7 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
                         className="w-full flex items-start gap-4 text-left px-4 py-3 hover:bg-surface/60 transition-colors group"
                       >
                         <span
-                          className={`mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all ${
+                          className={`mt-0.5 w-4 h-4 border flex items-center justify-center shrink-0 transition-all ${
                             checked
                               ? 'bg-ink border-ink text-paper'
                               : 'bg-paper-bright border-rule group-hover:border-sage'
@@ -122,7 +122,7 @@ export default function LeveledCheckpoints({ leafSlug, groups, locale }: Props) 
       </div>
 
       {totalScore >= 100 && (
-        <div className="rounded-3xl bg-ink text-ink-inv p-4 flex items-center gap-3">
+        <div className=" bg-ink text-ink-inv p-4 flex items-center gap-3">
           <IconCheck size={16} />
           <p className="text-sm">
             이 주제를 완전히 졸업했습니다. Tree에 채워진 노드로 표시됩니다.

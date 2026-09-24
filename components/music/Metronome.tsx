@@ -200,12 +200,12 @@ function MetronomeInner({
   // ── compact 모드 (토픽 사이드바용) ──
   if (compact) {
     return (
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <div className="bg-paper-bright border border-rule p-4">
         <div className="flex items-center gap-3">
           <button
             onClick={togglePlay}
-            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border transition-all ${
-              isPlaying ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+            className={`w-10 h-10 flex items-center justify-center text-sm font-bold border transition-all ${
+              isPlaying ? 'bg-ink text-ink-inv border-rule' : 'bg-paper-bright text-ink border-rule hover:bg-surface'
             }`}
           >
             {isPlaying ? '■' : '▶'}
@@ -214,7 +214,7 @@ function MetronomeInner({
             {Array.from({ length: beatsPerMeasure }, (_, i) => (
               <div
                 key={i}
-                className="w-3 h-3 rounded-full transition-all duration-75"
+                className="w-3 h-3 transition-all duration-75"
                 style={{
                   backgroundColor: isPlaying && beat === i ? (i === 0 ? '#111' : '#6b7280') : '#e5e7eb',
                   transform: isPlaying && beat === i ? 'scale(1.3)' : 'scale(1)',
@@ -227,7 +227,7 @@ function MetronomeInner({
             onChange={e => handleBpmChange(Number(e.target.value))}
             className="flex-1 h-1 cursor-pointer" style={{ accentColor: '#111' }}
           />
-          <span className="text-gray-700 text-sm w-12 text-right font-mono">{bpm}</span>
+          <span className="text-ink text-sm w-12 text-right font-mono">{bpm}</span>
         </div>
       </div>
     )
@@ -327,8 +327,8 @@ function MetronomeInner({
 export default dynamic(() => Promise.resolve(MetronomeInner), {
   ssr: false,
   loading: () => (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 min-h-[200px] flex items-center justify-center">
-      <span className="text-gray-400 text-sm">메트로놈 로딩 중...</span>
+    <div className="bg-paper-bright border border-rule p-6 min-h-[200px] flex items-center justify-center">
+      <span className="text-ink-faint text-sm">메트로놈 로딩 중...</span>
     </div>
   ),
 })

@@ -74,8 +74,7 @@
   "language": {
     "ko": "한국어",
     "en": "English",
-    "ja": "日本語",
-    "comingSoon": "준비중"
+    "ja": "日本語"
   },
   "stages": {
     "1": {
@@ -94,5 +93,279 @@
       "name": "스탠다드",
       "subtitle": "Jazz Standards"
     }
+  },
+  "site": {
+    "name": "재즈 구구단",
+    "mega1": "재즈",
+    "mega2": "구구단",
+    "homeTitle": "도수·코드·스케일 암산 훈련",
+    "homeDescription": "도수(인터벌), 코드 구성음, 스케일 구성음을 악기 없이 머리로 푸는 재즈 구구단 3종. 정답 하나에 걸린 시간, 반응속도로 실력을 잽니다.",
+    "ogAlt": "재즈 구구단 — 악기 없이 하는 재즈 암산 훈련"
+  },
+  "menu": {
+    "degree": "도수",
+    "chord": "코드",
+    "scale": "스케일",
+    "rank": "Rank",
+    "leaderboard": "리더보드",
+    "language": "Language",
+    "open": "메뉴 열기"
+  },
+  "games": {
+    "degree-id": {
+      "title": "도수 구구단",
+      "description": "음 두 개를 보고, 둘째 음이 첫 음에서 몇 도인지 12개 중에서 골라요.",
+      "rules": "음 두 개가 주어집니다. 첫 음에서 본 둘째 음이 몇 도인지 12개 중에서 고르세요. 20문제가 한 라운드이고, 답을 누르면 바로 다음 문제로 넘어갑니다.",
+      "round": "한 라운드 20문제",
+      "seoDescription": "도수 구구단 — 음 두 개를 보고 도수를 바로 답하는 재즈 암산 훈련입니다. 악기 없이 머리로 풉니다."
+    },
+    "chord-construction": {
+      "title": "코드 구구단",
+      "description": "코드 이름을 보고 구성음을 골라요. Triad와 7th 두 가지 모드가 있어요.",
+      "rules": "코드 이름을 보고 구성음을 고릅니다. 개수가 차면 자동으로 채점합니다. Triad와 7th 두 모드, 10문제가 한 라운드입니다.",
+      "round": "한 라운드 10문제",
+      "seoDescription": "코드 구구단 — 코드 이름을 보고 구성음을 바로 고르는 재즈 암산 훈련입니다. 악기 없이 머리로 풉니다."
+    },
+    "scale-construction": {
+      "title": "스케일 구구단",
+      "description": "루트와 스케일 이름을 보고 구성음을 빠르게 골라요.",
+      "rules": "루트와 스케일 이름을 보고 구성음을 고릅니다. 개수가 차면 자동으로 채점합니다. 10문제가 한 라운드이고, 출제 범위는 아래 설정에서 줄일 수 있습니다.",
+      "round": "12키 × 스케일 9개",
+      "seoDescription": "스케일 구구단 — 루트와 스케일 이름을 보고 구성음을 바로 고르는 재즈 암산 훈련입니다. 악기 없이 머리로 풉니다."
+    }
+  },
+  "levels": {
+    "beginner": "입문",
+    "proficient": "숙련",
+    "fluent": "유창",
+    "master": "마스터"
+  },
+  "scales": {
+    "major": "메이저",
+    "natural-minor": "내츄럴 마이너",
+    "jazz-minor": "재즈 마이너",
+    "harmonic-minor": "하모닉 마이너",
+    "minor-pentatonic": "마이너 펜타토닉",
+    "blues": "블루스 스케일",
+    "dorian": "도리안",
+    "mixolydian": "믹솔리디안",
+    "lydian": "리디안"
+  },
+  "landing": {
+    "metaCenter": "Mental drills for jazz",
+    "metaGames": "3 games",
+    "h1a": "악기 없이 하는",
+    "h1b": "재즈 훈련 세 가지",
+    "heroBody": "2 × 7 = 14가 바로 나오듯, Dm7 = D F A C가 바로 나와야 합니다. 도수, 코드, 스케일. 지하철에서도 점심시간에도 악기 없이 풀고, 정답 하나에 몇 초 걸렸는지로 기록합니다.",
+    "sampleAria": "Bb7의 구성음: Bb D F Ab",
+    "indexLabel": "Index / Games",
+    "indexUnit": "Unit — Reaction (s) · 정답 하나에 걸린 시간",
+    "play": "Play",
+    "stat1Unit": "음",
+    "stat1Body": "코드와 스케일 문제의 답은 언제나 12개 음 이름 안에 있습니다. 악기 없이 화면의 키만 누릅니다.",
+    "stat2Unit": "스케일",
+    "stat2Body": "메이저, 마이너 3종, 펜타토닉, 블루스, 도리안, 믹솔리디안, 리디안.",
+    "stat3Unit": "%",
+    "stat3Body": "정확도가 이 선을 넘은 라운드만 등급에 반영됩니다. 찍어서는 올라가지 않습니다.",
+    "scoringLabel": "Scoring",
+    "scoringTitle": "빠르고 정확해야 올라갑니다.",
+    "scoringBody": "라운드가 끝나면 걸린 시간을 정답 수로 나눠 반응속도를 계산합니다. 단위는 초(s)이고, 숫자가 작을수록 빠른 기록입니다. 등급은 최근 라운드 평균으로 정해지고, 달성 기록은 날짜와 함께 남습니다.",
+    "scoringLogAria": "라운드 채점 로그 예시",
+    "levelLine": "level   숙련 → 유창까지 0.22초",
+    "tableGame": "Game",
+    "notice": "정확도 {gate}% 미만인 라운드는 등급에 반영되지 않습니다.",
+    "faqTitle": "자주 묻는 질문",
+    "faqArchive": "Archive — {count} entries",
+    "faq": [
+      {
+        "q": "악기가 필요한가요?",
+        "a": "필요 없습니다. 세 게임 모두 화면에서 음 이름이나 도수를 고르는 방식이라 머리로만 풉니다."
+      },
+      {
+        "q": "왜 이 세 가지인가요?",
+        "a": "음과 음 사이의 도수, 코드 구성음, 스케일 구성음은 즉흥연주에서 매 마디 반복되는 계산입니다. 구구단처럼 자동으로 나오게 만드는 것이 목표입니다."
+      },
+      {
+        "q": "반응속도는 어떻게 계산하나요?",
+        "a": "정답 하나에 걸린 시간입니다. 라운드에 걸린 시간을 정답 수로 나눈 값이고 단위는 초(s)입니다. 숫자가 작을수록 빠릅니다. 최근 라운드 평균으로 숙련 · 유창 · 마스터 등급을 매깁니다."
+      },
+      {
+        "q": "기록은 어디에 저장되나요?",
+        "a": "등급과 연습 기록은 이 브라우저에 저장됩니다. 닉네임과 비밀번호로 가입하면 라운드 기록이 리더보드에도 올라갑니다."
+      },
+      {
+        "q": "리더보드는 어떻게 참가하나요?",
+        "a": "한 라운드를 끝내면 결과 화면에서 닉네임과 비밀번호 두 가지만 정해 기록을 올립니다. 이메일은 받지 않습니다. 정확도 90% 이상인 라운드 중 가장 빠른 기록 하나가 순위에 오릅니다. 코드 구구단은 7th 모드, 스케일 구구단은 출제 범위를 줄이지 않은 라운드만 인정됩니다."
+      },
+      {
+        "q": "레슨과 Tree는 어디로 갔나요?",
+        "a": "잠시 내려 두었습니다. 지금은 구구단 세 가지에만 집중합니다."
+      }
+    ],
+    "exitLabel": "Next / Play",
+    "exitTitle": "하나 골라서, 한 라운드만.",
+    "painA": "손이 느린 게 아니라,",
+    "painB": "음이 안 떠오르는 겁니다.",
+    "painBody": "코드를 보고 구성음이 바로 떠오르지 않는다면, 악기 연습보다 재즈 구구단이 먼저입니다.",
+    "painLabel": "Diagnosis / 01",
+    "painNext": "↓ One stop",
+    "commuteLabel": "When / 02",
+    "commuteNum": "2",
+    "commuteUnit": "분",
+    "commuteTitle": "지하철 한 정거장이면 한 라운드.",
+    "commuteBody": "숙련 기준으로 20문제에 약 2분입니다. 악기 없이 할 수 있는 연습은 이동시간에 끝내 두고, 악기를 잡는 시간에는 연주만 합니다.",
+    "commuteExample": "G7 = G B D F — 이게 생각 없이 나올 때까지."
+  },
+  "train": {
+    "metaLeft": "Sys / 02",
+    "metaRight": "Index — {count} games",
+    "intro": "악기 없이 머리로 푸는 구구단 세 가지. 기록은 정답 하나에 걸린 시간, 반응속도로 남습니다.",
+    "seoTitle": "구구단 3종 — 도수·코드·스케일",
+    "seoDescription": "도수(인터벌), 코드 구성음, 스케일 구성음을 악기 없이 머리로 푸는 재즈 구구단 3종입니다. 정답 하나에 걸린 시간, 반응속도로 실력을 잽니다."
+  },
+  "stats": {
+    "level": "Level",
+    "none": "아직 기록 없음",
+    "measuring": "측정중",
+    "measuringCount": "{n}/3회 측정중",
+    "gated": "정확도 미달 강등",
+    "recentAvg": "최근 {n}회 평균",
+    "accuracy": "정확도 {pct}%",
+    "achieved": "달성",
+    "notYet": "미달성",
+    "spc": "Reaction"
+  },
+  "game": {
+    "eyebrow": "Game",
+    "rank": "Rank",
+    "pendingNudge": "기록 {n}개가 이 브라우저에만 있습니다 — 올리기",
+    "statQuestion": "Question",
+    "statScore": "Score",
+    "statRate": "Rate",
+    "statRound": "Round",
+    "statProgress": "Progress",
+    "statAccuracy": "Accuracy",
+    "windowAria": "문제",
+    "start": "시작",
+    "login": "로그인",
+    "playingAs": "Playing as",
+    "startHint": "{n}문제 · Enter로 시작",
+    "startHintLogin": " · 로그인하면 기록이 순위에 남습니다",
+    "example": "Example",
+    "rootNote": "Root → Note = ?",
+    "correct": "○ Correct — 정답",
+    "wrongPicked": "× Wrong — 고른 답",
+    "wrongAnswerIs": "· 정답은",
+    "statusReady": "Ready",
+    "statusCorrect": "Correct",
+    "statusWrong": "Wrong →",
+    "statusSelectDegree": "Select a degree",
+    "chordCorrect": "○ Correct —",
+    "chordWrong": "× Wrong — 정답은",
+    "statusSelectN": "Select {selected}/{target} — auto-grade",
+    "statusCorrectNotes": "Correct —",
+    "reset": "Reset",
+    "retry": "Retry",
+    "next": "Next →",
+    "mode": "Mode",
+    "settingsTitle": "Settings — 출제 범위",
+    "settingsAria": "출제 범위",
+    "roots": "Roots",
+    "scalesLabel": "Scales",
+    "on": "{n}/{total} on",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "soundToggle": "소리 켜기/끄기",
+    "replay": "다시 듣기",
+    "statTime": "Time",
+    "statSpc": "Reaction"
+  },
+  "result": {
+    "title": "Round result",
+    "first": "이 게임의 첫 기록입니다.",
+    "newBest": "내 최고 기록보다 {diff}초 빨라졌습니다 — 신기록",
+    "sameBest": "내 최고 기록과 같습니다.",
+    "toBest": "내 최고 기록까지 {diff}초",
+    "lowAccuracy": "정확도 {gate}% 미만이라 이번 라운드는 순위에 반영되지 않습니다.",
+    "unranked": "이번 라운드는 순위에 반영되지 않습니다.",
+    "unrankedScale": "출제 범위를 줄인 라운드는 순위에 반영되지 않습니다.",
+    "unrankedChord": "Triad 모드가 섞인 라운드는 순위에 반영되지 않습니다. 순위는 7th 모드로 겨룹니다.",
+    "checking": "순위 확인 중…",
+    "boardOf": "{name} — 리더보드",
+    "rankUp": "순위가 올랐습니다.",
+    "firstRank": "첫 순위가 기록됐습니다.",
+    "bestRank": "최고 기록 기준 순위입니다.",
+    "leaderboard": "Leaderboard",
+    "wouldBePrefix": "지금 기록이면",
+    "joinPitch": "닉네임과 비밀번호만 정하면 방금 기록까지 함께 올라갑니다.",
+    "upload": "기록 올리기",
+    "saved": "Round saved",
+    "again": "다시 하기 →",
+    "againSkip": "그냥 다시 하기 →",
+    "unit": "s",
+    "noCorrect": "정답이 없어 기록을 계산하지 못했습니다.",
+    "topPercent": "상위 {pct}%",
+    "ofPlayers": "{total}명 중 {rank}위",
+    "speedNote": "반응속도 · 정답 하나에 걸린 시간"
+  },
+  "account": {
+    "title": "계정",
+    "tabJoin": "처음 — Join",
+    "tabLogin": "계정 있음 — Login",
+    "tabsAria": "참가 방식",
+    "nickname": "닉네임",
+    "nicknamePh": "닉네임 2~12자",
+    "password": "비밀번호",
+    "passwordPh": "비밀번호 {min}자 이상",
+    "join": "Join",
+    "login": "Login",
+    "joinNote": "이메일은 받지 않습니다. 비밀번호를 잊으면 되찾을 수 없으니 기억해 두세요.",
+    "loginNote": "가입할 때 정한 닉네임과 비밀번호. 다른 기기에서도 같은 기록으로 이어집니다.",
+    "player": "Player",
+    "logout": "로그아웃",
+    "logoutNote": "기록은 계정에 남습니다. 같은 닉네임과 비밀번호로 다시 들어오면 됩니다.",
+    "pendingNote": "이 브라우저에만 있는 기록 {n}개 — 가입하면 함께 올라갑니다.",
+    "close": "닫기",
+    "captchaLoad": "사람 확인을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    "captchaClosed": "사람 확인이 취소되었습니다.",
+    "captchaLocalhost": "hCaptcha는 localhost에서 동작하지 않습니다. 실제 도메인에서 시도해 주세요.",
+    "captchaFailed": "사람 확인에 실패했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "errors": {
+    "bad_nickname": "닉네임은 2~12자로 정해 주세요.",
+    "bad_password": "비밀번호는 {min}자 이상으로 정해 주세요.",
+    "nickname_taken": "이미 쓰이고 있는 닉네임입니다. 본인 계정이라면 로그인해 주세요.",
+    "bad_credentials": "닉네임 또는 비밀번호가 맞지 않습니다.",
+    "locked": "여러 번 틀려서 잠시 잠겼습니다. 5분 뒤에 다시 시도해 주세요.",
+    "not_signed_in": "서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    "captcha_failed": "사람 확인(캡차)을 통과하지 못했습니다. 다시 시도해 주세요.",
+    "connect_failed": "서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    "offline": "리더보드 서버에 연결되어 있지 않습니다.",
+    "generic": "요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "rank": {
+    "metaLeft": "Sys / 03",
+    "metaRight": "Unit — Reaction (s) · best round · accuracy ≥ 90%",
+    "body": "게임마다 한 사람의 최고 기록 하나로 겨룹니다. 한 라운드를 끝내면 그 자리에서 닉네임과 비밀번호만 정해 기록을 올릴 수 있습니다.",
+    "joinLogin": "Join / Login",
+    "playingAs": "Playing as",
+    "play": "Play",
+    "top": "Top {n}",
+    "empty": "아직 기록이 없습니다. 첫 기록을 남겨 보세요.",
+    "loading": "Loading…",
+    "offline": "Status / offline — 리더보드 서버가 아직 연결되지 않았습니다.",
+    "boardAria": "{game} 순위",
+    "seoTitle": "리더보드 — 도수·코드·스케일 순위",
+    "seoDescription": "재즈 구구단 세 게임의 반응속도(정답 하나에 걸린 시간) 순위입니다. 정확도 90% 이상인 라운드의 최고 기록으로 겨룹니다.",
+    "unit": "Reaction (s)"
+  },
+  "footer": {
+    "colophon": "Colophon",
+    "blurb": "Three mental drills for jazz: degree, chord, scale. Set in Helvetica and JetBrains Mono.",
+    "index": "Index",
+    "credits": "Credits",
+    "builtBy": "Built by 권기현",
+    "leaderboard": "리더보드",
+    "version": "Version / 0.3"
   }
 }

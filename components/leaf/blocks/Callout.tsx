@@ -22,11 +22,11 @@ export default function Callout({ type = 'note', title, body }: Props) {
   const isWarning = type === 'warning'
 
   return (
-    <div className={`my-6 rounded-3xl border bg-surface-soft px-5 py-4 ${
-      isWarning ? 'border-red-300' : 'border-rule'
+    <div className={`my-8 border border-ink px-5 py-4 shadow-[4px_4px_0_#1b1b1b] ${
+      isWarning ? 'bg-pink' : type === 'info' ? 'bg-blue' : 'bg-surface-soft'
     }`}>
-      <div className={`eyebrow mb-1 ${
-        isWarning ? 'text-red-500' : 'text-ink-faint'
+      <div className={`eyebrow mb-2 border-b border-ink pb-2 ${
+        isWarning ? 'text-ink' : 'text-ink-soft'
       }`}>
         {TYPE_LABEL[type]}
       </div>

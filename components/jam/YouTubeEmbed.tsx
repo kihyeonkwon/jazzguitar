@@ -38,7 +38,7 @@ export default function YouTubeEmbed({ videoId, caption }: Props) {
             className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
           />
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="w-16 h-16 rounded-full bg-paper-bright/90 group-hover:bg-paper-bright flex items-center justify-center transition-colors">
+            <span className="w-16 h-16 bg-paper-bright/90 group-hover:bg-paper-bright flex items-center justify-center transition-colors">
               <IconPlay size={24} className="text-ink translate-x-0.5" />
             </span>
           </div>

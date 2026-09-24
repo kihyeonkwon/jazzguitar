@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^2.2.0",
+    "@supabase/supabase-js": "^2.116.0",
     "@types/d3": "^7.4.3",
     "abcjs": "^6.6.3",
     "d3": "^7.9.0",

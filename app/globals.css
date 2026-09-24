@@ -1,95 +1,72 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Kakao Big Sans";
-  src: url("/fonts/kakao/KakaoBigSans-Regular.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kakao Big Sans";
-  src: url("/fonts/kakao/KakaoBigSans-Bold.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kakao Big Sans";
-  src: url("/fonts/kakao/KakaoBigSans-ExtraBold.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kakao Small Sans";
-  src: url("/fonts/kakao/KakaoSmallSans-Light.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kakao Small Sans";
-  src: url("/fonts/kakao/KakaoSmallSans-Regular.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kakao Small Sans";
-  src: url("/fonts/kakao/KakaoSmallSans-Bold.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
-
 /* ──────────────────────────────────────────────────────────────────
-   Design Tokens — Botanical / Organic Serif
-   Warm paper, forest ink, quiet garden accents.
+   Design Tokens — Retro Research Brutalism
+   참고: typesafe.ai — 흰 바탕, 먹색 글자, 선명한 핑크 면, 하늘색 위 핑크 비트맵 구름,
+   중간 굵기의 큰 그로테스크 + JetBrains Mono, 검정 제목줄의 회색 OS 창.
+   토큰 이름은 유지하고 값만 바꾼다 (paper / ink / rule ...).
    ────────────────────────────────────────────────────────────────── */
 
 @theme inline {
   /* Surfaces */
-  --color-paper:        #f9f8f4;
-  --color-paper-bright: #fffdf8;
-  --color-surface:      #f1eee7;
-  --color-surface-soft: #f6f3ed;
-  --color-rule:         #e6e2da;
-  --color-rule-strong:  #dccfc2;
+  --color-paper:        #fefefe;
+  --color-paper-bright: #ffffff;
+  --color-surface:      #d3dad9;
+  --color-surface-soft: #eef1f1;
+  --color-rule:         #1e1e1e;
+  --color-rule-strong:  #1e1e1e;
 
   /* Ink */
-  --color-ink:        #2d3a31;
-  --color-ink-soft:   #59665d;
-  --color-ink-faint:  #8c9a84;
-  --color-ink-quiet:  #c8c2b8;
-  --color-sage:       #8c9a84;
-  --color-clay:       #dccfc2;
-  --color-terracotta: #c27b66;
+  --color-ink:        #1e1e1e;
+  --color-ink-soft:   #3c3c3c;
+  --color-ink-faint:  #66696a;
+  --color-ink-quiet:  #a7adad;
+
+  /* Fields & accents (legacy names kept) */
+  --color-sage:       #1e1e1e;
+  --color-clay:       #d9e9fb;
+  --color-terracotta: #f386a1;
+  --color-pink:       #f386a1;
+  --color-blue:       #d9e9fb;
+  --color-gray:       #e3e8e7;
+  /* 비트맵 구름용 — 핑크보다 채도가 높은 마젠타 */
+  --color-cloud:      #ee5fd6;
+  /* 채점 피드백 전용 — 정답 / 오답 */
+  --color-ok:         #a9e66b;
+  --color-no:         #f26552;
 
   /* Inverse */
-  --color-ink-inv:    #fffdf8;
+  --color-ink-inv:    #fefefe;
 
   /* Fonts */
-  --font-sans: "Kakao Small Sans";
-  --font-display: "Kakao Big Sans";
-  --font-mono: "Kakao Small Sans";
+  --font-sans: "Helvetica Neue", var(--font-inter), Helvetica, Arial, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-display: "Helvetica Neue", var(--font-inter), Helvetica, Arial, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", "SFMono-Regular", ui-monospace, Menlo, Consolas, "Courier New", "Apple SD Gothic Neo", "Noto Sans KR", monospace;
 
-  --shadow-soft: 0 20px 60px rgba(45, 58, 49, 0.08);
-  --shadow-tight: 0 8px 24px rgba(45, 58, 49, 0.06);
-  --radius-organic: 28px;
-  --radius-pill: 999px;
+  /* Square geometry — 남아 있는 rounded-* 유틸도 직각으로 */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+  --radius-4xl: 0px;
+
+  /* Hard offset shadows only */
+  --shadow-soft: 6px 6px 0 #1e1e1e;
+  --shadow-tight: 4px 4px 0 #1e1e1e;
+  --radius-organic: 0px;
+  --radius-pill: 0px;
 }
 
 :root {
-  --font-sans: "Kakao Small Sans";
-  --font-display: "Kakao Big Sans";
-  --font-mono: "Kakao Small Sans";
-  --font-fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --black: #1e1e1e;
+  --offwhite: #fefefe;
+  --accent: #f386a1;
+  --secondary: #d9e9fb;
+  --gray: #e3e8e7;
+  --border: 1px solid currentColor;
 }
 
 /* ──────────────────────────────────────────────────────────────────
@@ -97,18 +74,16 @@
    ────────────────────────────────────────────────────────────────── */
 
 html {
-  font-feature-settings: 'ss01', 'cv11';
   text-rendering: optimizeLegibility;
   background: var(--color-paper);
 }
 
 body {
-  font-family: var(--font-sans), var(--font-fallback);
+  font-family: var(--font-sans);
   font-weight: 400;
   letter-spacing: 0;
-  background:
-    radial-gradient(circle at top left, rgba(220, 207, 194, 0.34), transparent 34rem),
-    linear-gradient(180deg, #f9f8f4 0%, #f6f3ed 100%);
+  background: var(--color-paper);
+  overflow-x: clip;
 }
 
 button,
@@ -116,11 +91,21 @@ a,
 input,
 select,
 textarea {
-  outline-color: var(--color-terracotta);
+  outline-color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.on-dark :focus-visible,
+.on-dark:focus-visible {
+  outline-color: var(--color-ink-inv);
 }
 
 ::selection {
-  background: rgba(194, 123, 102, 0.22);
+  background: var(--color-pink);
   color: var(--color-ink);
 }
 
@@ -129,47 +114,79 @@ textarea {
   font-variant-numeric: tabular-nums;
 }
 
-/* Display headings — tighter tracking */
+/* Display headings — dense, architectural */
 .display {
-  font-family: var(--font-display), var(--font-sans), var(--font-fallback);
-  letter-spacing: 0;
-  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: -0.035em;
+  font-weight: 600;
   word-break: keep-all;
-  overflow-wrap: normal;
-  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
-/* Eyebrow / overline labels */
-.eyebrow {
-  font-size: 11px;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--color-ink-faint);
+/* Mega typography — words as shapes */
+.mega {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(4rem, 13.5vw, 15rem);
+  line-height: 0.84;
+  letter-spacing: -0.05em;
+  overflow-wrap: anywhere;
 }
 
-/* Numbered section marker */
-.section-no {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0;
-  color: var(--color-ink-faint);
-  font-feature-settings: 'tnum';
+.mega-ko {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3.25rem, 10.5vw, 12rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
-.tracking-widest,
-.tracking-wide,
-.tracking-tight {
-  letter-spacing: 0 !important;
+.mega-num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(6rem, 19vw, 20rem);
+  line-height: 0.8;
+  letter-spacing: -0.07em;
+  font-variant-numeric: tabular-nums;
 }
 
+/* Technical labels
+   components 레이어에 둔다 — 그래야 text-*, hover:text-*, normal-case 같은 유틸리티가
+   이 기본값을 덮어쓸 수 있다. (레이어 밖에 두면 color: inherit 가 hover 색까지 이겨서
+   검정 배경 위에 검정 글자가 되는 문제가 있었다.) */
+@layer components {
+  .eyebrow,
+  .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-ink-faint);
+  }
+
+  .label { color: inherit; }
+
+  .section-no {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Legacy card → ruled box. No shadow, no radius. */
 .organic-card {
-  border-radius: var(--radius-organic);
-  border: 1px solid var(--color-rule);
-  background: rgba(255, 253, 248, 0.86);
-  box-shadow: var(--shadow-tight);
+  border: 1px solid var(--color-ink);
+  background: var(--color-paper-bright);
 }
 
+/* Legacy vine flourish → index tick in the margin */
 .organic-vine {
   position: relative;
 }
@@ -177,24 +194,290 @@ textarea {
 .organic-vine::before {
   content: "";
   position: absolute;
-  inset: 14px auto auto -26px;
-  width: 42px;
-  height: 76px;
-  border-left: 1px solid rgba(140, 154, 132, 0.34);
-  border-bottom: 1px solid rgba(140, 154, 132, 0.34);
-  border-bottom-left-radius: 42px;
+  inset: 6px auto auto -20px;
+  width: 8px;
+  height: 8px;
+  background: var(--color-pink);
+  border: 1px solid var(--color-ink);
   pointer-events: none;
 }
 
 /* ──────────────────────────────────────────────────────────────────
-   Leaf prose — 본문 톤 (편집물 같은 느낌)
+   Primitives — OS window, terminal, bitmap field, controls
+   ────────────────────────────────────────────────────────────────── */
+
+.os-window {
+  background: var(--color-gray);
+  color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  box-shadow: 6px 6px 0 var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.os-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 6px;
+  background: var(--color-ink);
+  color: var(--color-ink-inv);
+  border-bottom: 1px solid var(--color-ink);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.os-titlebar.is-light {
+  background: var(--color-gray);
+  color: var(--color-ink);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    var(--color-ink) 3px 4px
+  );
+  background-size: 100% 16px;
+  background-position: 0 5px;
+  background-repeat: no-repeat;
+}
+
+.os-titlebar.is-light > span:not(.os-ctl) {
+  background: var(--color-gray);
+  padding: 0 8px;
+}
+
+.os-ctl {
+  width: 12px;
+  height: 12px;
+  flex: none;
+  border: 1px solid currentColor;
+  background: var(--color-gray);
+}
+
+.os-titlebar:not(.is-light) .os-ctl {
+  background: transparent;
+}
+
+.os-body {
+  background: var(--color-paper-bright);
+  border-top: 0;
+}
+
+.os-statusbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 8px;
+  border-top: 1px solid var(--color-ink);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.os-menubar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 24px;
+  background: var(--color-paper-bright);
+  border-bottom: 1px solid var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.os-menubar > span {
+  padding: 0 10px;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+}
+
+.os-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 14px;
+  border: 1px solid var(--color-ink);
+  background: var(--color-gray);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 0 var(--color-ink);
+  transition: background-color 100ms linear, color 100ms linear;
+}
+
+.os-btn:hover {
+  background: var(--color-ink);
+  color: var(--color-ink-inv);
+}
+
+.os-btn:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+.terminal {
+  background: var(--color-ink);
+  color: var(--color-ink-inv);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 14px 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.terminal .dim { color: #8d8d88; }
+.terminal .hl { color: var(--color-pink); }
+.terminal .ok { color: #9fd0ff; }
+
+.cursor::after {
+  content: "";
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: cursor-blink 1.1s steps(1) infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+
+/* Editorial text link — TEXT → */
+.link-arrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+
+.link-arrow .arrow,
+.arrow-shift .arrow {
+  display: inline-block;
+  transition: transform 120ms linear;
+}
+
+.link-arrow:hover .arrow,
+.arrow-shift:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Rectangular control */
+.btn-rect {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: background-color 100ms linear, color 100ms linear;
+}
+
+.btn-rect:hover {
+  background: var(--color-ink);
+  color: var(--color-ink-inv);
+  border-color: var(--color-ink);
+}
+
+.on-dark .btn-rect:hover,
+.btn-rect.is-inv:hover {
+  background: var(--color-ink-inv);
+  color: var(--color-ink);
+  border-color: var(--color-ink-inv);
+}
+
+/* Bitmap / dither fields — one colour, CSS only */
+.dither {
+  background-image: radial-gradient(currentColor 1px, transparent 1.2px);
+  background-size: 4px 4px;
+}
+
+.dither-coarse {
+  background-image: radial-gradient(currentColor 1.5px, transparent 1.8px);
+  background-size: 8px 8px;
+}
+
+.dither-check {
+  background-image:
+    linear-gradient(45deg, currentColor 25%, transparent 25% 75%, currentColor 75%),
+    linear-gradient(45deg, currentColor 25%, transparent 25% 75%, currentColor 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+/* 비트맵 구름 — 촘촘한 중심 + 성긴 가장자리. 색은 currentColor. */
+.dither-dense {
+  background-image: radial-gradient(currentColor 1.45px, transparent 1.7px);
+  background-size: 4px 4px;
+}
+.mask-blob {
+  mask-image: radial-gradient(ellipse at center, #000 0%, #000 30%, transparent 68%);
+}
+.mask-blob-wide {
+  mask-image: radial-gradient(ellipse at center, #000 0%, #000 18%, transparent 72%);
+}
+
+.fade-r { mask-image: linear-gradient(to right, #000 0%, transparent 100%); }
+.fade-l { mask-image: linear-gradient(to left, #000 0%, transparent 100%); }
+.fade-t { mask-image: linear-gradient(to top, #000 0%, transparent 100%); }
+.fade-b { mask-image: linear-gradient(to bottom, #000 0%, transparent 100%); }
+.fade-cloud {
+  mask-image:
+    radial-gradient(ellipse 60% 55% at 70% 40%, #000 0%, transparent 70%);
+}
+
+.pixel-grid {
+  background-image:
+    linear-gradient(to right, currentColor 1px, transparent 1px),
+    linear-gradient(to bottom, currentColor 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Editorial rule helpers */
+.rule-t { border-top: 1px solid currentColor; }
+.rule-b { border-bottom: 1px solid currentColor; }
+.rule-l { border-left: 1px solid currentColor; }
+.rule-r { border-right: 1px solid currentColor; }
+
+/* Ticker */
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: ticker 40s linear infinite;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   Leaf prose — 본문 (technical publication)
    ────────────────────────────────────────────────────────────────── */
 
 .leaf-prose { color: var(--color-ink-soft); }
 .leaf-prose h2 { color: var(--color-ink); }
 .leaf-prose h3 { color: var(--color-ink); }
-.leaf-prose strong { color: var(--color-ink); font-weight: 600; }
-.leaf-prose p, .leaf-prose li { font-size: 15px; line-height: 1.75; }
+.leaf-prose strong { color: var(--color-ink); font-weight: 700; }
+.leaf-prose p, .leaf-prose li { font-size: 16px; line-height: 1.75; }
 
 /* ──────────────────────────────────────────────────────────────────
    abcjs SVG — keep light theme
@@ -205,20 +488,40 @@ textarea {
 .sheet-music-container .abcjs-note rect,
 .sheet-music-container path,
 .sheet-music-container text {
-  fill: #0a0a0a !important;
+  fill: #1b1b1b !important;
 }
-.sheet-music-container line { stroke: #d4d4d4 !important; }
+.sheet-music-container line { stroke: #a9a9a4 !important; }
+
+/* Range inputs — mechanical slider */
+input[type="range"] {
+  accent-color: var(--color-ink);
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 18px;
+  background: var(--color-pink);
+  border: 1px solid var(--color-ink);
+  border-radius: 0;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 18px;
+  background: var(--color-pink);
+  border: 1px solid var(--color-ink);
+  border-radius: 0;
+}
 
 /* ──────────────────────────────────────────────────────────────────
-   Animations
+   Animations — short, mechanical
    ────────────────────────────────────────────────────────────────── */
 
 @keyframes metronome-up {
-  from { opacity: 0; transform: translateY(8px) scale(0.95); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .animate-metronome-up {
-  animation: metronome-up 180ms ease-out;
+  animation: metronome-up 120ms linear;
   transform-origin: bottom right;
 }
 
@@ -229,39 +532,20 @@ textarea {
   60%      { transform: translateX(-4px); }
   80%      { transform: translateX(4px); }
 }
-.animate-shake { animation: shake 0.4s ease-in-out; }
+.animate-shake { animation: shake 0.4s steps(5); }
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-.animate-fade-in { animation: fade-in 240ms ease-out; }
-
-@keyframes landing-rise {
-  from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
-  to   { opacity: 1; transform: translateY(0); filter: blur(0); }
-}
-
-@keyframes landing-float {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-  50%      { transform: translate3d(0, -12px, 0) rotate(0.35deg); }
-}
-
-.landing-reveal {
-  animation: landing-rise 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.landing-reveal-delay-1 { animation-delay: 90ms; }
-.landing-reveal-delay-2 { animation-delay: 180ms; }
-.landing-reveal-delay-3 { animation-delay: 270ms; }
-
-.landing-float {
-  animation: landing-float 7s ease-in-out infinite;
-}
+.animate-fade-in { animation: fade-in 120ms linear; }
 
 @media (prefers-reduced-motion: reduce) {
-  .landing-reveal,
-  .landing-float {
+  .cursor::after,
+  .ticker-track,
+  .animate-shake,
+  .animate-fade-in,
+  .animate-metronome-up {
     animation: none;
   }
 }

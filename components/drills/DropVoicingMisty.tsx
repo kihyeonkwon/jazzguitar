@@ -451,7 +451,7 @@ export default function DropVoicingMisty() {
               {[1, 2, 3, 4].map((n) => (
                 <div
                   key={n}
-                  className={`h-2 transition-colors ${metronome.isPlaying && metronome.beat === n ? 'bg-ink' : 'bg-rule'}`}
+                  className={`h-2 transition-colors ${metronome.isPlaying && metronome.beat === n ? 'bg-ink' : 'bg-ink-quiet'}`}
                 />
               ))}
             </div>

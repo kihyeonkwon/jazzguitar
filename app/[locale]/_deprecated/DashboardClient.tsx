@@ -34,24 +34,24 @@ export default function DashboardClient({ locale, totalTopics, stages }: Props) 
     <div className="space-y-8">
       {/* Current Topic */}
       {currentTopic && (
-        <div className="rounded-xl p-6 border border-gray-200 bg-gray-50 space-y-4">
+        <div className=" p-6 border border-rule bg-surface-soft space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-widest text-gray-400">
+            <span className="text-xs font-medium uppercase tracking-widest text-ink-faint">
               {t('currentTopic')}
             </span>
-            <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+            <span className="text-xs px-2 py-1 bg-surface-soft text-ink-soft border border-rule">
               Stage {currentTopic.stage}
             </span>
           </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-semibold text-ink">
               {currentTopic.title[loc]}
             </h2>
-            <p className="text-gray-500 mt-1 text-sm">{currentTopic.description[loc]}</p>
+            <p className="text-ink-soft mt-1 text-sm">{currentTopic.description[loc]}</p>
           </div>
           <Link
             href={`/topic/${currentTopic.slug}`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-black text-white hover:bg-gray-800 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium bg-ink text-ink-inv hover:bg-pink hover:text-ink transition-colors"
           >
             {completedIds.includes(currentTopic.id) ? t('continueLearning') : t('startLearning')}
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,25 +62,25 @@ export default function DashboardClient({ locale, totalTopics, stages }: Props) 
       )}
 
       {/* Overall Progress */}
-      <div className="rounded-xl p-5 border border-gray-200 bg-white space-y-3">
+      <div className=" p-5 border border-rule bg-paper-bright space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-gray-500 text-sm">{t('overallProgress')}</span>
-          <span className="text-gray-700 text-sm font-medium">
+          <span className="text-ink-soft text-sm">{t('overallProgress')}</span>
+          <span className="text-ink text-sm font-medium">
             {completedIds.length}/{totalTopics} {t('topicsCompleted')}
           </span>
         </div>
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2 bg-surface-soft overflow-hidden">
           <div
-            className="h-full rounded-full bg-gray-900 transition-all duration-700"
+            className="h-full bg-ink transition-all duration-700"
             style={{ width: `${completionPct}%` }}
           />
         </div>
-        <div className="text-right text-xs text-gray-400">{completionPct}%</div>
+        <div className="text-right text-xs text-ink-faint">{completionPct}%</div>
       </div>
 
       {/* Stage Cards */}
       <div>
-        <h3 className="text-sm font-medium text-gray-400 uppercase tracking-widest mb-4">
+        <h3 className="text-sm font-medium text-ink-faint uppercase tracking-widest mb-4">
           {t('stageProgress')}
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -90,20 +90,20 @@ export default function DashboardClient({ locale, totalTopics, stages }: Props) 
             return (
               <div
                 key={stage.number}
-                className="rounded-xl p-4 border border-gray-200 bg-white space-y-3"
+                className=" p-4 border border-rule bg-paper-bright space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-gray-700">
+                  <span className="text-xs font-semibold text-ink">
                     S{stage.number}
                   </span>
-                  <span className="text-gray-400 text-xs">{stageCompleted}/{stage.topics.length}</span>
+                  <span className="text-ink-faint text-xs">{stageCompleted}/{stage.topics.length}</span>
                 </div>
-                <div className="text-xs text-gray-700 font-medium leading-tight">
+                <div className="text-xs text-ink font-medium leading-tight">
                   {stagesT(`${stage.number}.name` as `1.name`)}
                 </div>
-                <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-1 bg-surface-soft overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-gray-900"
+                    className="h-full bg-ink"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -116,7 +116,7 @@ export default function DashboardClient({ locale, totalTopics, stages }: Props) 
       {/* Recently Completed */}
       {completedIds.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium text-gray-400 uppercase tracking-widest mb-4">
+          <h3 className="text-sm font-medium text-ink-faint uppercase tracking-widest mb-4">
             {t('recentlyCompleted')}
           </h3>
           <div className="space-y-2">
@@ -130,12 +130,12 @@ export default function DashboardClient({ locale, totalTopics, stages }: Props) 
                   <Link
                     key={id}
                     href={`/topic/${topic.slug}`}
-                    className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-3 p-3 border border-rule hover:bg-surface transition-colors"
                   >
-                    <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center text-xs text-white">
+                    <div className="w-6 h-6 bg-ink flex items-center justify-center text-xs text-ink-inv">
                       ✓
                     </div>
-                    <span className="text-sm text-gray-700">{topic.title[loc]}</span>
+                    <span className="text-sm text-ink">{topic.title[loc]}</span>
                   </Link>
                 )
               })}

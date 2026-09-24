@@ -42,11 +42,11 @@ export default function DesignSystemPage() {
           <span className="eyebrow">Design System</span>
         </div>
         <h1 className="display text-5xl md:text-6xl text-ink leading-[0.95]">
-          Jazz Guitar<br />Visual Language
+          재즈 구구단<br />Visual Language
         </h1>
         <p className="text-ink-soft text-lg max-w-xl leading-relaxed">
-          모노톤 기반 에디토리얼 시스템. ECM 레코드와 출판물의 절제된 미감을 참고합니다.
-          색은 한 가지(검정)만 쓰고, 위계는 타이포그래피와 여백으로 만듭니다.
+          Retro Research Brutalism. 스위스 에디토리얼 그리드, 90년대 데스크톱 UI, 터미널, 비트맵 텍스처를
+          하나의 시스템으로 묶습니다. 위계는 타이포그래피 스케일과 1px 괘선, 평면 색면으로 만듭니다.
         </p>
       </header>
 
@@ -57,8 +57,8 @@ export default function DesignSystemPage() {
         <SectionHeader
           number={1}
           eyebrow="Typography"
-          title="Kakao Big Sans · Kakao Small Sans"
-          description="한 가지 sans 패밀리로 모든 계층을 표현합니다. 굵기와 트래킹으로 위계를 만듭니다. 숫자는 모노 + tabular 정렬로 정밀함을 확보합니다."
+          title="Helvetica · System Mono"
+          description="중립적인 그로테스크 sans 하나로 모든 계층을 표현합니다. 거대한 헤드라인과 아주 작은 모노스페이스 라벨의 대비가 핵심입니다."
         />
 
         <Card className="p-8 space-y-6">
@@ -73,7 +73,7 @@ export default function DesignSystemPage() {
           <div className="space-y-1">
             <div className="eyebrow">Body · 400 / -0.5% tracking</div>
             <p className="text-ink-soft leading-relaxed">
-              재즈 기타의 학습은 이론 암기가 아니라 연주의 누적입니다. 매일 한 코러스를 녹음하고
+              재즈 학습은 이론 암기가 아니라 연주의 누적입니다. 매일 한 코러스를 녹음하고
               들어보세요. 어제의 자신이 가장 정확한 거울입니다.
             </p>
           </div>
@@ -97,19 +97,18 @@ export default function DesignSystemPage() {
         <SectionHeader
           number={2}
           eyebrow="Color"
-          title="Pure monochrome"
-          description="색은 콘텐츠에서만 등장합니다. UI 자체는 검정·회색·종이색만 사용합니다."
+          title="White, ink, pink, sky"
+          description="흰 바탕, 먹색 글자, 선명한 핑크 면, 하늘색 위의 핑크 비트맵 구름. 그라디언트 없이 평면 색면과 점 텍스처로만 씁니다."
         />
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-rule border border-rule">
           {[
-            { name: 'paper',        hex: '#fafafa', fg: 'text-ink' },
-            { name: 'paper-bright', hex: '#ffffff', fg: 'text-ink' },
-            { name: 'surface',      hex: '#f4f4f4', fg: 'text-ink' },
-            { name: 'rule',         hex: '#e5e5e5', fg: 'text-ink' },
-            { name: 'ink-faint',    hex: '#a3a3a3', fg: 'text-ink-inv' },
-            { name: 'ink-soft',     hex: '#525252', fg: 'text-ink-inv' },
-            { name: 'ink',          hex: '#0a0a0a', fg: 'text-ink-inv' },
+            { name: 'paper',   hex: '#fefefe', fg: 'text-ink' },
+            { name: 'pink',    hex: '#f386a1', fg: 'text-ink' },
+            { name: 'blue',    hex: '#d9e9fb', fg: 'text-ink' },
+            { name: 'cloud',   hex: '#ee5fd6', fg: 'text-ink' },
+            { name: 'gray',    hex: '#e3e8e7', fg: 'text-ink' },
+            { name: 'ink',     hex: '#1e1e1e', fg: 'text-ink-inv' },
           ].map(c => (
             <div
               key={c.name}
@@ -297,7 +296,7 @@ export default function DesignSystemPage() {
       <Divider label="End" />
 
       <footer className="text-xs text-ink-faint">
-        Jazz Guitar Design System · Internal reference
+        재즈 구구단 Design System · Internal reference
       </footer>
     </div>
   )

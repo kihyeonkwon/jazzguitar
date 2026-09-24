@@ -1,11 +1,12 @@
 'use client'
 
 import { useMemo, useSyncExternalStore } from 'react'
+import { useTranslations } from 'next-intl'
 import { Stat } from '@/components/ui'
+import { cpmToSpc } from '@/lib/progress/thresholds'
 import {
   getCurrentLevel,
   getDrillScore,
-  levelLabel,
   CurrentLevelInfo,
   DrillLevel,
   LevelAchievement,
@@ -57,9 +58,10 @@ function makeSnapshot(drillType: string) {
   }
 }
 
+// 숫자(SPC)가 움직인 방향 — 빨라지면 초가 줄어드니 ↓
 function trendIcon(t: CurrentLevelInfo['trend']): string {
-  if (t === 'up') return ' ↑'
-  if (t === 'down') return ' ↓'
+  if (t === 'up') return ' ↓'
+  if (t === 'down') return ' ↑'
   if (t === 'flat') return ' →'
   return ''
 }
@@ -73,6 +75,8 @@ function formatDate(iso: string): string {
 }
 
 export default function DrillLibraryStats({ drillType }: { drillType: string }) {
+  const t = useTranslations('stats')
+  const tLevel = useTranslations('levels')
   const getSnapshot = useMemo(() => makeSnapshot(drillType), [drillType])
   const info = useSyncExternalStore(subscribe, getSnapshot, () => EMPTY)
 
@@ -83,8 +87,8 @@ export default function DrillLibraryStats({ drillType }: { drillType: string }) 
     return (
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <Stat label="Level" value="—" hint="아직 기록 없음" />
-          <Stat label="CPM" value="—" />
+          <Stat label={t('level')} value="—" hint={t('none')} />
+          <Stat label={t('spc')} value="—" />
         </div>
         <AchievementRow achievementsByLevel={achievementsByLevel} />
       </div>
@@ -92,29 +96,29 @@ export default function DrillLibraryStats({ drillType }: { drillType: string }) 
   }
 
   const levelText = info.level
-    ? levelLabel(info.level) + (info.accuracyGated ? '*' : '')
-    : '측정중'
-  const cpmText = info.avgCpm != null ? `${info.avgCpm}${trendIcon(info.trend)}` : '—'
+    ? tLevel(info.level) + (info.accuracyGated ? '*' : '')
+    : t('measuring')
+  const spcText = info.avgCpm ? `${cpmToSpc(info.avgCpm).toFixed(2)}s${trendIcon(info.trend)}` : '—'
   const accHint =
     info.avgAccuracy != null
-      ? `정확도 ${Math.round(info.avgAccuracy * 100)}%`
+      ? t('accuracy', { pct: Math.round(info.avgAccuracy * 100) })
       : undefined
 
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3">
         <Stat
-          label="Level"
+          label={t('level')}
           value={levelText}
           hint={
             info.roundsAnalyzed < 3
-              ? `${info.roundsAnalyzed}/3회 측정중`
+              ? t('measuringCount', { n: info.roundsAnalyzed })
               : info.accuracyGated
-              ? '정확도 미달 강등'
-              : `최근 ${info.roundsAnalyzed}회 평균`
+              ? t('gated')
+              : t('recentAvg', { n: info.roundsAnalyzed })
           }
         />
-        <Stat label="CPM" value={cpmText} hint={accHint} />
+        <Stat label={t('spc')} value={spcText} hint={accHint} />
       </div>
       <AchievementRow achievementsByLevel={achievementsByLevel} />
     </div>
@@ -126,9 +130,12 @@ function AchievementRow({
 }: {
   achievementsByLevel: Map<DrillLevel, LevelAchievement>
 }) {
+  const t = useTranslations('stats')
+  const tLevel = useTranslations('levels')
+
   return (
     <div className="flex items-center gap-2 pt-2 border-t border-rule">
-      <span className="eyebrow text-[10px]">달성</span>
+      <span className="eyebrow text-[10px]">{t('achieved')}</span>
       <div className="flex gap-1.5 flex-wrap">
         {LEVEL_TIERS.map((lvl) => {
           const a = achievementsByLevel.get(lvl)
@@ -136,14 +143,14 @@ function AchievementRow({
           return (
             <span
               key={lvl}
-              title={a ? `${formatDate(a.at)} · ${a.cpm} CPM` : '미달성'}
+              title={a && a.cpm > 0 ? `${formatDate(a.at)} · ${cpmToSpc(a.cpm).toFixed(2)}s` : t('notYet')}
               className={`text-[10px] font-mono tracking-widest px-1.5 py-0.5 border ${
                 reached
                   ? 'border-ink bg-ink text-ink-inv'
                   : 'border-rule text-ink-faint'
               }`}
             >
-              {levelLabel(lvl)}
+              {tLevel(lvl)}
             </span>
           )
         })}

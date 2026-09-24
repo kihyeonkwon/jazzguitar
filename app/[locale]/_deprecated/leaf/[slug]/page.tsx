@@ -11,8 +11,7 @@ import {
 import { Locale, TrunkSlug } from '@/lib/curriculum/types'
 import LeveledCheckpoints from '@/components/leaf/LeveledCheckpoints'
 import SelfCheck from '@/components/leaf/SelfCheck'
-import { TrunkIconMap, IconArrowRight, IconArrowLeft } from '@/components/icons'
-import { Divider } from '@/components/ui'
+import { TrunkIconMap, IconArrowLeft } from '@/components/icons'
 import TheoryProse from '@/components/leaf/TheoryProse'
 import JamPicker from '@/components/leaf/JamPicker'
 import ExerciseCard from '@/components/leaf/ExerciseCard'
@@ -80,68 +79,53 @@ export default async function LeafPage({ params }: Props) {
   const checkpoints = leaf.checkpoints
 
   return (
-    <div className="max-w-7xl mx-auto px-5 sm:px-6 py-16 sm:py-20 space-y-14">
-
-      {/* Back */}
-      {trunk && (
-        <Link
-          href={`/trunk/${trunk.slug}`}
-          className="inline-flex items-center gap-2 text-xs text-ink-faint hover:text-ink transition-colors font-mono tracking-widest"
-        >
-          <IconArrowLeft size={14} />
-          {trunk.title[locale].toUpperCase()}
-        </Link>
-      )}
-
+    <article>
       {/* Cover */}
-      <header className="organic-vine space-y-6">
-        <div className="flex items-baseline gap-3">
-          <span className="section-no">
-            {String(leaf.order).padStart(2, '0')}
-          </span>
-          <span className="eyebrow">주제 · I can play</span>
+      <header className="border-b border-ink bg-pink">
+        <div className="flex items-center justify-between gap-4 px-4 pt-5 sm:px-6">
+          {trunk ? (
+            <Link
+              href={`/trunk/${trunk.slug}`}
+              className="label arrow-shift inline-flex items-center gap-2 hover:underline"
+            >
+              <IconArrowLeft size={12} />
+              {TrunkIcon && <TrunkIcon size={14} />}
+              {trunk.title[locale]}
+            </Link>
+          ) : <span />}
+          <p className="label">{`Leaf / ${String(leaf.order).padStart(2, '0')} — I can play`}</p>
         </div>
-        <div className="flex items-start gap-5">
-          {TrunkIcon && (
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-clay bg-paper-bright text-ink shadow-[var(--shadow-tight)]">
-              <TrunkIcon size={30} />
-            </span>
-          )}
-          <div className="flex-1">
-            <h1 className="display text-4xl md:text-6xl text-ink leading-[1.16]">
+        <div className="grid items-end gap-8 px-4 pb-8 pt-14 sm:px-6 md:grid-cols-12 md:pt-24">
+          <div className="md:col-span-8">
+            <h1
+              className="display text-ink"
+              style={{ fontSize: 'clamp(2.75rem, 8vw, 8.5rem)', lineHeight: 0.98, letterSpacing: '-0.05em' }}
+            >
               {leaf.title[locale]}
             </h1>
             {leaf.subtitle && (
-              <p className="mt-2 text-ink-soft text-[15px] tracking-wide">
+              <p className="mt-5 text-xl font-bold tracking-[-0.02em] text-ink sm:text-2xl">
                 {leaf.subtitle[locale]}
               </p>
             )}
           </div>
+          <p className="break-keep border-t border-ink pt-4 text-[15px] leading-[1.7] text-ink md:col-span-4 lg:col-span-3 lg:col-start-10">
+            {leaf.description[locale]}
+          </p>
         </div>
-        <p className="max-w-3xl text-ink-soft text-base leading-8">
-          {leaf.description[locale]}
-        </p>
       </header>
 
       {/* Theory */}
       {theoryContent && (
-        <section className="space-y-4">
-          <div className="flex items-baseline gap-3">
-            <span className="section-no">T</span>
-            <span className="eyebrow">Theory</span>
-          </div>
+        <LeafSection index="T" label="Theory">
           <TheoryProse content={theoryContent} />
-        </section>
+        </LeafSection>
       )}
 
       {/* Practice — Exercises (Jam 위로 이동) */}
       {exercises.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-baseline gap-3">
-            <span className="section-no">P</span>
-            <span className="eyebrow">Exercises</span>
-          </div>
-          <div className="space-y-6 -mx-5 sm:mx-0">
+        <LeafSection index="P" label="Exercises">
+          <div className="space-y-6 -mx-4 sm:mx-0">
             {exercises.map((ex, i) => (
               <ExerciseCard
                 key={i}
@@ -152,75 +136,89 @@ export default async function LeafPage({ params }: Props) {
               />
             ))}
           </div>
-        </section>
+        </LeafSection>
       )}
 
       {/* Practice — Jam (트랙·키 자유 선택 + 녹음 + reference) */}
       {tracks.length > 0 && (
-        <section className="space-y-5">
-          <div className="flex items-baseline gap-3">
-            <span className="section-no">J</span>
-            <span className="eyebrow">Jam</span>
-          </div>
-          <p className="text-[13px] text-ink-soft">
+        <LeafSection index="J" label="Jam">
+          <p className="mb-5 text-[13px] text-ink-soft">
             이 주제가 추천하는 트랙은 <strong className="text-ink">★</strong> 표시됩니다. 키는 자유롭게 바꿔서 다른 조에서도 같은 주제를 연습할 수 있습니다.
           </p>
-          <div className="-mx-5 sm:mx-0">
+          <div className="-mx-4 sm:mx-0">
             <JamPicker
               recommendedTrackIds={tracks.map(t => t!.id)}
               locale={locale}
             />
           </div>
-        </section>
+        </LeafSection>
       )}
 
       {/* Checkpoints — new leveled or legacy */}
-      <div className="-mx-5 sm:mx-0">
-        {checkpoints && checkpoints.length > 0 ? (
-          <LeveledCheckpoints
-            leafSlug={leaf.slug}
-            groups={checkpoints}
-            locale={locale}
-          />
-        ) : (
-          <SelfCheck
-            leafSlug={leaf.slug}
-            items={leaf.selfCheck.map(c => c[locale])}
-          />
-        )}
-      </div>
+      <LeafSection index="C" label="Checklist">
+        <div className="-mx-4 sm:mx-0">
+          {checkpoints && checkpoints.length > 0 ? (
+            <LeveledCheckpoints
+              leafSlug={leaf.slug}
+              groups={checkpoints}
+              locale={locale}
+            />
+          ) : (
+            <SelfCheck
+              leafSlug={leaf.slug}
+              items={leaf.selfCheck.map(c => c[locale])}
+            />
+          )}
+        </div>
+      </LeafSection>
 
       {/* Sibling navigation */}
       {(prevLeaf || nextLeaf) && (
-        <nav className="flex items-stretch gap-3 -mx-5 sm:mx-0">
+        <nav className="grid border-b border-ink md:grid-cols-2" aria-label="주제 이동">
           {prevLeaf ? (
             <Link
               href={`/leaf/${prevLeaf.slug}`}
-              className="flex-1 organic-card p-5 hover:bg-surface-soft transition-colors flex items-center gap-3"
+              className="block border-b border-ink px-4 py-6 transition-colors duration-100 hover:bg-ink hover:text-ink-inv sm:px-6 md:border-b-0 md:border-r"
             >
-              <IconArrowLeft size={14} className="text-ink-faint shrink-0" />
-              <div className="text-left min-w-0">
-                <div className="eyebrow">이전 주제</div>
-                <div className="text-sm text-ink mt-0.5 truncate">{prevLeaf.title[locale]}</div>
-              </div>
+              <span className="label">← 이전 주제</span>
+              <span className="display mt-6 block text-3xl leading-[1.02] sm:text-5xl">{prevLeaf.title[locale]}</span>
             </Link>
-          ) : <span className="flex-1 p-5" />}
+          ) : <span className="hidden border-r border-ink md:block" />}
           {nextLeaf ? (
             <Link
               href={`/leaf/${nextLeaf.slug}`}
-              className="flex-1 organic-card p-5 hover:bg-surface-soft transition-colors flex items-center gap-3 justify-end"
+              className="block px-4 py-6 text-right transition-colors duration-100 hover:bg-ink hover:text-ink-inv sm:px-6"
             >
-              <div className="text-right min-w-0">
-                <div className="eyebrow">다음 주제</div>
-                <div className="text-sm text-ink mt-0.5 truncate">{nextLeaf.title[locale]}</div>
-              </div>
-              <IconArrowRight size={14} className="text-ink-faint shrink-0" />
+              <span className="label">다음 주제 →</span>
+              <span className="display mt-6 block text-3xl leading-[1.02] sm:text-5xl">{nextLeaf.title[locale]}</span>
             </Link>
-          ) : <span className="flex-1 p-5" />}
+          ) : <span />}
         </nav>
       )}
+    </article>
+  )
+}
 
-      <Divider />
-    </div>
+function LeafSection({
+  index,
+  label,
+  children,
+}: {
+  index: string
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="grid border-b border-ink md:grid-cols-12">
+      <div className="border-b border-ink px-4 py-5 sm:px-6 md:col-span-2 md:border-b-0 md:border-r">
+        <div className="flex items-baseline gap-4 md:sticky md:top-20 md:block">
+          <span aria-hidden className="display block text-5xl leading-none md:text-8xl">{index}</span>
+          <span className="label md:mt-3 md:block">{label}</span>
+        </div>
+      </div>
+      <div className="min-w-0 px-4 py-10 sm:px-6 md:col-span-10 md:py-14">
+        <div className="max-w-4xl">{children}</div>
+      </div>
+    </section>
   )
 }

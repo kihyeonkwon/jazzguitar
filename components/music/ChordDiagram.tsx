@@ -82,21 +82,21 @@ export default function ChordDiagram({ chordName, className = '' }: ChordDiagram
   if (!data) {
     return (
       <div
-        className={`inline-flex flex-col items-center bg-white rounded-lg border border-gray-200 p-3 ${className}`}
+        className={`inline-flex flex-col items-center bg-paper-bright border border-rule p-3 ${className}`}
       >
-        <span className="text-gray-900 text-sm font-medium mb-2">{chordName}</span>
-        <div className="text-gray-400 text-xs">다이어그램 없음</div>
+        <span className="text-ink text-sm font-medium mb-2">{chordName}</span>
+        <div className="text-ink-faint text-xs">다이어그램 없음</div>
       </div>
     )
   }
 
   return (
     <div
-      className={`inline-flex flex-col items-center bg-white rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-gray-400 transition-colors ${className}`}
+      className={`inline-flex flex-col items-center bg-paper-bright border border-rule p-3 cursor-pointer hover:border-ink transition-colors ${className}`}
       onClick={playChord}
       title={`${chordName} 재생`}
     >
-      <span className="text-gray-900 text-sm font-semibold mb-1">{chordName}</span>
+      <span className="text-ink text-sm font-semibold mb-1">{chordName}</span>
       <svg width={svgWidth} height={svgHeight} style={{ display: 'block' }}>
         {/* Nut / base fret label */}
         {data.baseFret === 1 ? (
@@ -213,7 +213,7 @@ export default function ChordDiagram({ chordName, className = '' }: ChordDiagram
           )
         })}
       </svg>
-      <span className="text-gray-400 text-xs mt-1">
+      <span className="text-ink-faint text-xs mt-1">
         {isPlaying ? '♪' : '클릭하여 재생'}
       </span>
     </div>

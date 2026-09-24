@@ -38,7 +38,7 @@ function renderInline(text: string): React.ReactNode {
     }
     if (p.startsWith('`') && p.endsWith('`')) {
       return (
-        <code key={i} className="font-mono text-[13px] bg-surface px-1.5 py-0.5 text-ink">
+        <code key={i} className="font-mono text-[0.85em] bg-blue border border-ink px-1.5 py-0.5 text-ink">
           {p.slice(1, -1)}
         </code>
       )
@@ -392,7 +392,7 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
   const flushPara = (k: string) => {
     if (para.length > 0) {
       out.push(
-        <p key={k} className="text-ink-soft text-[15px] leading-[1.8] my-4">
+        <p key={k} className="text-ink-soft text-[17px] leading-[1.8] my-5 break-keep">
           {renderInline(para.join(' '))}
         </p>,
       )
@@ -404,8 +404,8 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
       out.push(
         <ul key={k} className="my-4 space-y-2">
           {listItems.map((item, i) => (
-            <li key={i} className="flex gap-3 text-ink-soft text-[15px] leading-[1.7]">
-              <span className="text-ink-faint mt-2.5 w-1 h-1 bg-ink-faint rounded-full shrink-0" />
+            <li key={i} className="flex gap-3 text-ink-soft text-[17px] leading-[1.7] break-keep">
+              <span className="mt-[0.7em] w-1.5 h-1.5 bg-ink shrink-0" />
               <span>{renderInline(item)}</span>
             </li>
           ))}
@@ -419,7 +419,7 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
       out.push(
         <ol key={k} className="my-4 space-y-2">
           {orderedItems.map((item, i) => (
-            <li key={i} className="flex gap-3 text-ink-soft text-[15px] leading-[1.7]">
+            <li key={i} className="flex gap-3 text-ink-soft text-[17px] leading-[1.7] break-keep">
               <span className="font-mono text-ink-faint text-[12px] tracking-widest mt-1 shrink-0 w-5 text-right">{i + 1}.</span>
               <span>{renderInline(item)}</span>
             </li>
@@ -448,7 +448,7 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
             </thead>
             <tbody>
               {tableRows.map((row, ri) => (
-                <tr key={ri} className="border-b border-rule">
+                <tr key={ri} className="border-b border-ink/30">
                   {row.map((c, ci) => (
                     <td key={ci} className="px-3 py-2 align-top">
                       {renderInline(c)}
@@ -473,14 +473,14 @@ function renderTextBlock(lines: string[], keyBase: string): React.ReactNode[] {
     if (line.startsWith('## ')) {
       flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
       out.push(
-        <h2 key={`${keyBase}-h2-${i}`} className="display text-2xl text-ink mt-12 mb-3 leading-snug">
+        <h2 key={`${keyBase}-h2-${i}`} className="display text-3xl md:text-[2.5rem] text-ink mt-16 mb-5 pt-5 border-t border-ink leading-[1.08] first:mt-0">
           {line.replace(/^##\s+/, '')}
         </h2>,
       )
     } else if (line.startsWith('### ')) {
       flushPara(`${keyBase}-p-${i}`); flushList(`${keyBase}-l-${i}`); flushOrdered(`${keyBase}-o-${i}`); flushTable(`${keyBase}-tb-${i}`)
       out.push(
-        <h3 key={`${keyBase}-h3-${i}`} className="text-base font-semibold text-ink mt-8 mb-2">
+        <h3 key={`${keyBase}-h3-${i}`} className="text-xl font-bold tracking-[-0.02em] text-ink mt-10 mb-2">
           {line.replace(/^###\s+/, '')}
         </h3>,
       )
@@ -516,7 +516,7 @@ export function renderMarkdown(md: string): React.ReactNode {
       return <React.Fragment key={i}>{renderTextBlock(b.lines, `t-${i}`)}</React.Fragment>
     }
     // 모바일에서 본문 좌우 패딩(px-6)을 무력화해 풀-블리드로 표시
-    const bleed = '-mx-6 sm:mx-0'
+    const bleed = '-mx-4 sm:mx-0'
     if (b.kind === 'abc') {
       return (
         <div key={i} className={`my-6 ${bleed}`}>

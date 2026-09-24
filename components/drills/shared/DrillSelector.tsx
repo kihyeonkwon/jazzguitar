@@ -33,29 +33,29 @@ export default function DrillSelector({
     columns === 5 ? 'grid-cols-5' :
     'grid-cols-6'
 
+  // 선택지가 적은 게임(도수 등)은 큰 키, 많은 경우는 촘촘한 키
+  const size = columns <= 4
+    ? 'h-20 font-sans text-3xl font-semibold tracking-[-0.04em] sm:h-24 sm:text-4xl'
+    : 'h-14 font-mono text-sm font-medium'
+
   const disabled = state === 'correct' || state === 'wrong' || state === 'reveal'
 
   return (
-    <div className={`grid ${colsClass} gap-2`}>
+    <div className={`grid ${colsClass} gap-px border border-ink bg-ink`}>
       {choices.map((c) => {
         const isSelected = selected === c.value
         const isCorrect = correctValue === c.value
 
-        // 기본
-        let cls = 'bg-paper-bright text-ink border-rule'
+        let cls = 'bg-paper-bright text-ink'
 
         if (state === 'idle') {
-          if (isSelected) cls = 'bg-ink text-ink-inv border-ink'
+          if (isSelected) cls = 'bg-ink text-ink-inv'
+        } else if (isCorrect) {
+          cls = isSelected ? 'bg-ink text-ink-inv' : 'bg-blue text-ink'
+        } else if (isSelected) {
+          cls = 'bg-pink text-ink'
         } else {
-          // 결과 표시 상태
-          if (isCorrect) {
-            cls = 'bg-ink text-ink-inv border-ink border-2'
-          } else if (isSelected && !isCorrect) {
-            // 미세한 빨강 — 오답
-            cls = 'bg-paper-bright text-red-500 border-red-300'
-          } else {
-            cls = 'bg-paper-bright text-ink-faint border-rule'
-          }
+          cls = 'bg-paper-bright text-ink-quiet'
         }
 
         return (
@@ -63,13 +63,9 @@ export default function DrillSelector({
             key={c.value}
             onClick={() => !disabled && onSelect(c.value)}
             disabled={disabled}
-            className={`
-              h-12 border font-mono text-sm font-medium
-              transition-colors
-              ${cls}
-              ${!disabled && !isSelected ? 'hover:border-ink-soft' : ''}
-              ${disabled ? 'cursor-default' : 'cursor-pointer'}
-            `}
+            className={`${size} transition-colors duration-100 ${cls} ${
+              !disabled && !isSelected ? 'hover:bg-ink hover:text-ink-inv' : ''
+            } ${disabled ? 'cursor-default' : 'cursor-pointer'}`}
           >
             {c.label}
           </button>

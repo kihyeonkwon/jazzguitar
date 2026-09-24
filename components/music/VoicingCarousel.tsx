@@ -163,7 +163,7 @@ export default function VoicingCarousel({
                 key={i}
                 onClick={() => goTo(i)}
                 className={`w-2 h-2 transition-colors ${
-                  i === clampedIdx ? 'bg-ink' : 'bg-rule hover:bg-ink-soft'
+                  i === clampedIdx ? 'bg-ink' : 'bg-ink-quiet hover:bg-ink-soft'
                 }`}
                 aria-label={`Voicing ${i + 1}`}
               />

@@ -18,20 +18,20 @@ export default function CurriculumMap() {
       {stages.map((stage) => (
         <div key={stage.number} className="space-y-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border border-gray-200 bg-gray-50 text-gray-700">
+            <div className="w-8 h-8 flex items-center justify-center text-sm font-bold border border-rule bg-surface-soft text-ink">
               {stage.number}
             </div>
             <div>
-              <div className="text-gray-900 font-semibold text-sm">
+              <div className="text-ink font-semibold text-sm">
                 {stagesT(`${stage.number}.name` as `1.name`)}
               </div>
-              <div className="text-gray-400 text-xs">
+              <div className="text-ink-faint text-xs">
                 {stagesT(`${stage.number}.subtitle` as `1.subtitle`)}
               </div>
             </div>
           </div>
 
-          <div className="ml-4 border-l-2 border-gray-200 pl-6 space-y-2">
+          <div className="ml-4 border-l-2 border-rule pl-6 space-y-2">
             {stage.topics.map((topic) => {
               const isCompleted = completedIds.includes(topic.id)
               const isInProgress = startedIds.includes(topic.id)
@@ -43,19 +43,19 @@ export default function CurriculumMap() {
                   className="block group"
                 >
                   <div
-                    className={`flex items-center gap-3 p-3 rounded-lg border transition-all hover:bg-gray-50 ${
+                    className={`flex items-center gap-3 p-3 border transition-all hover:bg-surface ${
                       isCompleted
-                        ? 'border-gray-300 bg-gray-50'
+                        ? 'border-rule bg-surface-soft'
                         : isInProgress
-                        ? 'border-gray-300 bg-white'
-                        : 'border-gray-200 bg-white'
+                        ? 'border-rule bg-paper-bright'
+                        : 'border-rule bg-paper-bright'
                     }`}
                   >
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0 ${
+                      className={`w-6 h-6 flex items-center justify-center text-xs font-mono shrink-0 ${
                         isCompleted
-                          ? 'bg-gray-900 text-white'
-                          : 'bg-gray-100 text-gray-400'
+                          ? 'bg-ink text-ink-inv'
+                          : 'bg-surface-soft text-ink-faint'
                       }`}
                     >
                       {isCompleted ? '✓' : topic.order}
@@ -64,25 +64,25 @@ export default function CurriculumMap() {
                       <div
                         className={`text-sm truncate ${
                           isCompleted
-                            ? 'text-gray-900 font-medium'
+                            ? 'text-ink font-medium'
                             : isInProgress
-                            ? 'text-gray-900 font-medium underline'
-                            : 'text-gray-700'
+                            ? 'text-ink font-medium underline'
+                            : 'text-ink'
                         }`}
                       >
                         {topic.title[locale]}
                       </div>
-                      <div className="text-gray-400 text-xs truncate">
+                      <div className="text-ink-faint text-xs truncate">
                         {topic.description[locale]}
                       </div>
                     </div>
                     {isInProgress && !isCompleted && (
-                      <span className="text-xs px-2 py-0.5 rounded-full shrink-0 border border-gray-300 text-gray-500">
+                      <span className="text-xs px-2 py-0.5 shrink-0 border border-rule text-ink-soft">
                         {t('inProgress')}
                       </span>
                     )}
                     {isCompleted && (
-                      <span className="text-xs px-2 py-0.5 rounded-full shrink-0 border border-gray-200 text-gray-400">
+                      <span className="text-xs px-2 py-0.5 shrink-0 border border-rule text-ink-faint">
                         {t('completed')}
                       </span>
                     )}

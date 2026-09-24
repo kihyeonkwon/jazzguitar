@@ -18,18 +18,18 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed select-none'
+    'inline-flex items-center justify-center gap-2 border font-mono uppercase tracking-[0.02em] transition-colors duration-100 disabled:opacity-30 disabled:cursor-not-allowed select-none'
 
   const variants = {
-    primary:   'bg-ink text-ink-inv hover:bg-terracotta',
-    secondary: 'bg-paper-bright text-ink border border-rule hover:border-sage hover:bg-surface-soft',
-    ghost:     'bg-transparent text-ink-soft hover:text-ink hover:bg-surface',
+    primary:   'border-ink bg-ink text-ink-inv hover:bg-pink hover:text-ink',
+    secondary: 'border-ink bg-transparent text-ink hover:bg-ink hover:text-ink-inv',
+    ghost:     'border-transparent bg-transparent text-ink-soft hover:border-ink hover:text-ink',
   }[variant]
 
   const sizes = {
-    sm: 'h-8  px-3   text-xs',
-    md: 'h-10 px-4   text-sm',
-    lg: 'h-12 px-6   text-sm',
+    sm: 'h-8  px-3   text-[11px]',
+    md: 'h-10 px-4   text-xs',
+    lg: 'h-12 px-6   text-xs',
   }[size]
 
   return (
@@ -92,7 +92,7 @@ export function SectionHeader({
           {eyebrow && <span className="eyebrow">{eyebrow}</span>}
         </div>
       )}
-      <h2 className="display text-3xl md:text-4xl text-ink leading-tight">
+      <h2 className="display text-4xl md:text-6xl text-ink leading-[0.98]">
         {title}
       </h2>
       {description && (
@@ -125,7 +125,7 @@ export function NumericDisplay({
   }[size]
   return (
     <div className="inline-flex flex-col items-start">
-      <span className={`${sizes} font-mono font-medium tabular text-ink leading-none`}>
+      <span className={`${sizes} display tabular text-ink leading-none`}>
         {value}
       </span>
       {label && (
@@ -149,12 +149,12 @@ export function Pill({
   className?: string
 }) {
   const styles = {
-    default: 'bg-surface text-ink-soft',
-    outline: 'bg-transparent text-ink-soft border border-rule',
-    solid:   'bg-ink text-ink-inv',
+    default: 'border border-ink bg-surface text-ink',
+    outline: 'border border-ink bg-transparent text-ink',
+    solid:   'border border-ink bg-ink text-ink-inv',
   }[variant]
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase ${styles} ${className}`}>
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[10px] uppercase ${styles} ${className}`}>
       {children}
     </span>
   )
@@ -195,7 +195,7 @@ export function Hint({
   label?: string
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-3xl border border-rule bg-surface-soft px-5 py-4">
+    <div className="flex items-start gap-4 border-l-4 border-ink bg-blue px-5 py-4">
       <span className="eyebrow shrink-0 mt-0.5">{label}</span>
       <p className="text-sm text-ink-soft leading-relaxed">{children}</p>
     </div>

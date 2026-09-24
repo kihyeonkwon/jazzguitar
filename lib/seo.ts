@@ -6,36 +6,35 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ??
   'https://jazzguitartree.com'
 
-export const SITE_NAME = 'Jazz Guitar Tree'
+export const SITE_NAME = '재즈 구구단'
 
 const NAVER_SITE_VERIFICATION =
   'e8b4db747ec8a1b49b2bdce3e470c86c6167fc13'
 
 export const HOME_TITLE =
-  '재즈기타 독학·레슨 복습 시스템'
+  '도수·코드·스케일 암산 훈련'
 
 export const HOME_DESCRIPTION =
-  '재즈기타 입문, 코드 보이싱, 스케일, 릭, 컴핑, 즉흥 연습을 Tree와 Train으로 정리한 한국어 재즈 기타 학습 시스템입니다.'
+  '도수(인터벌), 코드 구성음, 스케일 구성음을 악기 없이 머리로 푸는 재즈 구구단 3종. 분당 정답 수(CPM)로 실력을 잽니다.'
 
 export const SEO_KEYWORDS = [
-  '재즈기타',
-  '재즈 기타',
-  '재즈기타 독학',
-  '재즈기타 레슨',
-  '재즈 기타 입문',
-  '재즈기타 코드',
-  '재즈기타 스케일',
-  '재즈기타 즉흥',
-  '재즈기타 컴핑',
-  '재즈 블루스 기타',
-  '드롭2 코드',
-  '드롭3 코드',
-  '기타 코드 보이싱',
-  '기타 스케일 연습',
-  '기타 릭',
-  'Jazz Guitar Tree',
-  '재즈기타 트리',
+  '재즈 구구단',
+  '재즈 이론 연습',
+  '재즈 즉흥연주 연습',
+  '코드 구성음',
+  '코드톤 외우기',
+  '스케일 구성음',
+  '인터벌 도수 연습',
+  '악기 없이 재즈 연습',
+  '재즈 입문',
+  '실용음악 입시 연습',
 ]
+
+export const LOCALE_BCP47: Record<Locale, string> = {
+  ko: 'ko-KR',
+  en: 'en',
+  ja: 'ja-JP',
+}
 
 const LOCALE_OG: Record<Locale, string> = {
   ko: 'ko_KR',
@@ -72,6 +71,8 @@ export function buildPageMetadata({
   description,
   keywords = [],
   image = '/assets/landing/tree-workspace.png',
+  siteName = SITE_NAME,
+  imageAlt,
 }: {
   locale: Locale
   path?: string
@@ -79,6 +80,9 @@ export function buildPageMetadata({
   description: string
   keywords?: string[]
   image?: string
+  /** 로케일별 사이트 이름 (messages의 site.name) */
+  siteName?: string
+  imageAlt?: string
 }): Metadata {
   const alternateLocale = routing.locales
     .filter((item) => item !== locale)
@@ -88,15 +92,16 @@ export function buildPageMetadata({
     metadataBase: new URL(SITE_URL),
     title,
     description,
-    applicationName: SITE_NAME,
-    keywords: [...SEO_KEYWORDS, ...keywords],
+    applicationName: siteName,
+    // 한국어 검색어 묶음은 한국어 페이지에만 붙인다
+    keywords: locale === 'ko' ? [...SEO_KEYWORDS, ...keywords] : keywords,
     alternates: {
       canonical: localePath(locale, path),
       languages: alternateLanguages(path),
     },
     openGraph: {
       type: 'website',
-      siteName: SITE_NAME,
+      siteName,
       title,
       description,
       url: localePath(locale, path),
@@ -107,7 +112,7 @@ export function buildPageMetadata({
           url: image,
           width: 1672,
           height: 941,
-          alt: `${SITE_NAME} 재즈기타 학습 시스템`,
+          alt: imageAlt ?? siteName,
         },
       ],
     },

@@ -92,7 +92,7 @@ export default function ExerciseCard({ leafSlug, idx, exercise, locale, reps = 3
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="display text-xl text-ink flex-1 leading-snug">{exercise.title[locale]}</h3>
         {exercise.bpm && (
-          <span className="rounded-full border border-rule bg-surface-soft px-3 py-1 text-[10px] font-mono tabular text-ink-faint shrink-0">
+          <span className=" border border-rule bg-surface-soft px-3 py-1 text-[10px] font-mono tabular text-ink-faint shrink-0">
             {exercise.bpm} BPM
           </span>
         )}
@@ -116,14 +116,14 @@ export default function ExerciseCard({ leafSlug, idx, exercise, locale, reps = 3
               key={i}
               type="button"
               onClick={() => toggle(i)}
-              className={`flex items-center gap-1.5 rounded-full px-3 h-8 border text-[11px] font-mono transition-colors ${
+              className={`flex items-center gap-1.5 px-3 h-8 border text-[11px] font-mono transition-colors ${
                 checked
                   ? 'bg-ink text-ink-inv border-ink'
                   : 'bg-paper-bright text-ink-soft border-rule hover:border-sage'
               }`}
             >
               <span
-                className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0 ${
+                className={`w-3.5 h-3.5 border flex items-center justify-center shrink-0 ${
                   checked ? 'bg-paper-bright border-paper-bright text-ink' : 'border-current'
                 }`}
               >

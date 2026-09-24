@@ -70,7 +70,7 @@ function renderMarkdown(md: string): React.ReactNode {
         <ul key={key} className="my-4 space-y-1.5">
           {listItems.map((item, i) => (
             <li key={i} className="flex gap-3 text-ink-soft text-[15px] leading-relaxed">
-              <span className="text-ink-faint mt-1.5 w-1 h-1 bg-ink-faint rounded-full shrink-0"></span>
+              <span className="text-ink-faint mt-1.5 w-1 h-1 bg-ink-faint shrink-0"></span>
               <span>{renderInline(item)}</span>
             </li>
           ))}

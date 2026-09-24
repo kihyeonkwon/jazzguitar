@@ -262,7 +262,7 @@ export default function FretboardDiagram({
                 key={i}
                 onClick={() => setIdx(i)}
                 className={`w-2 h-2 transition-colors ${
-                  i === idx ? 'bg-ink' : 'bg-rule hover:bg-ink-soft'
+                  i === idx ? 'bg-ink' : 'bg-ink-quiet hover:bg-ink-soft'
                 }`}
                 aria-label={`Position ${i + 1}`}
               />

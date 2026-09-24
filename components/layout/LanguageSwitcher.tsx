@@ -30,31 +30,30 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative flex items-stretch">
       <button
         onClick={() => setOpen(v => !v)}
-        className="flex h-8 items-center gap-1.5 bg-surface-soft/80 px-3 text-xs font-mono text-ink-soft transition-colors hover:bg-surface hover:text-ink"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex items-center gap-1.5 px-3 font-mono text-[12px] uppercase text-ink transition-colors duration-100 hover:bg-ink hover:text-ink-inv"
       >
-        {locale.toUpperCase()}
+        {locale.toUpperCase()} <span aria-hidden>{open ? '▴' : '▾'}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 min-w-[160px] overflow-hidden bg-paper-bright shadow-[var(--shadow-tight)] animate-fade-in">
+        <div className="absolute right-0 top-full z-50 min-w-[180px] border border-ink bg-paper shadow-[4px_4px_0_var(--color-ink)] animate-fade-in">
           {LOCALES.map(loc => (
             <button
               key={loc}
               onClick={() => select(loc)}
-              className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors ${
+              className={`flex w-full items-center justify-between border-b border-ink px-4 py-2.5 text-left font-sans text-sm normal-case transition-colors duration-100 last:border-b-0 ${
                 locale === loc
-                  ? 'text-ink bg-surface'
-                  : 'text-ink-soft hover:bg-surface hover:text-ink'
+                  ? 'bg-ink text-ink-inv'
+                  : 'text-ink hover:bg-pink'
               }`}
             >
               <span>{t(loc)}</span>
-              {loc !== 'ko' && (
-                <span className="eyebrow">{t('comingSoon')}</span>
-              )}
-              {locale === loc && <IconCheck size={14} className="text-ink" />}
+              {locale === loc && <IconCheck size={14} />}
             </button>
           ))}
         </div>

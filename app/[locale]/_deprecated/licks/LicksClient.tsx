@@ -130,10 +130,10 @@ export default function LicksClient() {
           <button
             key={f.id}
             onClick={() => setActiveFilter(f.id)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+            className={`px-4 py-1.5 text-sm font-medium border transition-colors ${
               activeFilter === f.id
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                ? 'bg-ink text-ink-inv border-ink'
+                : 'bg-paper-bright text-ink-soft border-rule hover:bg-surface'
             }`}
           >
             {f.label}
@@ -146,22 +146,22 @@ export default function LicksClient() {
         {filtered.map((lick) => (
           <div
             key={lick.id}
-            className="rounded-xl border border-gray-200 bg-white p-5 space-y-4"
+            className=" border border-rule bg-paper-bright p-5 space-y-4"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs px-2 py-0.5 rounded-full border border-gray-200 text-gray-500 capitalize">
+                  <span className="text-xs px-2 py-0.5 border border-rule text-ink-soft capitalize">
                     {lick.category}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-ink-faint">
                     {t('key')}: {lick.key}
                   </span>
                 </div>
-                <h3 className="text-gray-900 font-semibold">{lick.title}</h3>
-                <p className="text-gray-500 text-sm mt-0.5">{lick.description}</p>
+                <h3 className="text-ink font-semibold">{lick.title}</h3>
+                <p className="text-ink-soft text-sm mt-0.5">{lick.description}</p>
               </div>
-              <div className="text-xs px-2.5 py-1 rounded-full shrink-0 border border-gray-200 text-gray-500">
+              <div className="text-xs px-2.5 py-1 shrink-0 border border-rule text-ink-soft">
                 {lick.bpm} BPM
               </div>
             </div>

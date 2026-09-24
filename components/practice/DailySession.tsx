@@ -89,7 +89,7 @@ export default function DailySession() {
   if (!mounted) {
     return (
       <div className="max-w-3xl mx-auto px-6 py-16">
-        <div className="h-64 rounded-3xl bg-surface animate-pulse" />
+        <div className="h-64 bg-surface animate-pulse" />
       </div>
     )
   }
@@ -105,7 +105,7 @@ export default function DailySession() {
         </p>
         <Link
           href="/curriculum"
-          className="inline-flex h-11 rounded-full px-5 bg-ink text-ink-inv hover:bg-terracotta text-sm font-semibold items-center transition-colors"
+          className="inline-flex h-11 px-5 bg-ink text-ink-inv hover:bg-terracotta hover:text-ink text-sm font-semibold items-center transition-colors"
         >
           Tree로 가기
         </Link>
@@ -197,7 +197,7 @@ export default function DailySession() {
 
           <Card className="p-6 sm:p-7 space-y-6 min-h-[300px] flex flex-col">
             <div className="space-y-3">
-              <div className="w-12 h-12 rounded-full bg-surface border border-rule flex items-center justify-center text-ink shadow-[var(--shadow-tight)]">
+              <div className="w-12 h-12 bg-surface border border-rule flex items-center justify-center text-ink shadow-[var(--shadow-tight)]">
                 <IconPlay size={16} />
               </div>
               <div>
@@ -211,7 +211,7 @@ export default function DailySession() {
             </div>
             <Link
               href={`/train/${drillType}`}
-              className="mt-auto inline-flex items-center justify-center gap-2 h-11 rounded-full px-5 bg-ink text-ink-inv hover:bg-terracotta transition-colors text-sm font-semibold"
+              className="mt-auto inline-flex items-center justify-center gap-2 h-11 px-5 bg-ink text-ink-inv hover:bg-terracotta hover:text-ink transition-colors text-sm font-semibold"
             >
               <IconPlay size={14} />
               시작

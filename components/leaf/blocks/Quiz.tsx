@@ -30,7 +30,7 @@ export default function Quiz({ question, choices, correct, hint }: Props) {
           let className = 'bg-paper-bright text-ink hover:bg-surface'
           if (reveal) {
             if (isThisCorrect) className = 'bg-ink text-ink-inv'
-            else if (isThisPicked) className = 'bg-red-50 text-red-500'
+            else if (isThisPicked) className = 'bg-pink text-ink'
             else className = 'bg-paper-bright text-ink-faint'
           }
 
@@ -53,7 +53,7 @@ export default function Quiz({ question, choices, correct, hint }: Props) {
 
       {picked !== null && (
         <div className="px-5 py-3 border-t border-rule animate-fade-in">
-          <div className={`eyebrow mb-1 ${isCorrect ? 'text-ink' : 'text-red-500'}`}>
+          <div className={`eyebrow mb-1 ${isCorrect ? 'text-ink' : 'text-ink'}`}>
             {isCorrect ? 'Correct' : 'Try again'}
           </div>
           {hint && (

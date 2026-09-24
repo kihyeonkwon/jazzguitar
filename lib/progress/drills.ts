@@ -1,5 +1,10 @@
 'use client'
 
+import { DRILL_THRESHOLDS, ACCURACY_GATE } from './thresholds'
+import type { DrillLevel } from './thresholds'
+
+export type { DrillLevel }
+
 export interface DrillRound {
   at: string
   correct: number
@@ -7,8 +12,6 @@ export interface DrillRound {
   durationSec: number
   cpm: number
 }
-
-export type DrillLevel = 'beginner' | 'proficient' | 'fluent' | 'master'
 
 export interface LevelAchievement {
   level: DrillLevel
@@ -41,20 +44,7 @@ const LEVEL_LABELS: Record<DrillLevel, string> = {
   master: '마스터',
 }
 
-// CPM(분당 정답) 임계값 — 각 등급으로 진입하는 최소값
-export const DRILL_THRESHOLDS: Record<string, Record<DrillLevel, number>> = {
-  'fretboard-find':     { beginner: 0, proficient: 12, fluent: 20, master: 35 },
-  'interval-ear':       { beginner: 0, proficient: 4,  fluent: 8,  master: 12 },
-  'chord-quality-ear':  { beginner: 0, proficient: 5,  fluent: 10, master: 15 },
-  'voicing-find':       { beginner: 0, proficient: 3,  fluent: 6,  master: 10 },
-  'chord-tone-id':      { beginner: 0, proficient: 8,  fluent: 15, master: 25 },
-  'chord-construction': { beginner: 0, proficient: 6,  fluent: 12, master: 20 },
-  'scale-construction': { beginner: 0, proficient: 5,  fluent: 10, master: 18 },
-  'drop-voicing-misty': { beginner: 0, proficient: 8,  fluent: 14, master: 22 },
-}
-
-// 등급 인정 정확도 게이트: 90% 이상이어야 해당 라운드 CPM이 등급 산정·달성기록에 반영
-export const ACCURACY_GATE = 0.9
+export { DRILL_THRESHOLDS, ACCURACY_GATE }
 
 type DrillScoreMap = Record<string, DrillScore>
 
