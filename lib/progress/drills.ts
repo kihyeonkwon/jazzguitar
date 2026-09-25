@@ -128,7 +128,7 @@ export interface SaveRoundInput {
   durationSec: number
 }
 
-export function saveDrillRound(drillType: string, input: SaveRoundInput): void {
+export function saveDrillRound(drillType: string, input: SaveRoundInput): DrillRound {
   const map = readMap()
   const existing = map[drillType]
   const cpm = computeCpm(input.correct, input.durationSec)
@@ -185,6 +185,42 @@ export function saveDrillRound(drillType: string, input: SaveRoundInput): void {
   }
 
   map[drillType] = next
+  writeMap(map)
+  return round
+}
+
+// 같은 라운드인지 — 끝낸 시각(초 단위)과 결과가 같으면 같은 라운드로 본다
+function roundKey(r: DrillRound): string {
+  return `${Math.floor(Date.parse(r.at) / 1000)}|${r.correct}|${r.total}|${r.durationSec}`
+}
+
+/**
+ * 계정에 저장된 라운드를 이 브라우저의 기록과 합친다 (기기 간 동기화).
+ * 겹치는 라운드는 한 번만 남기고, 시간순으로 최근 HISTORY_LIMIT개를 유지한다.
+ */
+export function mergeDrillRounds(drillType: string, rounds: DrillRound[]): void {
+  if (rounds.length === 0) return
+  const map = readMap()
+  const existing = map[drillType]
+  const seen = new Map<string, DrillRound>()
+  for (const r of [...(existing?.history ?? []), ...rounds]) seen.set(roundKey(r), r)
+  const history = [...seen.values()]
+    .sort((a, b) => Date.parse(a.at) - Date.parse(b.at))
+    .slice(-HISTORY_LIMIT)
+  if (existing && history.length === existing.history.length && history.every((r, i) => roundKey(r) === roundKey(existing.history[i]))) {
+    return
+  }
+  const gated = history.filter((r) => r.total > 0 && r.correct / r.total >= ACCURACY_GATE)
+  map[drillType] = {
+    drillType,
+    bestScore: existing?.bestScore ?? 0,
+    bestTime: existing?.bestTime,
+    bestCpm: Math.max(existing?.bestCpm ?? 0, ...gated.map((r) => r.cpm)),
+    lastPlayedAt: history[history.length - 1]?.at ?? existing?.lastPlayedAt ?? new Date(0).toISOString(),
+    totalPlayed: Math.max(existing?.totalPlayed ?? 0, history.length),
+    history,
+    achievements: existing?.achievements ?? [],
+  }
   writeMap(map)
 }
 

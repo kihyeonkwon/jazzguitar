@@ -65,9 +65,9 @@ export default function ChordConstruction() {
       const roundTotal = score.total - lastSavedTotalRef.current
       const round = { correct: roundCorrect, total: roundTotal, durationSec: elapsedSec }
       frozenRef.current = { elapsedMs, correct: roundCorrect }
-      saveDrillRound('chord-construction', round)
+      const saved = saveDrillRound('chord-construction', round)
       // 리더보드 제출과 가입 권유는 결과 화면(RoundResult)이 맡는다
-      finishedRef.current = { summary: { id: Date.now(), ...round }, ranked: rankedRef.current }
+      finishedRef.current = { summary: { id: Date.now(), ...round, at: saved.at }, ranked: rankedRef.current }
       rankedRef.current = modeRef.current === 'seventh'
       lastSavedCorrectRef.current = score.correct
       lastSavedTotalRef.current = score.total

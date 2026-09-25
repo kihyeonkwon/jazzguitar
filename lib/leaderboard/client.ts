@@ -2,6 +2,7 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { GameType } from '@/lib/train/games'
+import { mergeDrillRounds } from '@/lib/progress/drills'
 
 // 리더보드 서버 연결. 환경변수가 없으면 null → UI는 "offline"으로 표시하고 게임은 그대로 동작한다.
 //
@@ -42,6 +43,10 @@ export interface RoundInput {
   correct: number
   total: number
   durationSec: number
+  /** 기기에서 라운드를 끝낸 시각 (ISO) — 기기 간 기록을 맞춰 볼 때 쓴다 */
+  at?: string
+  /** 순위표에 오를 수 있는 라운드인지. false면 개인 기록으로만 남는다 */
+  ranked?: boolean
 }
 
 export interface LeaderboardRow {
@@ -183,6 +188,7 @@ export async function join(nickname: string, password: string, captchaToken?: st
   if (error) return { ok: false, code: toCode(error.message) }
 
   await flushPending()
+  await syncHistory()
   emit()
   return { ok: true }
 }
@@ -201,6 +207,7 @@ export async function login(nickname: string, password: string, captchaToken?: s
   if (!data) return { ok: false, code: 'bad_credentials' }
 
   await flushPending()
+  await syncHistory()
   emit()
   return { ok: true }
 }
@@ -227,6 +234,8 @@ async function insertScore(profileId: string, game: GameType, round: RoundInput)
     correct: round.correct,
     total: round.total,
     duration_sec: Math.round(round.durationSec * 10) / 10,
+    ranked: round.ranked ?? true,
+    played_at: round.at ?? new Date().toISOString(),
   })
   if (!error) return 'ok'
   // PostgREST·Postgres 오류에는 코드가 있고, fetch 실패에는 없다
@@ -257,6 +266,40 @@ export async function submitRound(game: GameType, round: RoundInput): Promise<vo
   const r = me ? await insertScore(me.profileId, game, round) : 'retry'
   if (r === 'retry') writePending([...readPending(), { game, ...round }])
   emit()
+}
+
+// ── 개인 기록 동기화 ──
+
+const HISTORY_GAMES: GameType[] = ['degree-id', 'chord-construction', 'scale-construction']
+
+/** 계정에 저장된 최근 라운드를 받아 이 브라우저의 기록과 합친다. 로그인돼 있을 때만 의미가 있다. */
+export async function syncHistory(): Promise<void> {
+  const sb = getSupabase()
+  if (!sb) return
+  const me = await getMe()
+  if (!me) return
+  await Promise.all(
+    HISTORY_GAMES.map(async (game) => {
+      const { data, error } = await sb
+        .from('scores')
+        .select('correct,total,duration_sec,played_at')
+        .eq('profile_id', me.profileId)
+        .eq('game', game)
+        .order('played_at', { ascending: false })
+        .limit(20)
+      if (error || !data) return
+      mergeDrillRounds(
+        game,
+        data.map((r) => ({
+          at: new Date(r.played_at as string).toISOString(),
+          correct: Number(r.correct),
+          total: Number(r.total),
+          durationSec: Number(r.duration_sec),
+          cpm: Math.round((Number(r.correct) / Number(r.duration_sec)) * 600) / 10,
+        }))
+      )
+    })
+  )
 }
 
 export async function fetchTop(game: GameType, limit = 10): Promise<LeaderboardRow[]> {

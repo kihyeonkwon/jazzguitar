@@ -91,9 +91,9 @@ export default function DegreeId() {
         const playedMs = Date.now() - roundStartRef.current - feedbackMsRef.current
         const durationSec = Math.max(1, Math.round(playedMs / 100) / 10)
         const result = { correct: nextScore, total: ROUND_LENGTH, durationSec }
-        saveDrillRound('degree-id', result)
+        const saved = saveDrillRound('degree-id', result)
         // 리더보드 제출과 가입 권유는 결과 화면(RoundResult)이 맡는다
-        setSummary({ id: Date.now(), ...result })
+        setSummary({ id: Date.now(), ...result, at: saved.at })
         setFinished(true)
         setProblem(null)
       } else {

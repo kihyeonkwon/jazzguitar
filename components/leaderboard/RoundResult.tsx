@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import AccountForm from './AccountForm'
 import type { GameType } from '@/lib/train/games'
-import { getDrillScore } from '@/lib/progress/drills'
+import { DRILL_SCORES_EVENT, getDrillScore } from '@/lib/progress/drills'
 import { ACCURACY_GATE } from '@/lib/progress/thresholds'
 import {
   LEADERBOARD_ENABLED,
@@ -23,6 +23,8 @@ export interface RoundSummary {
   correct: number
   total: number
   durationSec: number
+  /** 라운드를 끝낸 시각 — 로컬 기록(saveDrillRound)과 같은 값 */
+  at?: string
 }
 
 interface Props {
@@ -39,6 +41,13 @@ interface Props {
 const submitted = new Set<number>()
 // 결과 화면에 그리는 최근 라운드 수
 const TRAIL = 12
+
+function readTrail(game: GameType): number[] {
+  return (getDrillScore(game)?.history ?? [])
+    .filter((r) => r.correct > 0)
+    .slice(-TRAIL)
+    .map((r) => Math.round((r.durationSec / r.correct) * 100) / 100)
+}
 
 // 라운드가 끝난 직후의 화면. 가입을 권하는 유일한 자리 —
 // 방금 낸 기록과 예상 순위를 보여 주고, 그 자리에서 닉네임·비밀번호만 받는다.
@@ -58,14 +67,17 @@ export default function RoundResult({ game, round, ranked = true, unrankedNote, 
 
   // 내 개인 기록(이 브라우저 기준) — 정확도와 상관없이 모든 라운드. 정답 하나에 걸린 초는
   // 오답이 많을수록 저절로 길어지므로 따로 거르지 않는다. 마지막 항목이 방금 라운드다.
-  const [trail] = useState<number[]>(() =>
-    (getDrillScore(game)?.history ?? [])
-      .filter((r) => r.correct > 0)
-      .slice(-TRAIL)
-      .map((r) => Math.round((r.durationSec / r.correct) * 100) / 100)
-  )
+  const [trail, setTrail] = useState<number[]>(() => readTrail(game))
+  // 방금 라운드보다 앞선 기록들 (계정 동기화로 다른 기기의 라운드가 섞여 들어와도 시간순이다)
   const earlier = trail.slice(0, -1)
-  const prevBest = earlier.length ? Math.min(...earlier) : null
+  const [prevBest] = useState<number | null>(() => (earlier.length ? Math.min(...earlier) : null))
+
+  // 로그인·동기화로 로컬 기록이 바뀌면 추이를 다시 그린다
+  useEffect(() => {
+    const onChange = () => setTrail(readTrail(game))
+    window.addEventListener(DRILL_SCORES_EVENT, onChange)
+    return () => window.removeEventListener(DRILL_SCORES_EVENT, onChange)
+  }, [game])
 
   const settle = useCallback(async () => {
     const who = await getMe()
@@ -82,9 +94,16 @@ export default function RoundResult({ game, round, ranked = true, unrankedNote, 
         submitted.add(round.id)
         const who = await getMe()
         if (who) setBefore((await fetchMyBest(game, who.profileId))?.rank ?? null)
+        // 로그인돼 있으면 모든 라운드를 계정에 남긴다 (개인 기록 — 기기 간 이어짐).
         // 로그인 전에는 순위에 들 수 있는 기록만 보관한다 (보관함은 5개뿐)
-        if (ranked && (who || passed)) {
-          await submitRound(game, { correct: round.correct, total: round.total, durationSec: round.durationSec })
+        if (who || (ranked && passed)) {
+          await submitRound(game, {
+            correct: round.correct,
+            total: round.total,
+            durationSec: round.durationSec,
+            at: round.at,
+            ranked,
+          })
         }
       }
       await settle()

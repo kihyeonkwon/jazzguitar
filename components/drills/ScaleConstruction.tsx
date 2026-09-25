@@ -251,9 +251,9 @@ export default function ScaleConstruction() {
         const roundTotal = nextScore.total - lastSavedTotalRef.current
         const round = { correct: roundCorrect, total: roundTotal, durationSec: elapsedSec }
         frozenRef.current = { elapsedMs, correct: roundCorrect }
-        saveDrillRound('scale-construction', round)
+        const saved = saveDrillRound('scale-construction', round)
         // 리더보드 제출과 가입 권유는 결과 화면(RoundResult)이 맡는다
-        finishedRef.current = { summary: { id: Date.now(), ...round }, ranked: rankedRef.current }
+        finishedRef.current = { summary: { id: Date.now(), ...round, at: saved.at }, ranked: rankedRef.current }
         rankedRef.current = true
         lastSavedCorrectRef.current = nextScore.correct
         lastSavedTotalRef.current = nextScore.total
