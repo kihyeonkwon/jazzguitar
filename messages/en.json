@@ -238,7 +238,7 @@
   "game": {
     "eyebrow": "Game",
     "rank": "Rank",
-    "pendingNudge": "{n} record(s) only in this browser — upload",
+    "pendingNudge": "Upload {n} {n, plural, one {record} other {records}}",
     "statQuestion": "Question",
     "statScore": "Score",
     "statRate": "Rate",
@@ -306,7 +306,10 @@
     "noCorrect": "No correct answers, so there is no time to record.",
     "topPercent": "top {pct}%",
     "ofPlayers": "#{rank} of {total} players",
-    "speedNote": "Reaction time · per correct answer"
+    "speedNote": "Reaction time · per correct answer",
+    "trail": "Last {n} rounds",
+    "best": "Your best {best}s",
+    "trailAria": "Reaction time over the last {n} rounds, best {best}s"
   },
   "account": {
     "title": "Account",

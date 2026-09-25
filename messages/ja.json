@@ -238,7 +238,7 @@
   "game": {
     "eyebrow": "Game",
     "rank": "Rank",
-    "pendingNudge": "記録{n}件がこのブラウザにだけあります — 載せる",
+    "pendingNudge": "記録{n}件を載せる",
     "statQuestion": "Question",
     "statScore": "Score",
     "statRate": "Rate",
@@ -306,7 +306,10 @@
     "noCorrect": "正解がなかったため、記録を計算できませんでした。",
     "topPercent": "上位 {pct}%",
     "ofPlayers": "{total}人中 {rank}位",
-    "speedNote": "反応速度 · 正解1つにかかった時間"
+    "speedNote": "反応速度 · 正解1つにかかった時間",
+    "trail": "直近{n}ラウンド",
+    "best": "自己ベスト {best}s",
+    "trailAria": "直近{n}ラウンドの反応速度、ベスト{best}秒"
   },
   "account": {
     "title": "アカウント",

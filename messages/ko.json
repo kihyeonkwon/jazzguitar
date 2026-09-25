@@ -238,7 +238,7 @@
   "game": {
     "eyebrow": "Game",
     "rank": "Rank",
-    "pendingNudge": "기록 {n}개가 이 브라우저에만 있습니다 — 올리기",
+    "pendingNudge": "기록 {n}개 올리기",
     "statQuestion": "Question",
     "statScore": "Score",
     "statRate": "Rate",
@@ -306,7 +306,10 @@
     "noCorrect": "정답이 없어 기록을 계산하지 못했습니다.",
     "topPercent": "상위 {pct}%",
     "ofPlayers": "{total}명 중 {rank}위",
-    "speedNote": "반응속도 · 정답 하나에 걸린 시간"
+    "speedNote": "반응속도 · 정답 하나에 걸린 시간",
+    "trail": "최근 {n}라운드",
+    "best": "내 최고 {best}s",
+    "trailAria": "최근 {n}라운드의 반응속도, 최고 {best}초"
   },
   "account": {
     "title": "계정",

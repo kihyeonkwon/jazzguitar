@@ -46,10 +46,12 @@ export default function DrillFrame({
   return (
     <div className="bg-gray px-4 pb-10 pt-6 sm:px-6 sm:pb-14 sm:pt-10">
       <div className={`mx-auto ${wide ? 'max-w-6xl' : 'max-w-3xl'}`}>
+        {/* 제목 줄은 한 줄 — 오른쪽 버튼이 길어져도 제목이 세로로 쪼개지면 안 된다 */}
         <div className="mb-3 flex items-baseline justify-between gap-3">
-          <h1 className="flex items-baseline gap-3">
-            <span className="label">{`${eyebrow ?? t('eyebrow')} / ${String(number).padStart(2, '0')}`}</span>
-            <span className="text-[15px] font-semibold tracking-[-0.03em] text-ink">{title}</span>
+          <h1 className="flex min-w-0 items-baseline gap-3 whitespace-nowrap">
+            {/* 좁은 화면에서는 번호 라벨을 접고 게임 이름에 자리를 준다 */}
+            <span className="label hidden sm:inline">{`${eyebrow ?? t('eyebrow')} / ${String(number).padStart(2, '0')}`}</span>
+            <span className="truncate text-[15px] font-semibold tracking-[-0.03em] text-ink">{title}</span>
           </h1>
           {drillType && (
             <div className="flex shrink-0 items-baseline gap-4">
@@ -132,7 +134,7 @@ function RankLink() {
 
   if (waiting > 0) {
     return (
-      <button type="button" onClick={() => openAccount('join')} className="label arrow-shift shrink-0 bg-pink px-2 py-0.5 text-ink">
+      <button type="button" onClick={() => openAccount('join')} className="label arrow-shift shrink-0 whitespace-nowrap bg-pink px-2 py-0.5 text-ink">
         {t('pendingNudge', { n: waiting })} <span className="arrow">→</span>
       </button>
     )

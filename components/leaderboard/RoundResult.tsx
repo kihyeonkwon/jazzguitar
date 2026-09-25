@@ -37,6 +37,8 @@ interface Props {
 
 // 개발 모드의 effect 이중 실행에서도 한 번만 올리도록 모듈 단위로 기억한다
 const submitted = new Set<number>()
+// 결과 화면에 그리는 최근 라운드 수
+const TRAIL = 12
 
 // 라운드가 끝난 직후의 화면. 가입을 권하는 유일한 자리 —
 // 방금 낸 기록과 예상 순위를 보여 주고, 그 자리에서 닉네임·비밀번호만 받는다.
@@ -54,12 +56,16 @@ export default function RoundResult({ game, round, ranked = true, unrankedNote, 
   const [after, setAfter] = useState<Standing | null>(null)
   const [wouldBe, setWouldBe] = useState<Standing | null>(null)
 
-  // 이번 라운드 이전의 내 최고 기록 (이 브라우저 기준)
-  const [prevBest] = useState<number | null>(() => {
-    const history = getDrillScore(game)?.history ?? []
-    const earlier = history.slice(0, -1).filter((r) => r.correct > 0 && r.correct / r.total >= ACCURACY_GATE)
-    return earlier.length ? Math.min(...earlier.map((r) => Math.round((r.durationSec / r.correct) * 100) / 100)) : null
-  })
+  // 내 개인 기록(이 브라우저 기준) — 정확도와 상관없이 모든 라운드. 정답 하나에 걸린 초는
+  // 오답이 많을수록 저절로 길어지므로 따로 거르지 않는다. 마지막 항목이 방금 라운드다.
+  const [trail] = useState<number[]>(() =>
+    (getDrillScore(game)?.history ?? [])
+      .filter((r) => r.correct > 0)
+      .slice(-TRAIL)
+      .map((r) => Math.round((r.durationSec / r.correct) * 100) / 100)
+  )
+  const earlier = trail.slice(0, -1)
+  const prevBest = earlier.length ? Math.min(...earlier) : null
 
   const settle = useCallback(async () => {
     const who = await getMe()
@@ -101,13 +107,17 @@ export default function RoundResult({ game, round, ranked = true, unrankedNote, 
             {`${round.correct}/${round.total} · ${Math.round(accuracy * 100)}% · ${round.durationSec.toFixed(1)}s`}
           </span>
         </div>
-        <div className="mt-3 flex items-end gap-3">
-          <span className="display tabular leading-[0.85]" style={{ fontSize: 'clamp(4rem, 14vw, 8.5rem)' }}>
+        {/* 숫자는 절대 줄바꿈하지 않는다 — 좁은 화면에서는 글자를 줄이고 설명은 아래 줄로 */}
+        <div className="mt-3 flex items-end gap-2 whitespace-nowrap sm:gap-3">
+          <span className="display tabular leading-[0.85]" style={{ fontSize: 'clamp(3.5rem, 19vw, 8.5rem)' }}>
             {spc === null ? '—' : spc.toFixed(2)}
           </span>
-          <span className="display pb-2 text-2xl sm:text-4xl">{t('unit')}</span>
-          <span className="label pb-3 normal-case text-ink-soft sm:pb-4">{t('speedNote')}</span>
+          <span className="display pb-1 text-2xl sm:pb-2 sm:text-4xl">{t('unit')}</span>
         </div>
+        <p className="label mt-2 normal-case text-ink-soft">{t('speedNote')}</p>
+
+        {trail.length > 1 && spc !== null && <Trail values={trail} />}
+
         <p className="label mt-4 normal-case">
           {spc === null
             ? t('noCorrect')
@@ -180,6 +190,40 @@ export default function RoundResult({ game, round, ranked = true, unrankedNote, 
         <button type="button" onClick={onAgain} className="os-btn">
           {me || !eligible ? t('again') : t('againSkip')}
         </button>
+      </div>
+    </div>
+  )
+}
+
+// 최근 라운드의 반응속도 막대 — 낮을수록 좋다. 최고 기록은 핑크, 방금 라운드는 잉크색.
+// 제일 중요한 건 이 막대가 점점 낮아지는 것이다.
+function Trail({ values }: { values: number[] }) {
+  const t = useTranslations('result')
+  const max = Math.max(...values)
+  const best = Math.min(...values)
+  const bestIdx = values.indexOf(best)
+  const last = values.length - 1
+
+  return (
+    <div className="mt-5">
+      <div className="flex h-14 items-end gap-1" role="img" aria-label={t('trailAria', { n: values.length, best: best.toFixed(2) })}>
+        {values.map((v, i) => (
+          <div key={i} className="relative flex-1">
+            <div
+              className={`w-full ${i === last ? 'bg-ink' : i === bestIdx ? 'bg-pink' : 'bg-ink/20'}`}
+              style={{ height: `${Math.max(6, (v / max) * 56)}px` }}
+            />
+            {i === bestIdx && i !== last && (
+              <span className="absolute -top-4 left-1/2 -translate-x-1/2 font-mono text-[9px] tabular text-ink-soft">
+                {v.toFixed(2)}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+      <div className="mt-1.5 flex items-baseline justify-between font-mono text-[11px] text-ink-soft">
+        <span>{t('trail', { n: values.length })}</span>
+        <span className="tabular">{t('best', { best: best.toFixed(2) })}</span>
       </div>
     </div>
   )
